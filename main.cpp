@@ -3,7 +3,9 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_image.h>
-#include "sprite.cpp"
+
+#include "sprite.h"
+#include "textbox.h"
 
 const float FPS = 60;
 const int SCREEN_H = 600;
@@ -14,7 +16,7 @@ enum KEYS {
 };
 
 struct Node {
-    sprite *sprite;
+    Sprite *sprite;
     struct Node *next;
 };
 
@@ -25,7 +27,16 @@ int hat_y = 0;
 bool key[4] = { false, false, false, false };
 Node *background;
 Node *pSprite;
+Node *textBox;
+
 ALLEGRO_EVENT_QUEUE *queue;
+ALLEGRO_TIMER *timer;
+ALLEGRO_DISPLAY *display;
+
+ALLEGRO_FONT *font8;
+ALLEGRO_FONT *font16;
+ALLEGRO_FONT *font24;
+ALLEGRO_FONT *font32;
 
 void handleEvents() {
     ALLEGRO_EVENT event;
@@ -139,14 +150,23 @@ void update() {
 }
 
 void loadSprites() {
+    ALLEGRO_BITMAP *textboxTest = al_load_bitmap("res/paper.png");
+    textBox = (Node*) malloc(sizeof(Node));
+    textBox->sprite = new Textbox(0, 344, "Now this is the story all about how\n"
+                                          "My life got flipped, turned upside down\n"
+                                          "And I'd like to take a minute just sit right there\n"
+                                          "I'll tell you how I became the prince of a town called Bel-air",
+                                          font32, al_map_rgb(0x00, 0x00, 0x00), textboxTest, nullptr);
+    textBox->next = NULL;
+
     ALLEGRO_BITMAP *hatImage = al_load_bitmap("res/hat.png");
     pSprite = (Node*) malloc(sizeof(Node));
-    pSprite->sprite = new sprite(0,0,hatImage);
-    pSprite->next = NULL;
+    pSprite->sprite = new Sprite(0,0,hatImage);
+    pSprite->next = textBox;
 
     ALLEGRO_BITMAP *bg01 = al_load_bitmap("res/bars.png");
     background = (Node*) malloc(sizeof(Node));
-    background->sprite = new sprite(0,0,bg01);
+    background->sprite = new Sprite(0,0,bg01);
     background->next = pSprite;
 }
 
@@ -158,7 +178,7 @@ int main(int argc, char *argv[]) {
     al_install_keyboard();
     al_install_mouse();
 
-    ALLEGRO_TIMER *timer = al_create_timer(1.0 / FPS);
+    timer = al_create_timer(1.0 / FPS);
     al_start_timer(timer);
 
     queue = al_create_event_queue();
@@ -166,13 +186,12 @@ int main(int argc, char *argv[]) {
     al_register_event_source(queue, al_get_mouse_event_source());
     al_register_event_source(queue, al_get_timer_event_source(timer));
 
-    ALLEGRO_DISPLAY *display = al_create_display(SCREEN_W, SCREEN_H);
+    display = al_create_display(SCREEN_W, SCREEN_H);
 
-    ALLEGRO_FONT *font = al_load_ttf_font("res/OpenSans.ttf", 48, 0);
-    if (!font) {
-        printf("Error in font load!");
-        return -1;
-    }
+    font8 = al_load_ttf_font("res/DOSVGA.ttf", 8, 0);
+    font16 = al_load_ttf_font("res/DOSVGA.ttf", 16, 0);
+    font24 = al_load_ttf_font("res/DOSVGA.ttf", 24, 0);
+    font32 = al_load_ttf_font("res/DOSVGA.ttf", 32, 0);
 
     loadSprites();
 

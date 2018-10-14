@@ -9,24 +9,26 @@ set(CMAKE_CXX_STANDARD 14)
 INCLUDE_DIRECTORIES(allegro_win/include)
 LINK_DIRECTORIES(allegro_win/lib)
 
-add_executable(fcwrpg main.cpp sprite.cpp)
-add_custom_command(
-        TARGET fcwrpg
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/res ./res
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/allegro_win/bin ./
-)
+add_executable(fcwrpg main.cpp sprite.cpp textbox.cpp sprite.h textbox.h)
+add_dependencies(fcwrpg copy_deps)
 TARGET_LINK_LIBRARIES(fcwrpg allegro allegro_font allegro_ttf allegro_image)
 
 find_file(pthread libwinpthread-1.dll)
 find_file(libgcc libgcc_s_dw2-1.dll)
 find_file(libstdc libstdc++-6.dll)
 
-add_custom_target(zip_package)
+add_custom_target(copy_deps)
 add_custom_command(
-        TARGET zip_package
+        TARGET copy_deps
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/res ./res
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/allegro_win/bin ./
         COMMAND ${CMAKE_COMMAND} -E copy ${pthread} ${libgcc} ${libstdc} ./
+)
+
+add_custom_target(zip_package)
+add_dependencies(zip_package copy_deps)
+add_custom_command(
+        TARGET zip_package
         COMMAND ${CMAKE_COMMAND} -E tar "cvf" "package.zip" --format=zip --
         fcwrpg.exe
         res
