@@ -3,7 +3,7 @@
 #include <allegro5/allegro_image.h>
 #include <string>
 
-#include "sprite.h"
+#include "Sprite.h"
 
 #ifndef FCWRPG_TEXTBOX_H
 #define FCWRPG_TEXTBOX_H

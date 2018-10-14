@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 14)
 INCLUDE_DIRECTORIES(allegro_win/include)
 LINK_DIRECTORIES(allegro_win/lib)
 
-add_executable(fcwrpg main.cpp sprite.cpp textbox.cpp sprite.h textbox.h)
+add_executable(fcwrpg main.cpp Sprite.cpp Textbox.cpp Sprite.h Textbox.h Map.cpp Map.h Tile.cpp Tile.h)
 add_dependencies(fcwrpg copy_deps)
 TARGET_LINK_LIBRARIES(fcwrpg
         allegro

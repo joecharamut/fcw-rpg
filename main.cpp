@@ -4,20 +4,16 @@
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_image.h>
 
-#include "sprite.h"
-#include "textbox.h"
+#include "Sprite.h"
+#include "Textbox.h"
+#include "Map.h"
 
 const float FPS = 60;
-const int SCREEN_H = 600;
-const int SCREEN_W = 800;
+const int SCREEN_H = 512;
+const int SCREEN_W = 512;
 
 enum KEYS {
     KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT
-};
-
-struct LinkedSprite {
-    Sprite *sprite;
-    struct LinkedSprite *next;
 };
 
 bool done = false;
@@ -28,6 +24,8 @@ bool key[4] = { false, false, false, false };
 LinkedSprite *background;
 LinkedSprite *pSprite;
 LinkedSprite *textBox;
+
+Map *current_map;
 
 ALLEGRO_EVENT_QUEUE *queue;
 ALLEGRO_TIMER *timer;
@@ -57,8 +55,11 @@ void handleEvents() {
         if(key[KEY_RIGHT]) {
             hat_x += 4;
         }
-        pSprite->sprite->setX(hat_x);
-        pSprite->sprite->setY(hat_y);
+        Sprite *hat = current_map->getSpriteById("s_hat");
+        if (hat != nullptr) {
+            hat->setX(hat_x);
+            hat->setY(hat_y);
+        }
         redraw = true;
     } else if(event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
         done = true;
@@ -143,17 +144,18 @@ void update() {
     if(redraw && al_is_event_queue_empty(queue)) {
         redraw = false;
         al_clear_to_color(al_map_rgb(0xff, 0xff, 0xff));
-        LinkedSprite *next = background;
+        /*LinkedSprite *next = background;
         while (next != NULL) {
             next->sprite->draw();
             next = next->next;
-        }
+        }*/
+        current_map->draw();
         al_flip_display();
     }
 }
 
 void loadSprites() {
-    ALLEGRO_BITMAP *textboxTest = al_load_bitmap("resources/paper.png");
+    /*ALLEGRO_BITMAP *textboxTest = al_load_bitmap("resources/paper.png");
     textBox = (LinkedSprite*) malloc(sizeof(LinkedSprite));
     textBox->sprite = new Textbox(0, 344, "Now this is the story all about how\n"
                                   "My life got flipped, turned upside down\n"
@@ -162,19 +164,34 @@ void loadSprites() {
                                   font32, al_map_rgb(0x00, 0x00, 0x00), textboxTest, nullptr);
     textBox->next = NULL;
 
-    ALLEGRO_BITMAP *hatImage = al_load_bitmap("resources/hat.png");
-    pSprite = (LinkedSprite*) malloc(sizeof(LinkedSprite));
-    pSprite->sprite = new Sprite(0,0,hatImage);
-    pSprite->next = textBox;
-
     ALLEGRO_BITMAP *bg01 = al_load_bitmap("resources/bars.png");
     background = (LinkedSprite*) malloc(sizeof(LinkedSprite));
     background->sprite = new Sprite(0,0,bg01);
-    background->next = pSprite;
+    background->next = pSprite;*/
+
+    ALLEGRO_BITMAP *hatImage = al_load_bitmap("resources/hat.png");
+
+    Tile **tileset = new Tile*[2];
+    //tileset[0] =  new Tile(al_load_bitmap("resources/icon.png"));
+    tileset[0] =  new Tile(al_load_bitmap("resources/tile00.png"));
+    tileset[1] =  new Tile(al_load_bitmap("resources/tile01.png"));
+    tileset[2] =  new Tile(al_load_bitmap("resources/tile02.png"));
+    tileset[3] =  new Tile(al_load_bitmap("resources/icon.png"));
+
+    int **tilemap;
+    tilemap = new int*[32];
+    for (int i = 0; i < 32; i++){
+        tilemap[i] = new int[32];
+        for (int j = 0; j < 32; j++) {
+            tilemap[i][j] = (j%4);
+        }
+    }
+    current_map = new Map(0, const_cast<char*>("m_main_menu"), tileset, tilemap, 32, 32);
+    current_map->addSprite(new Sprite(0,0,hatImage,"s_hat"));
 }
 
 void loadFonts() {
-    font8 = al_load_ttf_font("resources/font/DOSVGA.ttf", 8, 0);
+    font8  = al_load_ttf_font("resources/font/DOSVGA.ttf",  8, 0);
     font16 = al_load_ttf_font("resources/font/DOSVGA.ttf", 16, 0);
     font24 = al_load_ttf_font("resources/font/DOSVGA.ttf", 24, 0);
     font32 = al_load_ttf_font("resources/font/DOSVGA.ttf", 32, 0);

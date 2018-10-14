@@ -9,6 +9,11 @@ public:
     float x;
     float y;
     ALLEGRO_BITMAP *image;
+    int width;
+    int height;
+    const char *id;
+
+    Sprite(float x, float y, ALLEGRO_BITMAP *image, const char *id);
     Sprite(float x, float y, ALLEGRO_BITMAP *image);
     virtual void draw();
     void setX(float newX);

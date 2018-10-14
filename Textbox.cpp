@@ -1,4 +1,4 @@
-#include "textbox.h"
+#include "Textbox.h"
 
 Textbox::Textbox(float x, float y, const char *text, ALLEGRO_FONT *font,
                  ALLEGRO_COLOR color, ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *border) : Sprite(x, y, background) {
