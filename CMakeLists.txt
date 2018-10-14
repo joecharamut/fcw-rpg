@@ -20,7 +20,7 @@ find_file(libstdc libstdc++-6.dll)
 add_custom_target(copy_deps)
 add_custom_command(
         TARGET copy_deps
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/res ./res
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources ./resources
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/allegro_win/bin ./
         COMMAND ${CMAKE_COMMAND} -E copy ${pthread} ${libgcc} ${libstdc} ./
 )
@@ -31,7 +31,7 @@ add_custom_command(
         TARGET zip_package
         COMMAND ${CMAKE_COMMAND} -E tar "cvf" "package.zip" --format=zip --
         fcwrpg.exe
-        res
+        resources
         allegro-5.2.dll
         allegro_acodec-5.2.dll
         allegro_audio-5.2.dll

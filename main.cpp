@@ -15,9 +15,9 @@ enum KEYS {
     KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT
 };
 
-struct Node {
+struct LinkedSprite {
     Sprite *sprite;
-    struct Node *next;
+    struct LinkedSprite *next;
 };
 
 bool done = false;
@@ -25,9 +25,9 @@ bool redraw = true;
 int hat_x = 0;
 int hat_y = 0;
 bool key[4] = { false, false, false, false };
-Node *background;
-Node *pSprite;
-Node *textBox;
+LinkedSprite *background;
+LinkedSprite *pSprite;
+LinkedSprite *textBox;
 
 ALLEGRO_EVENT_QUEUE *queue;
 ALLEGRO_TIMER *timer;
@@ -140,7 +140,7 @@ void update() {
     if(redraw && al_is_event_queue_empty(queue)) {
         redraw = false;
         al_clear_to_color(al_map_rgb(0xff, 0xff, 0xff));
-        Node *next = background;
+        LinkedSprite *next = background;
         while (next != NULL) {
             next->sprite->draw();
             next = next->next;
@@ -150,24 +150,31 @@ void update() {
 }
 
 void loadSprites() {
-    ALLEGRO_BITMAP *textboxTest = al_load_bitmap("res/paper.png");
-    textBox = (Node*) malloc(sizeof(Node));
+    ALLEGRO_BITMAP *textboxTest = al_load_bitmap("resources/paper.png");
+    textBox = (LinkedSprite*) malloc(sizeof(LinkedSprite));
     textBox->sprite = new Textbox(0, 344, "Now this is the story all about how\n"
-                                          "My life got flipped, turned upside down\n"
-                                          "And I'd like to take a minute just sit right there\n"
-                                          "I'll tell you how I became the prince of a town called Bel-air",
-                                          font32, al_map_rgb(0x00, 0x00, 0x00), textboxTest, nullptr);
+                                  "My life got flipped, turned upside down\n"
+                                  "And I'd like to take a minute just sit right there\n"
+                                  "I'll tell you how I became the prince of a town called Bel-air",
+                                  font32, al_map_rgb(0x00, 0x00, 0x00), textboxTest, nullptr);
     textBox->next = NULL;
 
-    ALLEGRO_BITMAP *hatImage = al_load_bitmap("res/hat.png");
-    pSprite = (Node*) malloc(sizeof(Node));
+    ALLEGRO_BITMAP *hatImage = al_load_bitmap("resources/hat.png");
+    pSprite = (LinkedSprite*) malloc(sizeof(LinkedSprite));
     pSprite->sprite = new Sprite(0,0,hatImage);
     pSprite->next = textBox;
 
-    ALLEGRO_BITMAP *bg01 = al_load_bitmap("res/bars.png");
-    background = (Node*) malloc(sizeof(Node));
+    ALLEGRO_BITMAP *bg01 = al_load_bitmap("resources/bars.png");
+    background = (LinkedSprite*) malloc(sizeof(LinkedSprite));
     background->sprite = new Sprite(0,0,bg01);
     background->next = pSprite;
+}
+
+void loadFonts() {
+    font8 = al_load_ttf_font("resources/font/DOSVGA.ttf", 8, 0);
+    font16 = al_load_ttf_font("resources/font/DOSVGA.ttf", 16, 0);
+    font24 = al_load_ttf_font("resources/font/DOSVGA.ttf", 24, 0);
+    font32 = al_load_ttf_font("resources/font/DOSVGA.ttf", 32, 0);
 }
 
 int main(int argc, char *argv[]) {
@@ -187,12 +194,7 @@ int main(int argc, char *argv[]) {
     al_register_event_source(queue, al_get_timer_event_source(timer));
 
     display = al_create_display(SCREEN_W, SCREEN_H);
-
-    font8 = al_load_ttf_font("res/DOSVGA.ttf", 8, 0);
-    font16 = al_load_ttf_font("res/DOSVGA.ttf", 16, 0);
-    font24 = al_load_ttf_font("res/DOSVGA.ttf", 24, 0);
-    font32 = al_load_ttf_font("res/DOSVGA.ttf", 32, 0);
-
+    loadFonts();
     loadSprites();
 
     while (!done) {

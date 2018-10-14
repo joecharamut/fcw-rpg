@@ -16,6 +16,3 @@ void Sprite::setX(float newX) {
 void Sprite::setY(float newY) {
     this->y = newY;
 }
-
-
-
