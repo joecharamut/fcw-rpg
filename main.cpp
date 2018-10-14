@@ -40,7 +40,10 @@ ALLEGRO_FONT *font32;
 
 void handleEvents() {
     ALLEGRO_EVENT event;
-    al_wait_for_event(queue, &event);
+    //al_wait_for_event(queue, &event);
+    if (!al_get_next_event(queue, &event)) {
+        return;
+    }
     if (event.type == ALLEGRO_EVENT_TIMER) {
         if(key[KEY_UP]) {
             hat_y -= 4;
@@ -179,11 +182,16 @@ void loadFonts() {
 
 int main(int argc, char *argv[]) {
     al_init();
+
     al_init_font_addon();
     al_init_ttf_addon();
     al_init_image_addon();
     al_install_keyboard();
     al_install_mouse();
+
+    display = al_create_display(SCREEN_W, SCREEN_H);
+    al_set_new_display_flags(ALLEGRO_WINDOWED);
+    al_set_display_icon(display, al_load_bitmap("resources/icon.png"));
 
     timer = al_create_timer(1.0 / FPS);
     al_start_timer(timer);
@@ -192,12 +200,21 @@ int main(int argc, char *argv[]) {
     al_register_event_source(queue, al_get_keyboard_event_source());
     al_register_event_source(queue, al_get_mouse_event_source());
     al_register_event_source(queue, al_get_timer_event_source(timer));
+    al_register_event_source(queue, al_get_display_event_source(display));
 
-    display = al_create_display(SCREEN_W, SCREEN_H);
+
+    al_set_window_title(display, "FCW the RPG");
     loadFonts();
     loadSprites();
 
     while (!done) {
         update();
     }
+
+    al_destroy_font(font8);
+    al_destroy_font(font16);
+    al_destroy_font(font24);
+    al_destroy_font(font32);
+    al_destroy_display(display);
+
 }

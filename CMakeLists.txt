@@ -3,15 +3,26 @@ project(fcwrpg)
 
 set(CMAKE_CXX_STANDARD 14)
 
-#INCLUDE_DIRECTORIES(/usr/include)
-#LINK_DIRECTORIES(/usr/lib)
-
 INCLUDE_DIRECTORIES(allegro_win/include)
 LINK_DIRECTORIES(allegro_win/lib)
 
 add_executable(fcwrpg main.cpp sprite.cpp textbox.cpp sprite.h textbox.h)
 add_dependencies(fcwrpg copy_deps)
-TARGET_LINK_LIBRARIES(fcwrpg allegro allegro_font allegro_ttf allegro_image)
+TARGET_LINK_LIBRARIES(fcwrpg
+        allegro
+        allegro_acodec
+        allegro_audio
+        allegro_color
+        allegro_dialog
+        allegro_font
+        allegro_image
+        allegro_main
+        allegro_memfile
+        allegro_physfs
+        allegro_primitives
+        allegro_ttf
+        allegro_video
+)
 
 find_file(pthread libwinpthread-1.dll)
 find_file(libgcc libgcc_s_dw2-1.dll)
