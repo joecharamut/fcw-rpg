@@ -80,4 +80,11 @@ IF(${WIN32})
             libgcc_s_dw2-1.dll
             libstdc++-6.dll
     )
+ELSE(${WIN32})
+    add_custom_command(
+            TARGET zip_package
+            COMMAND ${CMAKE_COMMAND} -E tar "cvf" "package.zip" --format=zip --
+            fcwrpg
+            resources
+    )
 ENDIF(${WIN32})
