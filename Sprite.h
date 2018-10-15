@@ -20,5 +20,9 @@ public:
     void setY(float newY);
 };
 
+struct LinkedSprite {
+    Sprite *sprite;
+    struct LinkedSprite *next;
+};
 
 #endif //FCWRPG_SPRITE_H

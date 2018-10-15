@@ -6,11 +6,6 @@
 
 #include "Tile.h"
 
-struct LinkedSprite {
-    Sprite *sprite;
-    struct LinkedSprite *next;
-};
-
 class Map {
 public:
     int id;
@@ -26,6 +21,7 @@ public:
     void draw();
     void addSprite(Sprite *sprite);
     Sprite* getSpriteById(const char *id);
+    void handleEvent(ALLEGRO_EVENT event);
 
 };
 

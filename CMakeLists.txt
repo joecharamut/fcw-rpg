@@ -14,7 +14,8 @@ add_executable(fcwrpg
         Textbox.cpp Textbox.h
         Map.cpp Map.h
         Tile.cpp Tile.h
-)
+        BaseMenu.cpp BaseMenu.h
+        Globals.h Globals.cpp ActionSprite.cpp ActionSprite.h BoundingBox.cpp BoundingBox.h)
 
 add_dependencies(fcwrpg copy_deps)
 TARGET_LINK_LIBRARIES(fcwrpg

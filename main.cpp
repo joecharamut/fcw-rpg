@@ -7,6 +7,9 @@
 #include "Sprite.h"
 #include "Textbox.h"
 #include "Map.h"
+#include "BaseMenu.h"
+#include "Globals.h"
+#include "ActionSprite.h"
 
 const float FPS = 60;
 const int SCREEN_H = 512;
@@ -16,7 +19,6 @@ enum KEYS {
     KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT
 };
 
-bool done = false;
 bool redraw = true;
 int hat_x = 0;
 int hat_y = 0;
@@ -25,21 +27,21 @@ LinkedSprite *background;
 LinkedSprite *pSprite;
 LinkedSprite *textBox;
 
-Map *current_map;
+Map *current_map = nullptr;
+BaseMenu *current_menu = nullptr;
 
 ALLEGRO_EVENT_QUEUE *queue;
 ALLEGRO_TIMER *timer;
 ALLEGRO_DISPLAY *display;
 
-ALLEGRO_FONT *font8;
-ALLEGRO_FONT *font16;
-ALLEGRO_FONT *font24;
-ALLEGRO_FONT *font32;
-
 void handleEvents() {
     ALLEGRO_EVENT event;
     //al_wait_for_event(queue, &event);
     if (!al_get_next_event(queue, &event)) {
+        return;
+    }
+    if (current_map) {
+        current_map->handleEvent(event);
         return;
     }
     if (event.type == ALLEGRO_EVENT_TIMER) {
@@ -97,8 +99,7 @@ void handleEvents() {
                 key[KEY_RIGHT] = true;
                 break;
         }
-    }
-    else if(event.type == ALLEGRO_EVENT_KEY_UP) {
+    } else if(event.type == ALLEGRO_EVENT_KEY_UP) {
         switch(event.keyboard.keycode) {
             case ALLEGRO_KEY_UP:
                 key[KEY_UP] = false;
@@ -149,9 +150,22 @@ void update() {
             next->sprite->draw();
             next = next->next;
         }*/
-        current_map->draw();
+        if (current_map)
+            current_map->draw();
+        if (current_menu)
+            current_menu->draw();
         al_flip_display();
     }
+}
+
+void clickFunction(ActionSprite *as) {
+    printf("Click\n");
+}
+
+void hoverFunction(ActionSprite *as) {
+    as->setX(as->x+4.0f);
+    as->setY(as->y+4.0f);
+    redraw = true;
 }
 
 void loadSprites() {
@@ -172,7 +186,6 @@ void loadSprites() {
     ALLEGRO_BITMAP *hatImage = al_load_bitmap("resources/hat.png");
 
     Tile **tileset = new Tile*[2];
-    //tileset[0] =  new Tile(al_load_bitmap("resources/icon.png"));
     tileset[0] =  new Tile(al_load_bitmap("resources/tile00.png"));
     tileset[1] =  new Tile(al_load_bitmap("resources/tile01.png"));
     tileset[2] =  new Tile(al_load_bitmap("resources/tile02.png"));
@@ -187,7 +200,10 @@ void loadSprites() {
         }
     }
     current_map = new Map(0, const_cast<char*>("m_main_menu"), tileset, tilemap, 32, 32);
-    current_map->addSprite(new Sprite(0,0,hatImage,"s_hat"));
+    current_map->addSprite(new ActionSprite(0,0,hatImage,"s_hat", clickFunction, hoverFunction));
+
+    //current_menu = new BaseMenu();
+    //current_menu->addText("Help me", 0, 0);
 }
 
 void loadFonts() {
@@ -198,6 +214,7 @@ void loadFonts() {
 }
 
 int main(int argc, char *argv[]) {
+    done = false;
     al_init();
 
     al_init_font_addon();

@@ -1,6 +1,8 @@
 
 
 #include "Map.h"
+#include "Globals.h"
+#include "ActionSprite.h"
 
 Map::Map(int id, const char *name, Tile **tileset, int **tilemap, int length, int height) {
     this->id = id;
@@ -56,4 +58,45 @@ Sprite* Map::getSpriteById(const char *id) {
         next = next->next;
     }
     return nullptr;
+}
+
+void Map::handleEvent(ALLEGRO_EVENT event) {
+    if(event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+        done = true;
+    } else if(event.type == ALLEGRO_EVENT_KEY_UP) {
+        switch (event.keyboard.keycode) {
+            case ALLEGRO_KEY_ESCAPE:
+                done = true;
+        }
+    } else if(event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
+        LinkedSprite *next = sprites;
+        while(next != nullptr) {
+            if (next->sprite == nullptr) {
+                next = next->next;
+                continue;
+            }
+            ActionSprite *actionSprite = dynamic_cast<ActionSprite *>(next->sprite);
+            if (actionSprite) {
+                if (actionSprite->boundingBox->check(event.mouse.x, event.mouse.y)) {
+                    actionSprite->clickAction(actionSprite);
+                }
+            }
+            next = next->next;
+        }
+    } else if (event.type == ALLEGRO_EVENT_MOUSE_AXES) {
+        LinkedSprite *next = sprites;
+        while(next != nullptr) {
+            if (next->sprite == nullptr) {
+                next = next->next;
+                continue;
+            }
+            ActionSprite *actionSprite = dynamic_cast<ActionSprite *>(next->sprite);
+            if (actionSprite) {
+                if (actionSprite->boundingBox->check(event.mouse.x, event.mouse.y)) {
+                    actionSprite->hoverAction(actionSprite);
+                }
+            }
+            next = next->next;
+        }
+    }
 }
