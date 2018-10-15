@@ -4,17 +4,20 @@ Actually Builds in Linux *AND* Windows Now!
 
 I don't have a Mac to test it on.
 
-#Requirements (Windows):
+Requirements (Windows):
+=====
   * MinGW 7.2.0
   * CMake
   * Patience
 
-#Requirements (Linux):
+Requirements (Linux):
+=====
   * CMake
   * Working c++ compiler
   * Allegro 5 (`liballegro5-dev` on Debian/Ubuntu)
 
-#How to Build:
+How to Build:
+=====
   * Clone repository
   * Make new folder `build` 
   * Open terminal in the build folder
