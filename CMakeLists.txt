@@ -8,7 +8,14 @@ IF(${WIN32})
     LINK_DIRECTORIES(allegro_win/lib)
 ENDIF(${WIN32})
 
-add_executable(fcwrpg main.cpp Sprite.cpp Textbox.cpp Sprite.h Textbox.h Map.cpp Map.h Tile.cpp Tile.h)
+add_executable(fcwrpg
+        main.cpp
+        Sprite.cpp Sprite.h
+        Textbox.cpp Textbox.h
+        Map.cpp Map.h
+        Tile.cpp Tile.h
+)
+
 add_dependencies(fcwrpg copy_deps)
 TARGET_LINK_LIBRARIES(fcwrpg
         allegro
