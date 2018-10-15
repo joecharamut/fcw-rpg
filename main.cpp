@@ -185,7 +185,7 @@ void loadSprites() {
 
     ALLEGRO_BITMAP *hatImage = al_load_bitmap("resources/hat.png");
 
-    Tile **tileset = new Tile*[2];
+    Tile **tileset = new Tile*[4];
     tileset[0] =  new Tile(al_load_bitmap("resources/tile00.png"));
     tileset[1] =  new Tile(al_load_bitmap("resources/tile01.png"));
     tileset[2] =  new Tile(al_load_bitmap("resources/tile02.png"));
