@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.12)
 project(fcwrpg)
 
 set(CMAKE_CXX_STANDARD 14)
-
+INCLUDE_DIRECTORIES(cereal)
 IF(${WIN32})
-    INCLUDE_DIRECTORIES(allegro_win/include)
+    INCLUDE_DIRECTORIES(allegro_win/include cereal)
     LINK_DIRECTORIES(allegro_win/lib)
 ENDIF(${WIN32})
 

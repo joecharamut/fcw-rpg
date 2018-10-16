@@ -197,7 +197,7 @@ void loadSprites() {
     current_map->setEventHandlerFunction(mapEventHandler);
     ALLEGRO_BITMAP *hatImage = al_load_bitmap("resources/hat.png");
     current_map->addSprite(new ActionSprite(0,0,hatImage,"s_hat", clickFunction, nullptr));
-    current_map->addText("Hello I am some test text.", font16, al_map_rgb(0xff,0xff,0xff), 0, 0);
+    current_map->addText("Hello I am some test text.", font24, al_map_rgb(0xff,0xff,0xff), 0, 0);
 }
 
 void loadFonts() {
@@ -238,11 +238,4 @@ int main(int argc, char *argv[]) {
     while (!done) {
         update();
     }
-
-    al_destroy_font(font8);
-    al_destroy_font(font16);
-    al_destroy_font(font24);
-    al_destroy_font(font32);
-    al_destroy_display(display);
-
 }
