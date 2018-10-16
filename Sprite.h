@@ -16,8 +16,8 @@ public:
     Sprite(float x, float y, ALLEGRO_BITMAP *image, const char *id);
     Sprite(float x, float y, ALLEGRO_BITMAP *image);
     virtual void draw();
-    void setX(float newX);
-    void setY(float newY);
+    virtual void setX(float newX);
+    virtual void setY(float newY);
 };
 
 struct LinkedSprite {

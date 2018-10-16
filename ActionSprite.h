@@ -13,6 +13,8 @@ public:
 
     ActionSprite(float x, float y, ALLEGRO_BITMAP *image, const char *id,
             void (*clickAction)(ActionSprite*), void (*hoverAction)(ActionSprite*));
+    void setX(float newX) override;
+    void setY(float newY) override;
 };
 
 

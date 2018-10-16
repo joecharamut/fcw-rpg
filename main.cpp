@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <cstdio>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
@@ -7,7 +7,6 @@
 #include "Sprite.h"
 #include "Textbox.h"
 #include "Map.h"
-#include "BaseMenu.h"
 #include "Globals.h"
 #include "ActionSprite.h"
 
@@ -23,27 +22,34 @@ bool redraw = true;
 int hat_x = 0;
 int hat_y = 0;
 bool key[4] = { false, false, false, false };
-LinkedSprite *background;
-LinkedSprite *pSprite;
-LinkedSprite *textBox;
 
 Map *current_map = nullptr;
-BaseMenu *current_menu = nullptr;
 
 ALLEGRO_EVENT_QUEUE *queue;
 ALLEGRO_TIMER *timer;
 ALLEGRO_DISPLAY *display;
 
-void handleEvents() {
+void update() {
     ALLEGRO_EVENT event;
-    //al_wait_for_event(queue, &event);
-    if (!al_get_next_event(queue, &event)) {
-        return;
+    if (al_get_next_event(queue, &event)) {
+        if (current_map) {
+            current_map->handleEvent(event);
+        }
     }
-    if (current_map) {
-        current_map->handleEvent(event);
-        return;
+    if(redraw && al_is_event_queue_empty(queue)) {
+        redraw = false;
+        al_clear_to_color(al_map_rgb(0xff, 0xff, 0xff));
+        if (current_map)
+            current_map->draw();
+        al_flip_display();
     }
+}
+
+void clickFunction(ActionSprite *as) {
+    printf("Click\n");
+}
+
+void mapEventHandler(ALLEGRO_EVENT event) {
     if (event.type == ALLEGRO_EVENT_TIMER) {
         if(key[KEY_UP]) {
             hat_y -= 4;
@@ -65,6 +71,38 @@ void handleEvents() {
         redraw = true;
     } else if(event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
         done = true;
+    } else if(event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
+        LinkedSprite *next = current_map->sprites;
+        while(next != nullptr) {
+            if (next->sprite == nullptr) {
+                next = next->next;
+                continue;
+            }
+            ActionSprite *actionSprite = dynamic_cast<ActionSprite *>(next->sprite);
+            if (actionSprite) {
+                if (actionSprite->boundingBox->check(event.mouse.x, event.mouse.y)) {
+                    if (actionSprite->clickAction)
+                        actionSprite->clickAction(actionSprite);
+                }
+            }
+            next = next->next;
+        }
+    } else if (event.type == ALLEGRO_EVENT_MOUSE_AXES) {
+        LinkedSprite *next = current_map->sprites;
+        while(next != nullptr) {
+            if (next->sprite == nullptr) {
+                next = next->next;
+                continue;
+            }
+            ActionSprite *actionSprite = dynamic_cast<ActionSprite *>(next->sprite);
+            if (actionSprite) {
+                if (actionSprite->boundingBox->check(event.mouse.x, event.mouse.y)) {
+                    if (actionSprite->hoverAction)
+                        actionSprite->hoverAction(actionSprite);
+                }
+            }
+            next = next->next;
+        }
     } else if(event.type == ALLEGRO_EVENT_KEY_DOWN) {
         switch(event.keyboard.keycode) {
             case ALLEGRO_KEY_UP:
@@ -140,52 +178,8 @@ void handleEvents() {
     }
 }
 
-void update() {
-    handleEvents();
-    if(redraw && al_is_event_queue_empty(queue)) {
-        redraw = false;
-        al_clear_to_color(al_map_rgb(0xff, 0xff, 0xff));
-        /*LinkedSprite *next = background;
-        while (next != NULL) {
-            next->sprite->draw();
-            next = next->next;
-        }*/
-        if (current_map)
-            current_map->draw();
-        if (current_menu)
-            current_menu->draw();
-        al_flip_display();
-    }
-}
-
-void clickFunction(ActionSprite *as) {
-    printf("Click\n");
-}
-
-void hoverFunction(ActionSprite *as) {
-    as->setX(as->x+4.0f);
-    as->setY(as->y+4.0f);
-    redraw = true;
-}
-
 void loadSprites() {
-    /*ALLEGRO_BITMAP *textboxTest = al_load_bitmap("resources/paper.png");
-    textBox = (LinkedSprite*) malloc(sizeof(LinkedSprite));
-    textBox->sprite = new Textbox(0, 344, "Now this is the story all about how\n"
-                                  "My life got flipped, turned upside down\n"
-                                  "And I'd like to take a minute just sit right there\n"
-                                  "I'll tell you how I became the prince of a town called Bel-air",
-                                  font32, al_map_rgb(0x00, 0x00, 0x00), textboxTest, nullptr);
-    textBox->next = NULL;
-
-    ALLEGRO_BITMAP *bg01 = al_load_bitmap("resources/bars.png");
-    background = (LinkedSprite*) malloc(sizeof(LinkedSprite));
-    background->sprite = new Sprite(0,0,bg01);
-    background->next = pSprite;*/
-
-    ALLEGRO_BITMAP *hatImage = al_load_bitmap("resources/hat.png");
-
-    Tile **tileset = new Tile*[4];
+    auto **tileset = new Tile*[4];
     tileset[0] =  new Tile(al_load_bitmap("resources/tile00.png"));
     tileset[1] =  new Tile(al_load_bitmap("resources/tile01.png"));
     tileset[2] =  new Tile(al_load_bitmap("resources/tile02.png"));
@@ -200,10 +194,10 @@ void loadSprites() {
         }
     }
     current_map = new Map(0, const_cast<char*>("m_main_menu"), tileset, tilemap, 32, 32);
-    current_map->addSprite(new ActionSprite(0,0,hatImage,"s_hat", clickFunction, hoverFunction));
-
-    //current_menu = new BaseMenu();
-    //current_menu->addText("Help me", 0, 0);
+    current_map->setEventHandlerFunction(mapEventHandler);
+    ALLEGRO_BITMAP *hatImage = al_load_bitmap("resources/hat.png");
+    current_map->addSprite(new ActionSprite(0,0,hatImage,"s_hat", clickFunction, nullptr));
+    current_map->addText("Hello I am some test text.", font16, al_map_rgb(0xff,0xff,0xff), 0, 0);
 }
 
 void loadFonts() {
