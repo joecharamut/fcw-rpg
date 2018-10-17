@@ -5,3 +5,4 @@ extern ALLEGRO_FONT *font16;
 extern ALLEGRO_FONT *font24;
 extern ALLEGRO_FONT *font32;
 extern bool done;
+extern int frameCounter;

@@ -71,6 +71,7 @@ void update() {
         al_clear_to_color(al_map_rgb(0xff, 0xff, 0xff));
         if (current_map)
             current_map->draw();
+        frameCounter = (++frameCounter % 60);
         al_flip_display();
     }
 }
@@ -209,11 +210,12 @@ void mapEventHandler(ALLEGRO_EVENT event) {
 }
 
 void loadSprites() {
-    auto **tileset = new Tile*[4];
-    tileset[0] =  new Tile(al_load_bitmap("resources/tile00.png"));
-    tileset[1] =  new Tile(al_load_bitmap("resources/tile01.png"));
-    tileset[2] =  new Tile(al_load_bitmap("resources/tile02.png"));
-    tileset[3] =  new Tile(al_load_bitmap("resources/icon.png"));
+    Tile **tileset = new Tile*[4];
+    tileset[0] = new Tile(al_load_bitmap("resources/tile00.png"));
+    tileset[1] = new Tile(al_load_bitmap("resources/tile01.png"));
+    tileset[2] = new Tile(al_load_bitmap("resources/tile02.png"));
+    tileset[3] = new Tile(al_load_bitmap("resources/icon.png"));
+
 
     int **tilemap;
     tilemap = new int*[32];
@@ -228,6 +230,15 @@ void loadSprites() {
     ALLEGRO_BITMAP *hatImage = al_load_bitmap("resources/hat.png");
     current_map->addSprite(new ActionSprite(0,0,hatImage,"s_hat", clickFunction, nullptr));
     current_map->addText("Hello I am some test text.", font24, al_map_rgb(0xff,0xff,0xff), 0, 0);
+
+    Sprite *animSprite = new Sprite(64,64,al_load_bitmap("resources/rainbow/frame-0.png"));
+    animSprite->speed = 4;
+    char filename[64];
+    for (int i = 1; i < 4; i++) {
+        sprintf(filename, "resources/rainbow/frame-%i.png", i);
+        animSprite->addFrame(al_load_bitmap(filename));
+    }
+    current_map->addSprite(animSprite);
 }
 
 void loadFonts() {

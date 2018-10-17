@@ -4,7 +4,7 @@ project(fcwrpg)
 set(CMAKE_CXX_STANDARD 14)
 
 #set(CMAKE_VERBOSE_MAKEFILE  ON)
-
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/cereal)
 IF(${WIN32})
     INCLUDE_DIRECTORIES(allegro_win/include ${CMAKE_SOURCE_DIR}/cereal)
     LINK_DIRECTORIES(allegro_win/lib)

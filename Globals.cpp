@@ -5,3 +5,4 @@ ALLEGRO_FONT *font16;
 ALLEGRO_FONT *font24;
 ALLEGRO_FONT *font32;
 bool done;
+int frameCounter;

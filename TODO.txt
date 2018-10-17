@@ -1,5 +1,5 @@
 
-TODO: Check if allegro does .gif
+TODO: Check if allegro does .gif - No it does not
 TODO: Animated Sprites
 TODO: Animated Tiles (^Possible Similar solution)
 TODO: Map Editor -> JSON file
