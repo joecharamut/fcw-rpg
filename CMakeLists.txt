@@ -2,9 +2,11 @@ cmake_minimum_required(VERSION 3.12)
 project(fcwrpg)
 
 set(CMAKE_CXX_STANDARD 14)
-INCLUDE_DIRECTORIES(cereal)
+
+#set(CMAKE_VERBOSE_MAKEFILE  ON)
+
 IF(${WIN32})
-    INCLUDE_DIRECTORIES(allegro_win/include cereal)
+    INCLUDE_DIRECTORIES(allegro_win/include ${CMAKE_SOURCE_DIR}/cereal)
     LINK_DIRECTORIES(allegro_win/lib)
 ENDIF(${WIN32})
 
@@ -14,7 +16,9 @@ add_executable(fcwrpg
         Textbox.cpp Textbox.h
         Map.cpp Map.h
         Tile.cpp Tile.h
-        Globals.h Globals.cpp ActionSprite.cpp ActionSprite.h BoundingBox.cpp BoundingBox.h)
+        Globals.h Globals.cpp
+        ActionSprite.cpp ActionSprite.h
+        BoundingBox.cpp BoundingBox.h)
 
 add_dependencies(fcwrpg copy_deps)
 TARGET_LINK_LIBRARIES(fcwrpg

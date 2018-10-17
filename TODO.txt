@@ -1,0 +1,6 @@
+
+TODO: Check if allegro does .gif
+TODO: Animated Sprites
+TODO: Animated Tiles (^Possible Similar solution)
+TODO: Map Editor -> JSON file
+TODO: Map Editor Python Maybe (3d array for map, 1d array for tileset -> export arrays as json, zip images? (res/tile00_0.png))
