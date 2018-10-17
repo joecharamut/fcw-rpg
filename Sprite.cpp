@@ -21,17 +21,8 @@ Sprite::Sprite(float x, float y, const char *id, int frameCount, ...) {
 void Sprite::draw() {
     LinkedImage *next = frames;
     while (next) {
-        if (frameCounter%speed == 0) {
-            ++currentFrame %= numFrames;
-            while (next != nullptr && next->frameNum != currentFrame) {
-                next = next->next;
-            }
-            if (next != nullptr) {
-                al_draw_bitmap(next->image, x, y, 0);
-            }
-        } else {
-            next = next->next;
-        }
+        al_draw_bitmap(next->image, x, y, 0);
+        next = next->next;
     }
 }
 
