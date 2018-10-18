@@ -4,22 +4,25 @@
 #include "Globals.h"
 #include "ActionSprite.h"
 
-Map::Map(int id, const char *name, Tile **tileset, int **tilemap, int length, int height) {
+Map::Map(int id, const char *name, Tile **tileset, int ***tilemap, int length, int height, int layers) {
     this->id = id;
     this->name = name;
     this->tileset = tileset;
     this->tilemap = tilemap;
     this->length = length;
     this->height = height;
+    this->layers = layers;
     this->sprites = new LinkedSprite();
     this->texts = new LinkedText();
 }
 
 void Map::draw() {
-    for (int x = 0; x < height; x++) {
-        for (int y = 0; y < length; y++) {
-            Tile *tile = tileset[tilemap[x][y]];
-            tile->draw((x*tile->width), (y*tile->height));
+    for (int l = 0; l < layers; l++) {
+        for (int x = 0; x < height; x++) {
+            for (int y = 0; y < length; y++) {
+                Tile *tile = tileset[tilemap[l][x][y]];
+                tile->draw((x * tile->width), (y * tile->height));
+            }
         }
     }
     LinkedText *nextText = texts;

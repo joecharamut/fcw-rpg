@@ -224,20 +224,30 @@ void loadSprites() {
     tileset[0] = new Tile(al_load_bitmap("resources/tile00.png"));
     tileset[1] = new Tile(al_load_bitmap("resources/tile01.png"));
     tileset[2] = new Tile(al_load_bitmap("resources/tile02.png"));
+
     tileset[3] = new Tile(al_load_bitmap("resources/icon.png"));
     tileset[4] = new Tile(al_load_bitmap("resources/tree_top.png"));
     tileset[5] = new Tile(al_load_bitmap("resources/tree_bottom.png"));
     tileset[6] = new Tile(al_load_bitmap("resources/rock_1.png"));
 
-    int **tilemap;
-    tilemap = new int*[32];
+    int ***tilemap;
+    tilemap = new int**[2];
+    tilemap[0] = new int*[32];
     for (int i = 0; i < 32; i++){
-        tilemap[i] = new int[32];
+        tilemap[0][i] = new int[32];
         for (int j = 0; j < 32; j++) {
-            tilemap[i][j] = (j%7);
+            tilemap[0][i][j] = 0;//(j%4);
         }
     }
-    current_map = new Map(0, const_cast<char*>("m_main_menu"), tileset, tilemap, 32, 32);
+    tilemap[1] = new int*[32];
+    for (int i = 0; i < 32; i++){
+        tilemap[1][i] = new int[32];
+        for (int j = 0; j < 32; j++) {
+            tilemap[1][i][j] = (j%4)+3;
+        }
+    }
+
+    current_map = new Map(0, const_cast<char*>("m_main_menu"), tileset, tilemap, 32, 32, 2);
     current_map->setEventHandlerFunction(mapEventHandler);
     ALLEGRO_BITMAP *hatImage = al_load_bitmap("resources/hat.png");
     current_map->addSprite(new ActionSprite(0,0,hatImage,"s_hat", clickFunction, nullptr));

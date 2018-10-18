@@ -20,14 +20,15 @@ public:
     int id;
     const char *name;
     Tile **tileset;
-    int **tilemap;
+    int ***tilemap;
     int length;
     int height;
+    int layers;
     LinkedSprite *sprites;
     LinkedText *texts;
     void (*handlerFunction)(ALLEGRO_EVENT event);
 
-    Map(int id, const char *name, Tile **tileset, int **tilemap, int length, int height);
+    Map(int id, const char *name, Tile **tileset, int ***tilemap, int length, int height, int layers);
 
     void draw();
     void addSprite(Sprite *sprite);
