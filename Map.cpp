@@ -45,6 +45,10 @@ void Map::draw() {
     }
 }
 
+bool Map::checkCollision(BoundingBox box) {
+
+}
+
 void Map::addSprite(Sprite *sprite) {
     LinkedSprite *add = new LinkedSprite();
     add->sprite = sprite;

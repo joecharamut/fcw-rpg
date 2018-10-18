@@ -36,6 +36,7 @@ public:
     Sprite* getSpriteById(const char *id);
     void handleEvent(ALLEGRO_EVENT event);
     void setEventHandlerFunction(void (*handler)(ALLEGRO_EVENT event));
+    bool checkCollision(BoundingBox box);
 };
 
 #endif //FCWRPG_MAP_H

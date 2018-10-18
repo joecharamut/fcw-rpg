@@ -9,7 +9,6 @@ class ActionSprite : public Sprite {
 public:
     void (*clickAction)(ActionSprite*, ALLEGRO_EVENT event);
     void (*hoverAction)(ActionSprite*, ALLEGRO_EVENT event);
-    BoundingBox *boundingBox;
 
     ActionSprite(float x, float y, ALLEGRO_BITMAP *image, const char *id,
             void (*clickAction)(ActionSprite*, ALLEGRO_EVENT event), void (*hoverAction)(ActionSprite*, ALLEGRO_EVENT event));

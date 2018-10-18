@@ -121,7 +121,7 @@ void mapEventHandler(ALLEGRO_EVENT event) {
             }
             ActionSprite *actionSprite = dynamic_cast<ActionSprite *>(next->sprite);
             if (actionSprite) {
-                if (actionSprite->boundingBox->check(event.mouse.x, event.mouse.y)) {
+                if (actionSprite->boundingBox->intersect(event.mouse.x, event.mouse.y)) {
                     if (actionSprite->clickAction)
                         actionSprite->clickAction(actionSprite, event);
                 }
@@ -137,7 +137,7 @@ void mapEventHandler(ALLEGRO_EVENT event) {
             }
             ActionSprite *actionSprite = dynamic_cast<ActionSprite *>(next->sprite);
             if (actionSprite) {
-                if (actionSprite->boundingBox->check(event.mouse.x, event.mouse.y)) {
+                if (actionSprite->boundingBox->intersect(event.mouse.x, event.mouse.y)) {
                     if (actionSprite->hoverAction)
                         actionSprite->hoverAction(actionSprite, event);
                 }

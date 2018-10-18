@@ -1,5 +1,6 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
+#include "BoundingBox.h"
 
 #ifndef FCWRPG_SPRITE_H
 #define FCWRPG_SPRITE_H
@@ -26,6 +27,8 @@ public:
     virtual void draw();
     virtual void setX(float newX);
     virtual void setY(float newY);
+    BoundingBox *boundingBox;
+    void updateBoundingBox();
     void addFrame(ALLEGRO_BITMAP *image);
 };
 

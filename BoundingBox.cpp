@@ -7,6 +7,11 @@ BoundingBox::BoundingBox(float x1, float y1, float x2, float y2) {
     this->y2 = y2;
 }
 
-bool BoundingBox::check(float px, float py) {
+bool BoundingBox::intersect(float px, float py) {
     return (x1 <= px && px <= x2) && (y1 <= py && py <= y2);
+}
+
+bool BoundingBox::intersect(BoundingBox *box) {
+    // TODO: Get this working
+    return false;
 }
