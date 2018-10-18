@@ -4,20 +4,20 @@
 #ifndef FCWRPG_SPRITE_H
 #define FCWRPG_SPRITE_H
 
-class LinkedImage;
-class LinkedSprite;
-
 class Sprite {
 public:
     float x;
     float y;
-    LinkedImage *frames;
+    ALLEGRO_BITMAP **frames = (ALLEGRO_BITMAP **) calloc(64, sizeof(ALLEGRO_BITMAP *));
+    int nextFrameStore = 0;
     int width;
     int height;
     const char *id;
-    int numFrames;
-    int currentFrame;
-    int speed;
+
+    int numFrames = 0;
+    int currentFrame = 0;
+    int speed = 0;
+    int speedCount = 0;
 
     Sprite(float x, float y, const char *id, ALLEGRO_BITMAP *image);
     Sprite(float x, float y, ALLEGRO_BITMAP *image) : Sprite(x, y, nullptr, image) {};
@@ -32,12 +32,6 @@ public:
 struct LinkedSprite {
     Sprite *sprite;
     struct LinkedSprite *next;
-};
-
-struct LinkedImage {
-    ALLEGRO_BITMAP *image;
-    int frameNum = 0;
-    struct LinkedImage *next;
 };
 
 #endif //FCWRPG_SPRITE_H

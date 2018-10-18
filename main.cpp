@@ -68,7 +68,7 @@ void update() {
     }
     if(redraw && al_is_event_queue_empty(queue)) {
         redraw = false;
-        al_clear_to_color(al_map_rgb(0xff, 0xff, 0xff));
+        al_clear_to_color(al_map_rgb(0x00, 0x00, 0x00));
         if (current_map)
             current_map->draw();
         frameCounter = (++frameCounter % 60);
@@ -76,8 +76,18 @@ void update() {
     }
 }
 
-void clickFunction(ActionSprite *as) {
-    printf("Click\n");
+void clickFunction(ActionSprite *as, ALLEGRO_EVENT event) {
+    switch (event.mouse.button) {
+        case 1:
+            printf("LMB\n");
+            break;
+        case 2:
+            printf("RMB\n");
+            break;
+        default:
+            printf("Other: %i\n", event.mouse.button);
+            break;
+    }
 }
 
 void mapEventHandler(ALLEGRO_EVENT event) {
@@ -113,7 +123,7 @@ void mapEventHandler(ALLEGRO_EVENT event) {
             if (actionSprite) {
                 if (actionSprite->boundingBox->check(event.mouse.x, event.mouse.y)) {
                     if (actionSprite->clickAction)
-                        actionSprite->clickAction(actionSprite);
+                        actionSprite->clickAction(actionSprite, event);
                 }
             }
             next = next->next;
@@ -129,7 +139,7 @@ void mapEventHandler(ALLEGRO_EVENT event) {
             if (actionSprite) {
                 if (actionSprite->boundingBox->check(event.mouse.x, event.mouse.y)) {
                     if (actionSprite->hoverAction)
-                        actionSprite->hoverAction(actionSprite);
+                        actionSprite->hoverAction(actionSprite, event);
                 }
             }
             next = next->next;
@@ -210,19 +220,21 @@ void mapEventHandler(ALLEGRO_EVENT event) {
 }
 
 void loadSprites() {
-    Tile **tileset = new Tile*[4];
+    Tile **tileset = new Tile*[7];
     tileset[0] = new Tile(al_load_bitmap("resources/tile00.png"));
     tileset[1] = new Tile(al_load_bitmap("resources/tile01.png"));
     tileset[2] = new Tile(al_load_bitmap("resources/tile02.png"));
     tileset[3] = new Tile(al_load_bitmap("resources/icon.png"));
-
+    tileset[4] = new Tile(al_load_bitmap("resources/tree_top.png"));
+    tileset[5] = new Tile(al_load_bitmap("resources/tree_bottom.png"));
+    tileset[6] = new Tile(al_load_bitmap("resources/rock_1.png"));
 
     int **tilemap;
     tilemap = new int*[32];
     for (int i = 0; i < 32; i++){
         tilemap[i] = new int[32];
         for (int j = 0; j < 32; j++) {
-            tilemap[i][j] = (j%4);
+            tilemap[i][j] = (j%7);
         }
     }
     current_map = new Map(0, const_cast<char*>("m_main_menu"), tileset, tilemap, 32, 32);
@@ -234,7 +246,7 @@ void loadSprites() {
     Sprite *animSprite = new Sprite(64,64,al_load_bitmap("resources/rainbow/frame-0.png"));
     animSprite->speed = 4;
     char filename[64];
-    for (int i = 1; i < 4; i++) {
+    for (int i = 1; i <= 11; i++) {
         sprintf(filename, "resources/rainbow/frame-%i.png", i);
         animSprite->addFrame(al_load_bitmap(filename));
     }

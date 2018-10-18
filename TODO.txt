@@ -1,6 +1,6 @@
 
-TODO: Check if allegro does .gif - No it does not
-TODO: Animated Sprites
-TODO: Animated Tiles (^Possible Similar solution)
-TODO: Map Editor -> JSON file
-TODO: Map Editor Python Maybe (3d array for map, 1d array for tileset -> export arrays as json, zip images? (res/tile00_0.png))
+TODO::Code - Map Layers
+TODO::Map Editor -> JSON file
+TODO::Map Editor - Python Probably (how do i do guis in python help? (maybe try java i can do that kinda))
+TODO::Map Export - (Zip of .json, all tiles, (map.json{id/name, int tilemap[][][], String tileset[]}, resources{tiles, sounds?, events??}))
+TODO::Map Editor - Event tile : Transparent sprite, when stepped on triggers dialog or battle

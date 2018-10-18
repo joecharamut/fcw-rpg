@@ -5,13 +5,12 @@
 Sprite::Sprite(float x, float y, const char *id, ALLEGRO_BITMAP *image) {
     this->x = x;
     this->y = y;
-    this->frames = new LinkedImage();
-    this->frames->image = image;
+    this->frames[nextFrameStore++] = image;
     this->width = al_get_bitmap_width(image);
     this->height = al_get_bitmap_height(image);
     this->id = id;
-    this->numFrames = 1;
     this->speed = 1;
+    this->numFrames++;
 }
 
 Sprite::Sprite(float x, float y, const char *id, int frameCount, ...) {
@@ -19,11 +18,13 @@ Sprite::Sprite(float x, float y, const char *id, int frameCount, ...) {
 }
 
 void Sprite::draw() {
-    LinkedImage *next = frames;
-    while (next) {
-        al_draw_bitmap(next->image, x, y, 0);
-        next = next->next;
-    }
+     ++speedCount;
+     if (speedCount >= speed) {
+         speedCount = 0;
+         ++currentFrame %= numFrames;
+         speedCount = 0;
+     }
+     al_draw_bitmap(frames[currentFrame], x, y, 0);
 }
 
 void Sprite::setX(float newX) {
@@ -34,10 +35,7 @@ void Sprite::setY(float newY) {
 }
 
 void Sprite::addFrame(ALLEGRO_BITMAP *image) {
-    LinkedImage *newFrame = new LinkedImage();
-    newFrame->image = image;
-    newFrame->frameNum = frames->frameNum+1;
+    frames[nextFrameStore++] = image;
     numFrames++;
-    frames->next = newFrame;
 }
 

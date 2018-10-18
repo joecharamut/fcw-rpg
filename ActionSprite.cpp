@@ -2,7 +2,7 @@
 #include <allegro5/allegro_image.h>
 
 ActionSprite::ActionSprite(float x, float y, ALLEGRO_BITMAP *image, const char *id,
-        void (*clickAction)(ActionSprite*), void (*hoverAction)(ActionSprite*)) : Sprite(x, y, id, image) {
+        void (*clickAction)(ActionSprite*, ALLEGRO_EVENT event), void (*hoverAction)(ActionSprite*, ALLEGRO_EVENT event)) : Sprite(x, y, id, image) {
     this->clickAction = clickAction;
     this->hoverAction = hoverAction;
     this->boundingBox = new BoundingBox(x, y, x+al_get_bitmap_width(image), y+al_get_bitmap_height(image));
@@ -10,9 +10,9 @@ ActionSprite::ActionSprite(float x, float y, ALLEGRO_BITMAP *image, const char *
 
 void ActionSprite::setX(float newX) {
     this->x = newX;
-    this->boundingBox = new BoundingBox(x, y, x+al_get_bitmap_width(frames->image), y+al_get_bitmap_height(frames->image));
+    this->boundingBox = new BoundingBox(x, y, x+al_get_bitmap_width(frames[0]), y+al_get_bitmap_height(frames[0]));
 }
 void ActionSprite::setY(float newY) {
     this->y = newY;
-    this->boundingBox = new BoundingBox(x, y, x+al_get_bitmap_width(frames->image), y+al_get_bitmap_height(frames->image));
+    this->boundingBox = new BoundingBox(x, y, x+al_get_bitmap_width(frames[0]), y+al_get_bitmap_height(frames[0]));
 }
