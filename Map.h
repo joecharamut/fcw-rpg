@@ -19,8 +19,9 @@ class Map {
 public:
     int id;
     const char *name;
-    Tile **tileset;
-    int ***tilemap;
+    //Tile **tileset;
+    //int ***tilemap;
+    Tile ****tilemap;
     int length;
     int height;
     int layers;
@@ -30,13 +31,14 @@ public:
 
     Map(int id, const char *name, Tile **tileset, int ***tilemap, int length, int height, int layers);
 
+    Tile ****resolveMap(Tile **tileset, int ***tilemap, int length, int height, int layers);
     void draw();
     void addSprite(Sprite *sprite);
     void addText(const char *text, ALLEGRO_FONT *font, ALLEGRO_COLOR color, float x, float y);
     Sprite* getSpriteById(const char *id);
     void handleEvent(ALLEGRO_EVENT event);
     void setEventHandlerFunction(void (*handler)(ALLEGRO_EVENT event));
-    bool checkCollision(BoundingBox box);
+    bool checkCollision(Sprite *sprite);
 };
 
 #endif //FCWRPG_MAP_H

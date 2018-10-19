@@ -14,9 +14,11 @@ enum COLLISION_TYPE {
 class Tile : public Sprite {
 public:
     COLLISION_TYPE collision;
-    Tile(ALLEGRO_BITMAP *image) : Tile(image, NONE) {};
+
     Tile(ALLEGRO_BITMAP *image, COLLISION_TYPE collision);
-    void draw(float x, float y);
+    explicit Tile(ALLEGRO_BITMAP *image) : Tile(image, NONE) {};
+    Tile(const Tile &tile) : Tile(tile.frames[0]) {};
+    void draw() override;
 };
 
 

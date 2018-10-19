@@ -1,6 +1,7 @@
 #include "Sprite.h"
 #include "Globals.h"
 #include <cstdarg>
+#include <cstdio>
 
 Sprite::Sprite(float x, float y, const char *id, ALLEGRO_BITMAP *image) {
     this->x = x;
@@ -14,9 +15,9 @@ Sprite::Sprite(float x, float y, const char *id, ALLEGRO_BITMAP *image) {
     this->boundingBox = new BoundingBox(x, y, x+width, y+height);
 }
 
-Sprite::Sprite(float x, float y, const char *id, int frameCount, ...) {
-
-}
+//Sprite::Sprite(float x, float y, const char *id, int frameCount, ...) {
+//
+//}
 
 void Sprite::draw() {
      ++speedCount;
@@ -43,6 +44,7 @@ void Sprite::addFrame(ALLEGRO_BITMAP *image) {
 }
 
 void Sprite::updateBoundingBox() {
+    delete boundingBox;
     this->boundingBox = new BoundingBox(x, y, x+width, y+height);
 }
 

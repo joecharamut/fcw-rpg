@@ -7,8 +7,8 @@
 Map::Map(int id, const char *name, Tile **tileset, int ***tilemap, int length, int height, int layers) {
     this->id = id;
     this->name = name;
-    this->tileset = tileset;
-    this->tilemap = tilemap;
+    //this->tileset = tileset;
+    this->tilemap = resolveMap(tileset, tilemap, length, height, layers);
     this->length = length;
     this->height = height;
     this->layers = layers;
@@ -16,12 +16,36 @@ Map::Map(int id, const char *name, Tile **tileset, int ***tilemap, int length, i
     this->texts = new LinkedText();
 }
 
+Tile ****Map::resolveMap(Tile **tileset, int ***tilemap, int length, int height, int layers) {
+    Tile ****resolved;// = (Tile ****)malloc(layers * length * height * sizeof(Tile *));
+    resolved = new Tile***[layers];
+    for (int l = 0; l < layers; l++) {
+        resolved[l] = new Tile**[length];
+        for (int x = 0; x < length; x++) {
+            resolved[l][x] = new Tile*[height];
+            for (int y = 0; y < height; y++) {
+                resolved[l][x][y] = nullptr;
+            }
+        }
+    }
+    for (int l = 0; l < layers; l++) {
+        for (int x = 0; x < length; x++) {
+            for (int y = 0; y < height; y++) {
+                resolved[l][x][y] = new Tile(tileset[tilemap[l][x][y]]->frames[0], tileset[tilemap[l][x][y]]->collision);
+                resolved[l][x][y]->setX(x * resolved[l][x][y]->width);
+                resolved[l][x][y]->setY(y * resolved[l][x][y]->height);
+            }
+        }
+    }
+    return resolved;
+}
+
+
 void Map::draw() {
     for (int l = 0; l < layers; l++) {
-        for (int x = 0; x < height; x++) {
-            for (int y = 0; y < length; y++) {
-                Tile *tile = tileset[tilemap[l][x][y]];
-                tile->draw((x * tile->width), (y * tile->height));
+        for (int x = 0; x < length; x++) {
+            for (int y = 0; y < height; y++) {
+                tilemap[l][x][y]->draw();
             }
         }
     }
@@ -45,8 +69,23 @@ void Map::draw() {
     }
 }
 
-bool Map::checkCollision(BoundingBox box) {
-
+bool Map::checkCollision(Sprite *sprite) {
+    BoundingBox *box = sprite->boundingBox;
+    for (int l = 0; l < layers; l++) {
+        for (int x = 0; x < height; x++) {
+            for (int y = 0; y < length; y++) {
+                Tile *tile = tilemap[l][x][y];
+                if (tile->collision == NONE) {
+                    continue;
+                }
+                BoundingBox *check = tile->boundingBox;
+                if (check->intersect(box)) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
 }
 
 void Map::addSprite(Sprite *sprite) {

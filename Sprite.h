@@ -22,8 +22,8 @@ public:
 
     Sprite(float x, float y, const char *id, ALLEGRO_BITMAP *image);
     Sprite(float x, float y, ALLEGRO_BITMAP *image) : Sprite(x, y, nullptr, image) {};
-    Sprite(float x , float y, const char *id, int frameCount, ...);
-    Sprite(float x , float y, int frameCount, ...) : Sprite(x, y, nullptr, frameCount) {};
+    //Sprite(float x , float y, const char *id, int frameCount, ...);
+    //Sprite(float x , float y, int frameCount, ...) : Sprite(x, y, nullptr, frameCount) {};
     virtual void draw();
     virtual void setX(float newX);
     virtual void setY(float newY);

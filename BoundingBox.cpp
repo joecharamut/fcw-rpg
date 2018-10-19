@@ -12,6 +12,5 @@ bool BoundingBox::intersect(float px, float py) {
 }
 
 bool BoundingBox::intersect(BoundingBox *box) {
-    // TODO: Get this working
-    return false;
+    return ((x2 >= box->x1) && (box->x2 >= x1)) && ((y2 >= box->y1) && (box->y2 >= y1));
 }

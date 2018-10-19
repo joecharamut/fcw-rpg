@@ -77,6 +77,7 @@ void update() {
 }
 
 void clickFunction(ActionSprite *as, ALLEGRO_EVENT event) {
+    printf("%i\n", current_map->checkCollision(as));
     switch (event.mouse.button) {
         case 1:
             printf("LMB\n");
@@ -108,6 +109,10 @@ void mapEventHandler(ALLEGRO_EVENT event) {
         if (hat != nullptr) {
             hat->setX(hat_x);
             hat->setY(hat_y);
+            if (current_map->checkCollision(hat)) {
+                hat->setX(--hat_x);
+                hat->setY(--hat_y);
+            }
         }
         redraw = true;
     } else if(event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
@@ -228,7 +233,9 @@ void loadSprites() {
     tileset[3] = new Tile(al_load_bitmap("resources/icon.png"));
     tileset[4] = new Tile(al_load_bitmap("resources/tree_top.png"));
     tileset[5] = new Tile(al_load_bitmap("resources/tree_bottom.png"));
+    tileset[5]->collision = TILE;
     tileset[6] = new Tile(al_load_bitmap("resources/rock_1.png"));
+    tileset[6]->collision = TILE;
 
     int ***tilemap;
     tilemap = new int**[2];
@@ -247,8 +254,9 @@ void loadSprites() {
         }
     }
 
-    current_map = new Map(0, const_cast<char*>("m_main_menu"), tileset, tilemap, 32, 32, 2);
+    current_map = new Map(0, "map_debug", tileset, tilemap, 32, 32, 2);
     current_map->setEventHandlerFunction(mapEventHandler);
+
     ALLEGRO_BITMAP *hatImage = al_load_bitmap("resources/hat.png");
     current_map->addSprite(new ActionSprite(0,0,hatImage,"s_hat", clickFunction, nullptr));
     current_map->addText("Hello I am some test text.", font24, al_map_rgb(0xff,0xff,0xff), 0, 0);
