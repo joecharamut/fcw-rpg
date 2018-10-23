@@ -1,3 +1,4 @@
+#include <memory>
 
 
 #include "Map.h"
@@ -14,6 +15,20 @@ Map::Map(int id, const char *name, Tile **tileset, int ***tilemap, int length, i
     this->layers = layers;
     this->sprites = new LinkedSprite();
     this->texts = new LinkedText();
+}
+
+Map* Map::loadMap(const char *filename) {
+    std::ofstream os("test.json", std::ios::binary);
+    cereal::JSONOutputArchive archive(os);
+    MapJSON myData;
+    myData.id = std::make_unique<std::string>("map_test");
+    myData.layers = 1;
+    myData.height = 1;
+    myData.width = 1;
+    myData.version = 1;
+    myData.tilemap = (int ***) new int[1][1][1];
+    //myData.tilemap[1][1][1] = 0;
+    archive(myData);
 }
 
 Tile ****Map::resolveMap(Tile **tileset, int ***tilemap, int length, int height, int layers) {

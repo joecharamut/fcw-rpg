@@ -10,36 +10,6 @@
 #include "Globals.h"
 #include "ActionSprite.h"
 
-#include "cereal/cereal.hpp"
-#include "cereal/types/unordered_map.hpp"
-#include "cereal/types/memory.hpp"
-#include "cereal/archives/json.hpp"
-#include <fstream>
-
-struct TestData {
-    int32_t id;
-    std::shared_ptr<std::unordered_map<uint32_t, TestData>> data;
-
-    template <class Archive>
-    void save(Archive &archive) const {
-        archive(data);
-    }
-
-    template <class Archive>
-    void load(Archive &archive) {
-        static int32_t idGen = 0;
-        id = idGen++;
-        archive(data);
-    }
-};
-
-void testJson() {
-    std::ofstream os("test.json", std::ios::binary);
-    cereal::JSONOutputArchive archive(os);
-    TestData myData;
-    archive(myData);
-}
-
 const float FPS = 60;
 const int SCREEN_H = 512;
 const int SCREEN_W = 512;
@@ -279,7 +249,7 @@ void loadFonts() {
 }
 
 int main(int argc, char *argv[]) {
-    testJson();
+    Map::loadMap("TEST");
     done = false;
     al_init();
 

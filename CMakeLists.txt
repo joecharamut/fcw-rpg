@@ -11,7 +11,7 @@ IF(${WIN32})
 ENDIF(${WIN32})
 
 set(SOURCE_FILES
-        main.cpp
+        Main.cpp
         Sprite.cpp Sprite.h
         Textbox.cpp Textbox.h
         Map.cpp Map.h
