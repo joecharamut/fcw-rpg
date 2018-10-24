@@ -14,14 +14,15 @@ public:
     int width;
     int height;
     const char *id;
+    char *imageName;
 
     int numFrames = 0;
     int currentFrame = 0;
     int speed = 0;
     int speedCount = 0;
 
-    Sprite(float x, float y, const char *id, ALLEGRO_BITMAP *image);
-    Sprite(float x, float y, ALLEGRO_BITMAP *image) : Sprite(x, y, nullptr, image) {};
+    Sprite(float x, float y, const char *id, const char *image);
+    Sprite(float x, float y, const char *image) : Sprite(x, y, nullptr, image) {};
     //Sprite(float x , float y, const char *id, int frameCount, ...);
     //Sprite(float x , float y, int frameCount, ...) : Sprite(x, y, nullptr, frameCount) {};
     virtual void draw();

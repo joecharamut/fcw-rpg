@@ -3,12 +3,13 @@
 #include <cstdarg>
 #include <cstdio>
 
-Sprite::Sprite(float x, float y, const char *id, ALLEGRO_BITMAP *image) {
+Sprite::Sprite(float x, float y, const char *id, const char *image) {
     this->x = x;
     this->y = y;
-    this->frames[nextFrameStore++] = image;
-    this->width = al_get_bitmap_width(image);
-    this->height = al_get_bitmap_height(image);
+    this->frames[nextFrameStore++] = al_load_bitmap(image);
+    this->imageName = (char *) image;
+    this->width = al_get_bitmap_width(frames[nextFrameStore-1]);
+    this->height = al_get_bitmap_height(frames[nextFrameStore-1]);
     this->id = id;
     this->speed = 1;
     this->numFrames++;

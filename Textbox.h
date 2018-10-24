@@ -20,7 +20,7 @@ public:
     Sprite *background;
     Sprite *border;
     Textbox(float x, float y, const char *text, ALLEGRO_FONT *font,
-            ALLEGRO_COLOR color, ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *border);
+            ALLEGRO_COLOR color, const char *background, const char *border);
 
     void draw() override;
 };

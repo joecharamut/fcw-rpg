@@ -196,15 +196,14 @@ void mapEventHandler(ALLEGRO_EVENT event) {
 
 void loadSprites() {
     Tile **tileset = new Tile*[7];
-    tileset[0] = new Tile(al_load_bitmap("resources/tile00.png"));
-    tileset[1] = new Tile(al_load_bitmap("resources/tile01.png"));
-    tileset[2] = new Tile(al_load_bitmap("resources/tile02.png"));
-
-    tileset[3] = new Tile(al_load_bitmap("resources/icon.png"));
-    tileset[4] = new Tile(al_load_bitmap("resources/tree_top.png"));
-    tileset[5] = new Tile(al_load_bitmap("resources/tree_bottom.png"));
+    tileset[0] = new Tile("resources/tile00.png");
+    tileset[1] = new Tile("resources/tile01.png");
+    tileset[2] = new Tile("resources/tile02.png");
+    tileset[3] = new Tile("resources/icon.png");
+    tileset[4] = new Tile("resources/tree_top.png");
+    tileset[5] = new Tile("resources/tree_bottom.png");
+    tileset[6] = new Tile("resources/rock_1.png");
     tileset[5]->collision = TILE;
-    tileset[6] = new Tile(al_load_bitmap("resources/rock_1.png"));
     tileset[6]->collision = TILE;
 
     int ***tilemap;
@@ -227,11 +226,10 @@ void loadSprites() {
     current_map = new Map(0, "map_debug", tileset, tilemap, 32, 32, 2);
     current_map->setEventHandlerFunction(mapEventHandler);
 
-    ALLEGRO_BITMAP *hatImage = al_load_bitmap("resources/hat.png");
-    current_map->addSprite(new ActionSprite(0,0,hatImage,"s_hat", clickFunction, nullptr));
+    current_map->addSprite(new ActionSprite(0,0,"resources/hat.png","s_hat", clickFunction, nullptr));
     current_map->addText("Hello I am some test text.", font24, al_map_rgb(0xff,0xff,0xff), 0, 0);
 
-    Sprite *animSprite = new Sprite(64,64,al_load_bitmap("resources/rainbow/frame-0.png"));
+    Sprite *animSprite = new Sprite(64,64,"resources/rainbow/frame-0.png");
     animSprite->speed = 4;
     char filename[64];
     for (int i = 1; i <= 11; i++) {
@@ -249,7 +247,6 @@ void loadFonts() {
 }
 
 int main(int argc, char *argv[]) {
-    Map::loadMap("TEST");
     done = false;
     al_init();
 
@@ -258,6 +255,8 @@ int main(int argc, char *argv[]) {
     al_init_image_addon();
     al_install_keyboard();
     al_install_mouse();
+
+    Map::loadMap("TEST");
 
     display = al_create_display(SCREEN_W, SCREEN_H);
     al_set_new_display_flags(ALLEGRO_WINDOWED);

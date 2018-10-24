@@ -1,7 +1,7 @@
 #include "Textbox.h"
 
 Textbox::Textbox(float x, float y, const char *text, ALLEGRO_FONT *font,
-                 ALLEGRO_COLOR color, ALLEGRO_BITMAP *background, ALLEGRO_BITMAP *border) : Sprite(x, y, background) {
+                 ALLEGRO_COLOR color, const char *background, const char *border) : Sprite(x, y, background) {
     this->x = x;
     this->y = y;
     this->text = text;

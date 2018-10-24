@@ -8,9 +8,10 @@
 #include "Tile.h"
 
 #include "cereal/cereal.hpp"
-#include "cereal/types/unordered_map.hpp"
+#include "cereal/types/vector.hpp"
 #include "cereal/types/memory.hpp"
 #include "cereal/archives/json.hpp"
+#include "cereal/types/polymorphic.hpp"
 #include <fstream>
 
 struct LinkedText {
@@ -23,21 +24,22 @@ struct LinkedText {
 
 struct MapJSON {
     int version;
-    std::unique_ptr<std::string> id;
+    std::string id;
 
     int layers, height, width;
-    // TODO: fix this
-    int tilemap;
-    //Tile *tileset;
-
+    std::vector<std::vector<std::vector<int>>> tilemap;
+    std::vector<std::string> tileset;
     template <class Archive>
-    void save(Archive &archive) const {
-        archive(version, id, layers, height, width);
-    }
-
-    template <class Archive>
-    void load(Archive &archive) {
-        archive(version, id, layers, height, width);
+    void serialize(Archive &archive) {
+        archive(
+                CEREAL_NVP(version),
+                CEREAL_NVP(id),
+                CEREAL_NVP(layers),
+                CEREAL_NVP(height),
+                CEREAL_NVP(width),
+                CEREAL_NVP(tilemap),
+                CEREAL_NVP(tileset)
+        );
     }
 };
 

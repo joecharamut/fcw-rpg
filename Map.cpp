@@ -21,14 +21,26 @@ Map* Map::loadMap(const char *filename) {
     std::ofstream os("test.json", std::ios::binary);
     cereal::JSONOutputArchive archive(os);
     MapJSON myData;
-    myData.id = std::make_unique<std::string>("map_test");
+    myData.id = "map_test";
     myData.layers = 1;
     myData.height = 1;
     myData.width = 1;
     myData.version = 1;
-    myData.tilemap = (int ***) new int[1][1][1];
-    //myData.tilemap[1][1][1] = 0;
-    archive(myData);
+    myData.tilemap.resize(8);
+    for (int l = 0; l < 8; l++) {
+        myData.tilemap[l].resize(32);
+        for (int h = 0; h < 32; h++) {
+            myData.tilemap[l][h].resize(32);
+            for (int w = 0; w < 32; w++) {
+                myData.tilemap[l][h][w] = w;
+            }
+        }
+    }
+    myData.tileset = {
+            "resources/tile00.png"
+    };
+    archive(cereal::make_nvp("mapdata", myData));
+    return nullptr;
 }
 
 Tile ****Map::resolveMap(Tile **tileset, int ***tilemap, int length, int height, int layers) {
@@ -46,7 +58,7 @@ Tile ****Map::resolveMap(Tile **tileset, int ***tilemap, int length, int height,
     for (int l = 0; l < layers; l++) {
         for (int x = 0; x < length; x++) {
             for (int y = 0; y < height; y++) {
-                resolved[l][x][y] = new Tile(tileset[tilemap[l][x][y]]->frames[0], tileset[tilemap[l][x][y]]->collision);
+                resolved[l][x][y] = new Tile(tileset[tilemap[l][x][y]]->imageName, tileset[tilemap[l][x][y]]->collision);
                 resolved[l][x][y]->setX(x * resolved[l][x][y]->width);
                 resolved[l][x][y]->setY(y * resolved[l][x][y]->height);
             }

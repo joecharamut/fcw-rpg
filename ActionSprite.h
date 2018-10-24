@@ -10,7 +10,7 @@ public:
     void (*clickAction)(ActionSprite*, ALLEGRO_EVENT event);
     void (*hoverAction)(ActionSprite*, ALLEGRO_EVENT event);
 
-    ActionSprite(float x, float y, ALLEGRO_BITMAP *image, const char *id,
+    ActionSprite(float x, float y, const char *image, const char *id,
             void (*clickAction)(ActionSprite*, ALLEGRO_EVENT event),
             void (*hoverAction)(ActionSprite*, ALLEGRO_EVENT event));
 };
