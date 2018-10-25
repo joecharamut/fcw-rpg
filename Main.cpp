@@ -222,8 +222,8 @@ void loadSprites() {
             tilemap[1][i][j] = (j%4)+3;
         }
     }
-
-    current_map = new Map(0, "map_debug", tileset, tilemap, 32, 32, 2);
+    Map::test();
+    current_map = Map::loadMap("test.json");//new Map("map_debug", tileset, tilemap, 32, 32, 2);
     current_map->setEventHandlerFunction(mapEventHandler);
 
     current_map->addSprite(new ActionSprite(0,0,"resources/hat.png","s_hat", clickFunction, nullptr));
@@ -255,8 +255,6 @@ int main(int argc, char *argv[]) {
     al_init_image_addon();
     al_install_keyboard();
     al_install_mouse();
-
-    Map::loadMap("TEST");
 
     display = al_create_display(SCREEN_W, SCREEN_H);
     al_set_new_display_flags(ALLEGRO_WINDOWED);
