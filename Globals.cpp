@@ -6,3 +6,4 @@ ALLEGRO_FONT *font24;
 ALLEGRO_FONT *font32;
 bool done;
 int frameCounter;
+std::map<std::string, ALLEGRO_FONT *> fontMap;

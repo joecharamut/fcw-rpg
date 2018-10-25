@@ -88,36 +88,24 @@ void mapEventHandler(ALLEGRO_EVENT event) {
     } else if(event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
         done = true;
     } else if(event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
-        LinkedSprite *next = current_map->sprites;
-        while(next != nullptr) {
-            if (next->sprite == nullptr) {
-                next = next->next;
-                continue;
-            }
-            ActionSprite *actionSprite = dynamic_cast<ActionSprite *>(next->sprite);
+        for(auto *spr : current_map->sprites) {
+            auto *actionSprite = dynamic_cast<ActionSprite *>(spr);
             if (actionSprite) {
                 if (actionSprite->boundingBox->intersect(event.mouse.x, event.mouse.y)) {
                     if (actionSprite->clickAction)
                         actionSprite->clickAction(actionSprite, event);
                 }
             }
-            next = next->next;
         }
     } else if (event.type == ALLEGRO_EVENT_MOUSE_AXES) {
-        LinkedSprite *next = current_map->sprites;
-        while(next != nullptr) {
-            if (next->sprite == nullptr) {
-                next = next->next;
-                continue;
-            }
-            ActionSprite *actionSprite = dynamic_cast<ActionSprite *>(next->sprite);
+        for(auto *spr : current_map->sprites) {
+            auto *actionSprite = dynamic_cast<ActionSprite *>(spr);
             if (actionSprite) {
                 if (actionSprite->boundingBox->intersect(event.mouse.x, event.mouse.y)) {
                     if (actionSprite->hoverAction)
                         actionSprite->hoverAction(actionSprite, event);
                 }
             }
-            next = next->next;
         }
     } else if(event.type == ALLEGRO_EVENT_KEY_DOWN) {
         switch(event.keyboard.keycode) {
@@ -195,7 +183,7 @@ void mapEventHandler(ALLEGRO_EVENT event) {
 }
 
 void loadSprites() {
-    Tile **tileset = new Tile*[7];
+    /*Tile **tileset = new Tile*[7];
     tileset[0] = new Tile("resources/tile00.png");
     tileset[1] = new Tile("resources/tile01.png");
     tileset[2] = new Tile("resources/tile02.png");
@@ -221,20 +209,20 @@ void loadSprites() {
         for (int j = 0; j < 32; j++) {
             tilemap[1][i][j] = (j%4)+3;
         }
-    }
+    }*/
     Map::test();
     current_map = Map::loadMap("test.json");//new Map("map_debug", tileset, tilemap, 32, 32, 2);
     current_map->setEventHandlerFunction(mapEventHandler);
 
     current_map->addSprite(new ActionSprite(0,0,"resources/hat.png","s_hat", clickFunction, nullptr));
-    current_map->addText("Hello I am some test text.", font24, al_map_rgb(0xff,0xff,0xff), 0, 0);
+    current_map->addText("Hello I am some test text.", "font24", 0xff,0xff,0xff, 0, 0);
 
     Sprite *animSprite = new Sprite(64,64,"resources/rainbow/frame-0.png");
     animSprite->speed = 4;
     char filename[64];
     for (int i = 1; i <= 11; i++) {
         sprintf(filename, "resources/rainbow/frame-%i.png", i);
-        animSprite->addFrame(al_load_bitmap(filename));
+        animSprite->addFrame(filename);
     }
     current_map->addSprite(animSprite);
 }
@@ -244,6 +232,10 @@ void loadFonts() {
     font16 = al_load_ttf_font("resources/font/DOSVGA.ttf", 16, 0);
     font24 = al_load_ttf_font("resources/font/DOSVGA.ttf", 24, 0);
     font32 = al_load_ttf_font("resources/font/DOSVGA.ttf", 32, 0);
+    fontMap["font8"] = font8;
+    fontMap["font16"] = font16;
+    fontMap["font24"] = font24;
+    fontMap["font32"] = font32;
 }
 
 int main(int argc, char *argv[]) {

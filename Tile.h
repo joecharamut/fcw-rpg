@@ -1,3 +1,4 @@
+#include <utility>
 
 
 #ifndef FCWRPG_TILE_H
@@ -17,18 +18,18 @@ class Tile : public Sprite {
 public:
     COLLISION_TYPE collision;
 
-    Tile(const char *image, COLLISION_TYPE collision);
-    explicit Tile(const char *image) : Tile(image, NONE) {};
+    Tile(std::string image, COLLISION_TYPE collision);
+    explicit Tile(std::string image) : Tile(std::move(image), NONE) {};
     Tile(const Tile &tile) : Tile(tile.imageName) {};
     void draw() override;
 
-    template <class Archive>
+    /*template <class Archive>
     void serialize(Archive &archive) {
         archive(
                 CEREAL_NVP(collision),
                 CEREAL_NVP(imageName)
         );
-    }
+    }*/
 };
 
 

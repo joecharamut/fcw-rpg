@@ -1,5 +1,7 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
+#include <vector>
+#include <cereal/cereal.hpp>
 #include "BoundingBox.h"
 
 #ifndef FCWRPG_SPRITE_H
@@ -9,20 +11,21 @@ class Sprite {
 public:
     float x;
     float y;
-    ALLEGRO_BITMAP **frames = (ALLEGRO_BITMAP **) calloc(64, sizeof(ALLEGRO_BITMAP *));
-    int nextFrameStore = 0;
+    std::vector<std::string> frameStr;
+    std::vector<ALLEGRO_BITMAP *> frames;
     int width;
     int height;
-    const char *id;
-    char *imageName;
+    std::string id;
+    std::string imageName;
 
-    int numFrames = 0;
     int currentFrame = 0;
     int speed = 0;
     int speedCount = 0;
 
-    Sprite(float x, float y, const char *id, const char *image);
-    Sprite(float x, float y, const char *image) : Sprite(x, y, nullptr, image) {};
+    Sprite() {};
+    explicit Sprite(Sprite *spr) : Sprite(spr->x, spr->y, spr->id, spr->imageName) {};
+    Sprite(float x, float y, std::string id, std::string image);
+    Sprite(float x, float y, std::string image) : Sprite(x, y, "", image) {};
     //Sprite(float x , float y, const char *id, int frameCount, ...);
     //Sprite(float x , float y, int frameCount, ...) : Sprite(x, y, nullptr, frameCount) {};
     virtual void draw();
@@ -30,12 +33,37 @@ public:
     virtual void setY(float newY);
     BoundingBox *boundingBox;
     void updateBoundingBox();
-    void addFrame(ALLEGRO_BITMAP *image);
-};
+    void addFrame(std::string image);
 
-struct LinkedSprite {
-    Sprite *sprite;
-    struct LinkedSprite *next;
+    template <class Archive>
+    void serialize(Archive &archive) {
+        archive(
+                CEREAL_NVP(id),
+                CEREAL_NVP(x),
+                CEREAL_NVP(y),
+                CEREAL_NVP(frameStr),
+                CEREAL_NVP(speed)
+        );
+    }
+
+    template <class Archive>
+    static void load_and_construct(Archive &archive, cereal::construct<Sprite> &construct) {
+        float x;
+        float y;
+        std::vector<std::string> frameStr;
+        std::string id;
+        int speed = 0;
+        archive(
+                CEREAL_NVP(id),
+                CEREAL_NVP(x),
+                CEREAL_NVP(y),
+                CEREAL_NVP(frameStr),
+                CEREAL_NVP(speed)
+        );
+        construct(
+                id, x, y, frameStr, speed
+        );
+    }
 };
 
 #endif //FCWRPG_SPRITE_H
