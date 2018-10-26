@@ -48,9 +48,8 @@ void Map::test() {
                         new MapJSON(1, "map_test", 1, 16, 16,
                                 {{{}}},
                                 {"resources/tile00.png"},
-                                {* new Sprite(0, 0, "test_spr", "resources/tile01.png"),
-                                 * new Sprite(64, 64, "anim_sprite",
-                                         std::vector<std::string>{
+                                {* new Sprite(64, 64, "anim_sprite",
+                                        std::vector<std::string>{
                                      "resources/rainbow/frame-0.png",
                                      "resources/rainbow/frame-1.png",
                                      "resources/rainbow/frame-2.png",
@@ -63,7 +62,8 @@ void Map::test() {
                                      "resources/rainbow/frame-9.png",
                                      "resources/rainbow/frame-10.png",
                                      "resources/rainbow/frame-11.png"
-                                 }, 2)},
+                                 }, 2),
+                                 * new Sprite(0,0,"s_hat","resources/hat.png")},
                                 {* new Text("I am test text", 16, 0, "font24", 0xff, 0xff, 0xff)}));
         myData->tilemap.resize(1);
         for (int l = 0; l < 1; l++) {

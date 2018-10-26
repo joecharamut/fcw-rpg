@@ -183,49 +183,13 @@ void mapEventHandler(ALLEGRO_EVENT event) {
 }
 
 void loadSprites() {
-    /*Tile **tileset = new Tile*[7];
-    tileset[0] = new Tile("resources/tile00.png");
-    tileset[1] = new Tile("resources/tile01.png");
-    tileset[2] = new Tile("resources/tile02.png");
-    tileset[3] = new Tile("resources/icon.png");
-    tileset[4] = new Tile("resources/tree_top.png");
-    tileset[5] = new Tile("resources/tree_bottom.png");
-    tileset[6] = new Tile("resources/rock_1.png");
-    tileset[5]->collision = TILE;
-    tileset[6]->collision = TILE;
-
-    int ***tilemap;
-    tilemap = new int**[2];
-    tilemap[0] = new int*[32];
-    for (int i = 0; i < 32; i++){
-        tilemap[0][i] = new int[32];
-        for (int j = 0; j < 32; j++) {
-            tilemap[0][i][j] = 0;//(j%4);
-        }
-    }
-    tilemap[1] = new int*[32];
-    for (int i = 0; i < 32; i++){
-        tilemap[1][i] = new int[32];
-        for (int j = 0; j < 32; j++) {
-            tilemap[1][i][j] = (j%4)+3;
-        }
-    }*/
     //Map::test();
     //exit(0);
-    current_map = Map::loadMap("test.json");//new Map("map_debug", tileset, tilemap, 32, 32, 2);
+    current_map = Map::loadMap("test.json");
     current_map->setEventHandlerFunction(mapEventHandler);
 
-    current_map->addSprite(new ActionSprite(0,0,"resources/hat.png","s_hat", clickFunction, nullptr));
+    //current_map->addSprite(new ActionSprite(0,0,"resources/hat.png","s_hat", clickFunction, nullptr));
     //current_map->addText("Hello I am some test text.", "font24", 0xff,0xff,0xff, 0, 0);
-
-    /*Sprite *animSprite = new Sprite(64,64,"resources/rainbow/frame-0.png");
-    animSprite->speed = 4;
-    char filename[64];
-    for (int i = 1; i <= 11; i++) {
-        sprintf(filename, "resources/rainbow/frame-%i.png", i);
-        animSprite->addFrame(filename);
-    }
-    current_map->addSprite(animSprite);*/
 }
 
 void loadFonts() {
