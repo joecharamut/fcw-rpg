@@ -210,21 +210,22 @@ void loadSprites() {
             tilemap[1][i][j] = (j%4)+3;
         }
     }*/
-    Map::test();
+    //Map::test();
+    //exit(0);
     current_map = Map::loadMap("test.json");//new Map("map_debug", tileset, tilemap, 32, 32, 2);
     current_map->setEventHandlerFunction(mapEventHandler);
 
     current_map->addSprite(new ActionSprite(0,0,"resources/hat.png","s_hat", clickFunction, nullptr));
-    current_map->addText("Hello I am some test text.", "font24", 0xff,0xff,0xff, 0, 0);
+    //current_map->addText("Hello I am some test text.", "font24", 0xff,0xff,0xff, 0, 0);
 
-    Sprite *animSprite = new Sprite(64,64,"resources/rainbow/frame-0.png");
+    /*Sprite *animSprite = new Sprite(64,64,"resources/rainbow/frame-0.png");
     animSprite->speed = 4;
     char filename[64];
     for (int i = 1; i <= 11; i++) {
         sprintf(filename, "resources/rainbow/frame-%i.png", i);
         animSprite->addFrame(filename);
     }
-    current_map->addSprite(animSprite);
+    current_map->addSprite(animSprite);*/
 }
 
 void loadFonts() {

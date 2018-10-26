@@ -21,6 +21,17 @@ struct Text {
     std::string font;
     unsigned char r, g, b;
 
+    Text() {};
+    Text(std::string text, float x, float y, std::string font, unsigned char r, unsigned char g, unsigned char b) {
+        this->text = text;
+        this->x = x;
+        this->y = y;
+        this->font = font;
+        this->r = r;
+        this->g = g;
+        this->b = b;
+    }
+
     template <class Archive>
     void serialize(Archive &archive) {
         archive(
@@ -159,7 +170,8 @@ public:
     void (*handlerFunction)(ALLEGRO_EVENT event);
 
     static Map* loadMap(std::string filename);
-    Map(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap, int length, int width, int layers);
+    Map(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
+            int length, int width, int layers, std::vector<Sprite> sprites, std::vector<Text> texts);
     static void test();
 
     std::vector<std::vector<std::vector<Tile *>>> resolveMap(std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap, int length, int height, int layers);

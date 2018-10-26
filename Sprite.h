@@ -16,17 +16,17 @@ public:
     int width;
     int height;
     std::string id;
-    std::string imageName;
+    //std::string imageName;
 
     int currentFrame = 0;
     int speed = 0;
     int speedCount = 0;
 
     Sprite() {};
-    explicit Sprite(Sprite *spr) : Sprite(spr->x, spr->y, spr->id, spr->imageName) {};
+    explicit Sprite(Sprite *spr) : Sprite(spr->x, spr->y, spr->id, spr->frameStr, spr->speed) {};
     Sprite(float x, float y, std::string id, std::string image);
     Sprite(float x, float y, std::string image) : Sprite(x, y, "", image) {};
-    //Sprite(float x , float y, const char *id, int frameCount, ...);
+    Sprite(float x , float y, std::string id, std::vector<std::string> frames, int speed);
     //Sprite(float x , float y, int frameCount, ...) : Sprite(x, y, nullptr, frameCount) {};
     virtual void draw();
     virtual void setX(float newX);

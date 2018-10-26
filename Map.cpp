@@ -9,12 +9,19 @@
 #include "Globals.h"
 #include "ActionSprite.h"
 
-Map::Map(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap, int length, int width, int layers) {
+Map::Map(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
+        int length, int width, int layers, std::vector<Sprite> sprites, std::vector<Text> texts) {
     this->id = std::move(id);
     this->tilemap = resolveMap(std::move(tileset), std::move(tilemap), length, width, layers);
     this->length = length;
     this->width = width;
     this->layers = layers;
+    for (auto spr : sprites) {
+        this->sprites.push_back(new Sprite(&spr));
+    }
+    for (auto text : texts) {
+        this->texts.push_back(new Text(text));
+    }
 }
 
 Map *Map::loadMap(std::string filename) {
@@ -24,7 +31,7 @@ Map *Map::loadMap(std::string filename) {
         std::unique_ptr<MapJSON> loaded{nullptr};
         inputArchive(cereal::make_nvp("mapdata", loaded));
         printf("Loading Map %s", loaded->id.c_str());
-        Map *m = new Map(loaded->id, loaded->tileset, loaded->tilemap, loaded->width, loaded->height, loaded->layers);
+        Map *m = new Map(loaded->id, loaded->tileset, loaded->tilemap, loaded->width, loaded->height, loaded->layers, loaded->sprites, loaded->texts);
         return m;
     } else {
         printf("Error loading map %s", filename.c_str());
@@ -38,13 +45,32 @@ void Map::test() {
         cereal::JSONOutputArchive archive(os);
         std::unique_ptr<MapJSON> myData =
                 std::make_unique<MapJSON>(
-                        new MapJSON(1, "map_test", 1, 32, 32, {{{}}}, {"resources/tile00.png"}, {* new Sprite(0, 0, "resources/tile01.png")}, {}));
+                        new MapJSON(1, "map_test", 1, 16, 16,
+                                {{{}}},
+                                {"resources/tile00.png"},
+                                {* new Sprite(0, 0, "test_spr", "resources/tile01.png"),
+                                 * new Sprite(64, 64, "anim_sprite",
+                                         std::vector<std::string>{
+                                     "resources/rainbow/frame-0.png",
+                                     "resources/rainbow/frame-1.png",
+                                     "resources/rainbow/frame-2.png",
+                                     "resources/rainbow/frame-3.png",
+                                     "resources/rainbow/frame-4.png",
+                                     "resources/rainbow/frame-5.png",
+                                     "resources/rainbow/frame-6.png",
+                                     "resources/rainbow/frame-7.png",
+                                     "resources/rainbow/frame-8.png",
+                                     "resources/rainbow/frame-9.png",
+                                     "resources/rainbow/frame-10.png",
+                                     "resources/rainbow/frame-11.png"
+                                 }, 2)},
+                                {* new Text("I am test text", 16, 0, "font24", 0xff, 0xff, 0xff)}));
         myData->tilemap.resize(1);
         for (int l = 0; l < 1; l++) {
-            myData->tilemap[l].resize(32);
-            for (int h = 0; h < 32; h++) {
-                myData->tilemap[l][h].resize(32);
-                for (int w = 0; w < 32; w++) {
+            myData->tilemap[l].resize(16);
+            for (int h = 0; h < 16; h++) {
+                myData->tilemap[l][h].resize(16);
+                for (int w = 0; w < 16; w++) {
                     myData->tilemap[l][h][w] = 0;
                 }
             }
@@ -84,7 +110,7 @@ void Map::draw() {
     for (auto text : texts) {
         al_draw_text(fontMap.at(text->font), al_map_rgb(text->r, text->g, text->b), text->x, text->y, 0, text->text.c_str());
     }
-    for (auto spr : sprites) {
+    for (auto *spr : sprites) {
         spr->draw();
     }
 }
