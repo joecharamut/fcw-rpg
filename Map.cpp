@@ -2,6 +2,8 @@
 
 #include <utility>
 
+#include <utility>
+
 #include <memory>
 
 
@@ -19,7 +21,7 @@ Map::Map(std::string id, std::vector<std::string> tileset, std::vector<std::vect
     for (auto spr : sprites) {
         this->sprites.push_back(new Sprite(&spr));
     }
-    for (auto text : texts) {
+    for (const auto &text : texts) {
         this->texts.push_back(new Text(text));
     }
 }
@@ -75,7 +77,7 @@ void Map::test() {
                 }
             }
         }
-        archive(cereal::make_nvp("mapdata", myData));
+        archive(cereal::make_nvp("mapdata", *myData));
     }
 }
 
@@ -83,11 +85,11 @@ std::vector<std::vector<std::vector<Tile *>>> Map::resolveMap(std::vector<std::s
         std::vector<std::vector<std::vector<int>>> tilemap, int length, int height, int layers) {
 
     std::vector<std::vector<std::vector<Tile *>>> resolved;
-    resolved.resize(layers);
+    resolved.resize((unsigned long)layers);
     for (int l = 0; l < layers; l++) {
-        resolved[l].resize(length);
+        resolved[l].resize((unsigned long)length);
         for (int x = 0; x < length; x++) {
-            resolved[l][x].resize(height);
+            resolved[l][x].resize((unsigned long)height);
             for (int y = 0; y < height; y++) {
                 resolved[l][x][y] = new Tile(tileset[tilemap[l][x][y]]);
                 resolved[l][x][y]->setX(x * resolved[l][x][y]->width);
@@ -139,11 +141,11 @@ void Map::addSprite(Sprite *sprite) {
 }
 
 void Map::addText(std::string text, std::string font, unsigned char r, unsigned char g, unsigned char b, float x, float y) {
-    Text *add = new Text();
+    auto *add = new Text();
     add->text = std::move(text);
     add->x = x;
     add->y = y;
-    add->font = font;
+    add->font = std::move(font);
     add->r = r;
     add->g = g;
     add->b = b;

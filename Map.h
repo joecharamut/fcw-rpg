@@ -17,9 +17,9 @@
 
 struct Text {
     std::string text;
-    float x, y;
+    float x = 0, y = 0;
     std::string font;
-    unsigned char r, g, b;
+    unsigned char r = 0, g = 0, b = 0;
 
     Text() {};
     Text(std::string text, float x, float y, std::string font, unsigned char r, unsigned char g, unsigned char b) {
@@ -48,9 +48,9 @@ struct Text {
     template <class Archive>
     static void load_and_construct(Archive &archive, cereal::construct<Text> &construct) {
         std::string text;
-        float x, y;
+        float x = 0, y = 0;
         std::string font;
-        int r,g,b;
+        int r = 0, g = 0, b = 0;
         archive(
                 CEREAL_NVP(text),
                 CEREAL_NVP(x),
@@ -125,9 +125,9 @@ struct MapJSON {
 
     template <class Archive>
     static void load_and_construct(Archive &archive, cereal::construct<MapJSON> &construct) {
-        int version;
+        int version = 0;
         std::string id;
-        int layers, height, width;
+        int layers = 0, height = 0, width = 0;
         std::vector<std::vector<std::vector<int>>> tilemap;
         std::vector<std::string> tileset;
         std::vector<Sprite> sprites;

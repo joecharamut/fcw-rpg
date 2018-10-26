@@ -140,6 +140,8 @@ void mapEventHandler(ALLEGRO_EVENT event) {
             case ALLEGRO_KEY_D:
                 key[KEY_RIGHT] = true;
                 break;
+            default:
+                break;
         }
     } else if(event.type == ALLEGRO_EVENT_KEY_UP) {
         switch(event.keyboard.keycode) {
@@ -178,12 +180,14 @@ void mapEventHandler(ALLEGRO_EVENT event) {
             case ALLEGRO_KEY_ESCAPE:
                 done = true;
                 break;
+            default:
+                break;
         }
     }
 }
 
 void loadSprites() {
-    //Map::test();
+    Map::test();
     //exit(0);
     current_map = Map::loadMap("test.json");
     current_map->setEventHandlerFunction(mapEventHandler);
