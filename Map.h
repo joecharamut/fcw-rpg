@@ -81,6 +81,7 @@ struct MapJSON {
     std::vector<Sprite> sprites;
     std::vector<Text> texts;
 
+    MapJSON() {};
     MapJSON(int version, std::string id,
             int layers, int height, int width,
             std::vector<std::vector<std::vector<int>>> tilemap, std::vector<std::string> tileset,

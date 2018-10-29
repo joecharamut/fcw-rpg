@@ -19,8 +19,6 @@ enum KEYS {
 };
 
 bool redraw = true;
-int hat_x = 0;
-int hat_y = 0;
 bool key[4] = { false, false, false, false };
 
 Map *current_map = nullptr;
@@ -63,26 +61,25 @@ void clickFunction(ActionSprite *as, ALLEGRO_EVENT event) {
 
 void mapEventHandler(ALLEGRO_EVENT event) {
     if (event.type == ALLEGRO_EVENT_TIMER) {
-        if(key[KEY_UP]) {
-            hat_y -= 4;
-        }
-        if(key[KEY_DOWN]) {
-            hat_y += 4;
-        }
-        if(key[KEY_LEFT]) {
-            hat_x -= 4;
-        }
-        if(key[KEY_RIGHT]) {
-            hat_x += 4;
-        }
         Sprite *hat = current_map->getSpriteById("s_hat");
         if (hat != nullptr) {
+            float hat_x = hat->x;
+            float hat_y = hat->y;
+            if(key[KEY_UP]) {
+                hat_y -= 4;
+            }
+            if(key[KEY_DOWN]) {
+                hat_y += 4;
+            }
+            if(key[KEY_LEFT]) {
+                hat_x -= 4;
+            }
+            if(key[KEY_RIGHT]) {
+                hat_x += 4;
+            }
+
             hat->setX(hat_x);
             hat->setY(hat_y);
-            if (current_map->checkCollision(hat)) {
-                hat->setX(--hat_x);
-                hat->setY(--hat_y);
-            }
         }
         redraw = true;
     } else if(event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
@@ -92,8 +89,7 @@ void mapEventHandler(ALLEGRO_EVENT event) {
             auto *actionSprite = dynamic_cast<ActionSprite *>(spr);
             if (actionSprite) {
                 if (actionSprite->boundingBox->intersect(event.mouse.x, event.mouse.y)) {
-                    if (actionSprite->clickAction)
-                        actionSprite->clickAction(actionSprite, event);
+                    clickFunction(actionSprite, event);
                 }
             }
         }
@@ -187,7 +183,7 @@ void mapEventHandler(ALLEGRO_EVENT event) {
 }
 
 void loadSprites() {
-    Map::test();
+    //Map::test();
     //exit(0);
     current_map = Map::loadMap("test.json");
     current_map->setEventHandlerFunction(mapEventHandler);
@@ -229,7 +225,6 @@ int main(int argc, char *argv[]) {
     al_register_event_source(queue, al_get_mouse_event_source());
     al_register_event_source(queue, al_get_timer_event_source(timer));
     al_register_event_source(queue, al_get_display_event_source(display));
-
 
     al_set_window_title(display, "FCW the RPG");
     loadFonts();

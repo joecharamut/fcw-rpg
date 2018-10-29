@@ -27,7 +27,6 @@ public:
     Sprite(float x, float y, std::string id, std::string image);
     Sprite(float x, float y, std::string image) : Sprite(x, y, "", image) {};
     Sprite(float x , float y, std::string id, std::vector<std::string> frames, int speed);
-    //Sprite(float x , float y, int frameCount, ...) : Sprite(x, y, nullptr, frameCount) {};
     virtual void draw();
     virtual void setX(float newX);
     virtual void setY(float newY);
@@ -61,7 +60,11 @@ public:
                 CEREAL_NVP(speed)
         );
         construct(
-                id, x, y, frameStr, speed
+                id,
+                x,
+                y,
+                frameStr,
+                speed
         );
     }
 };

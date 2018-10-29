@@ -20,16 +20,9 @@ public:
 
     Tile(std::string image, COLLISION_TYPE collision);
     explicit Tile(std::string image) : Tile(std::move(image), NONE) {};
+    Tile() {};
     Tile(const Tile &tile) : Tile(tile.frameStr[0]) {};
     void draw() override;
-
-    /*template <class Archive>
-    void serialize(Archive &archive) {
-        archive(
-                CEREAL_NVP(collision),
-                CEREAL_NVP(imageName)
-        );
-    }*/
 };
 
 

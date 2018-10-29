@@ -30,10 +30,10 @@ Map *Map::loadMap(std::string filename) {
     std::ifstream is(filename, std::ios::binary);
     if (!is.fail()) {
         cereal::JSONInputArchive inputArchive(is);
-        std::unique_ptr<MapJSON> loaded{nullptr};
+        MapJSON loaded = * new MapJSON();
         inputArchive(cereal::make_nvp("mapdata", loaded));
-        printf("Loading Map %s", loaded->id.c_str());
-        Map *m = new Map(loaded->id, loaded->tileset, loaded->tilemap, loaded->width, loaded->height, loaded->layers, loaded->sprites, loaded->texts);
+        printf("Loading Map %s", loaded.id.c_str());
+        Map *m = new Map(loaded.id, loaded.tileset, loaded.tilemap, loaded.width, loaded.height, loaded.layers, loaded.sprites, loaded.texts);
         return m;
     } else {
         printf("Error loading map %s", filename.c_str());
@@ -47,9 +47,9 @@ void Map::test() {
         cereal::JSONOutputArchive archive(os);
         std::unique_ptr<MapJSON> myData =
                 std::make_unique<MapJSON>(
-                        new MapJSON(1, "map_test", 1, 16, 16,
+                        new MapJSON(1, "map_test", 2, 16, 16,
                                 {{{}}},
-                                {"resources/tile00.png"},
+                                {"resources/tile00.png", "resources/tile01.png", "resources/tile02.png"},
                                 {* new Sprite(64, 64, "anim_sprite",
                                         std::vector<std::string>{
                                      "resources/rainbow/frame-0.png",
@@ -64,17 +64,22 @@ void Map::test() {
                                      "resources/rainbow/frame-9.png",
                                      "resources/rainbow/frame-10.png",
                                      "resources/rainbow/frame-11.png"
-                                 }, 2),
+                                 }, 4),
                                  * new Sprite(0,0,"s_hat","resources/hat.png")},
-                                {* new Text("I am test text", 16, 0, "font24", 0xff, 0xff, 0xff)}));
-        myData->tilemap.resize(1);
-        for (int l = 0; l < 1; l++) {
-            myData->tilemap[l].resize(16);
-            for (int h = 0; h < 16; h++) {
-                myData->tilemap[l][h].resize(16);
-                for (int w = 0; w < 16; w++) {
-                    myData->tilemap[l][h][w] = 0;
-                }
+                                {* new Text("Test text tests text when test text tests texts.", 0, 0, "font16", 0xff, 0xff, 0xff)}));
+        myData->tilemap.resize(2);
+        myData->tilemap[0].resize(16);
+        for (int h = 0; h < 16; h++) {
+            myData->tilemap[0][h].resize(16);
+            for (int w = 0; w < 16; w++) {
+                myData->tilemap[0][h][w] = 0;
+            }
+        }
+        myData->tilemap[1].resize(16);
+        for (int h = 0; h < 16; h++) {
+            myData->tilemap[1][h].resize(16);
+            for (int w = 0; w < 16; w++) {
+                myData->tilemap[1][h][w] = (h%3 != 0 ? (h%3) : -1);
             }
         }
         archive(cereal::make_nvp("mapdata", *myData));
@@ -91,7 +96,11 @@ std::vector<std::vector<std::vector<Tile *>>> Map::resolveMap(std::vector<std::s
         for (int x = 0; x < length; x++) {
             resolved[l][x].resize((unsigned long)height);
             for (int y = 0; y < height; y++) {
-                resolved[l][x][y] = new Tile(tileset[tilemap[l][x][y]]);
+                if (tilemap[l][x][y] == -1) {
+                    resolved[l][x][y] = new Tile();
+                } else {
+                    resolved[l][x][y] = new Tile(tileset[tilemap[l][x][y]]);
+                }
                 resolved[l][x][y]->setX(x * resolved[l][x][y]->width);
                 resolved[l][x][y]->setY(y * resolved[l][x][y]->height);
             }
@@ -105,6 +114,7 @@ void Map::draw() {
     for (int l = 0; l < layers; l++) {
         for (int x = 0; x < length; x++) {
             for (int y = 0; y < width; y++) {
+                if (tilemap[l][x][y]->frames.empty()) continue;
                 tilemap[l][x][y]->draw();
             }
         }
