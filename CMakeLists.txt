@@ -18,7 +18,7 @@ set(SOURCE_FILES
         Tile.cpp Tile.h
         Globals.h Globals.cpp
         ActionSprite.cpp ActionSprite.h
-        BoundingBox.cpp BoundingBox.h)
+        BoundingBox.cpp BoundingBox.h Util.cpp Util.h)
 
 add_executable(fcwrpg ${SOURCE_FILES})
 

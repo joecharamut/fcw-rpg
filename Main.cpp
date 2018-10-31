@@ -9,6 +9,7 @@
 #include "Map.h"
 #include "Globals.h"
 #include "ActionSprite.h"
+#include "Util.h"
 
 const float FPS = 60;
 const int SCREEN_H = 512;
