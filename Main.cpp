@@ -183,16 +183,6 @@ void mapEventHandler(ALLEGRO_EVENT event) {
     }
 }
 
-void loadSprites() {
-    //Map::test();
-    //exit(0);
-    current_map = Map::loadMap("test.json");
-    current_map->setEventHandlerFunction(mapEventHandler);
-
-    //current_map->addSprite(new ActionSprite(0,0,"resources/hat.png","s_hat", clickFunction, nullptr));
-    //current_map->addText("Hello I am some test text.", "font24", 0xff,0xff,0xff, 0, 0);
-}
-
 void loadFonts() {
     font8  = al_load_ttf_font("resources/font/DOSVGA.ttf",  8, 0);
     font16 = al_load_ttf_font("resources/font/DOSVGA.ttf", 16, 0);
@@ -206,31 +196,58 @@ void loadFonts() {
 
 int main(int argc, char *argv[]) {
     done = false;
-    al_init();
+    Util::log("Initialising Game");
 
-    al_init_font_addon();
-    al_init_ttf_addon();
-    al_init_image_addon();
-    al_install_keyboard();
-    al_install_mouse();
+    if(!al_init()) {
+        Util::log("Error initialising Allegro", "INIT", ERROR);
+        return 1;
+    }
+    if(!al_init_font_addon()) {
+        Util::log("Error initialising Allegro Font", "INIT", ERROR);
+        return 1;
+    }
+    if(!al_init_ttf_addon()) {
+        Util::log("Error initialising Allegro TTF", "INIT", ERROR);
+        return 1;
+    }
+    if(!al_init_image_addon()) {
+        Util::log("Error initialising Allegro Image", "INIT", ERROR);
+        return 1;
+    }
+    if(!al_install_keyboard()) {
+        Util::log("Error initialising Keyboard", "INIT", ERROR);
+        return 1;
+    }
+    if(!al_install_mouse()) {
+        Util::log("Error initialising Mouse", "INIT", ERROR);
+        return 1;
+    }
 
     display = al_create_display(SCREEN_W, SCREEN_H);
+    if (!display) {
+        Util::log("Error creating display", "INIT", ERROR);
+        return 1;
+    }
     al_set_new_display_flags(ALLEGRO_WINDOWED);
     al_set_display_icon(display, al_load_bitmap("resources/icon.png"));
+    al_set_window_title(display, "FCW the RPG");
 
     timer = al_create_timer(1.0 / FPS);
     al_start_timer(timer);
-
     queue = al_create_event_queue();
     al_register_event_source(queue, al_get_keyboard_event_source());
     al_register_event_source(queue, al_get_mouse_event_source());
     al_register_event_source(queue, al_get_timer_event_source(timer));
     al_register_event_source(queue, al_get_display_event_source(display));
 
-    al_set_window_title(display, "FCW the RPG");
+    Util::log("Loading Fonts");
     loadFonts();
-    loadSprites();
 
+    //Map::test();
+    current_map = Map::loadMap("test.json");
+    current_map->setEventHandlerFunction(mapEventHandler);
+
+    Util::log("Initialisation Finished, Starting Game");
     while (!done) {
         update();
     }

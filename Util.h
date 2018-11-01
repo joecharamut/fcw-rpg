@@ -22,6 +22,7 @@ class Util {
 public:
     static void log(std::string message, std::string src, LogLevel level);
     static void log(std::string message, std::string src);
+    static void log(std::string message, LogLevel level);
     static void log(std::string message);
 
     static void error(std::string message);

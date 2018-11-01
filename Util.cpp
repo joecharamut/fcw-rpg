@@ -11,6 +11,10 @@ void Util::log(std::string message, std::string src) {
     log(std::move(message), std::move(src), INFO);
 }
 
+void Util::log(std::string message, LogLevel level) {
+    log(std::move(message), "", level);
+}
+
 void Util::log(std::string message) {
     log(std::move(message), "", INFO);
 }

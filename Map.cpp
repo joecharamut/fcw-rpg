@@ -10,6 +10,7 @@
 #include "Map.h"
 #include "Globals.h"
 #include "ActionSprite.h"
+#include "Util.h"
 
 Map::Map(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
         int length, int width, int layers, std::vector<Sprite> sprites, std::vector<Text> texts) {
@@ -32,11 +33,11 @@ Map *Map::loadMap(std::string filename) {
         cereal::JSONInputArchive inputArchive(is);
         MapJSON loaded = * new MapJSON();
         inputArchive(cereal::make_nvp("mapdata", loaded));
-        printf("Loading Map %s", loaded.id.c_str());
+        Util::log("Loading Map " + loaded.id);
         Map *m = new Map(loaded.id, loaded.tileset, loaded.tilemap, loaded.width, loaded.height, loaded.layers, loaded.sprites, loaded.texts);
         return m;
     } else {
-        printf("Error loading map %s", filename.c_str());
+        Util::log("Error loading map " + filename + " (File Not Found)", ERROR);
     }
     return nullptr;
 }
