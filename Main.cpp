@@ -195,6 +195,9 @@ void loadFonts() {
 }
 
 int main(int argc, char *argv[]) {
+    for (auto str : Map::enumerateMaps()) {
+        Util::log(str, "Test");
+    }
     done = false;
     Util::log("Initialising Game");
 

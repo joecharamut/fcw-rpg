@@ -19,6 +19,6 @@ void Util::log(std::string message) {
     log(std::move(message), "", INFO);
 }
 
-void Util::error(std::string message) {
-
+void Util::print(std::string message) {
+    std::cout << message << std::endl;
 }

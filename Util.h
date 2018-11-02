@@ -25,7 +25,7 @@ public:
     static void log(std::string message, LogLevel level);
     static void log(std::string message);
 
-    static void error(std::string message);
+    static void print(std::string message);
 };
 
 

@@ -18,7 +18,8 @@ set(SOURCE_FILES
         Tile.cpp Tile.h
         Globals.h Globals.cpp
         ActionSprite.cpp ActionSprite.h
-        BoundingBox.cpp BoundingBox.h Util.cpp Util.h)
+        BoundingBox.cpp BoundingBox.h
+        Util.cpp Util.h)
 
 add_executable(fcwrpg ${SOURCE_FILES})
 
@@ -42,6 +43,7 @@ TARGET_LINK_LIBRARIES(fcwrpg
         allegro_primitives
         allegro_ttf
         allegro_video
+        stdc++fs
 )
 
 IF(${WIN32})

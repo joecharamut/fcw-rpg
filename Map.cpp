@@ -1,11 +1,7 @@
 #include <utility>
-
-#include <utility>
-
-#include <utility>
-
+#include <iostream>
 #include <memory>
-
+#include <experimental/filesystem>
 
 #include "Map.h"
 #include "Globals.h"
@@ -85,6 +81,18 @@ void Map::test() {
         }
         archive(cereal::make_nvp("mapdata", *myData));
     }
+}
+
+std::vector<std::string> Map::enumerateMaps() {
+    std::vector<std::string> maps;
+    std::string path = "resources/maps";
+    if (!std::experimental::filesystem::exists(path)) {
+        return maps;
+    }
+    for (const auto &p : std::experimental::filesystem::directory_iterator(path)) {
+        maps.push_back(p.path().string());
+    }
+    return maps;
 }
 
 std::vector<std::vector<std::vector<Tile *>>> Map::resolveMap(std::vector<std::string> tileset,

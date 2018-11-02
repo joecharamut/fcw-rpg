@@ -175,6 +175,7 @@ public:
             int length, int width, int layers, std::vector<Sprite> sprites, std::vector<Text> texts);
     static void test();
 
+    static std::vector<std::string> enumerateMaps();
     std::vector<std::vector<std::vector<Tile *>>> resolveMap(std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap, int length, int height, int layers);
     void draw();
     void addSprite(Sprite *sprite);
