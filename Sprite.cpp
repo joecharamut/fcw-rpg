@@ -18,6 +18,7 @@ Sprite::Sprite(float x, float y, std::string id, std::string image) {
     this->id = std::move(id);
     this->speed = 1;
     this->boundingBox = new BoundingBox(x, y, x+width, y+height);
+    this->collision = NONE;
 }
 
 Sprite::Sprite(float x, float y, std::string id, std::vector<std::string> frames, int speed) : Sprite(x, y, std::move(id), frames[0]) {

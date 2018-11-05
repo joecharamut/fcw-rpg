@@ -167,7 +167,7 @@ void Map::draw() {
     }
 }
 
-bool Map::checkCollision(Sprite *sprite) {
+Sprite* Map::checkCollision(Sprite *sprite) {
     BoundingBox *box = sprite->boundingBox;
     for (int l = 0; l < layers; l++) {
         for (int x = 0; x < width; x++) {
@@ -178,12 +178,21 @@ bool Map::checkCollision(Sprite *sprite) {
                 }
                 BoundingBox *check = tile->boundingBox;
                 if (BoundingBox::intersect(check, box)) {
-                    return true;
+                    return tile;
                 }
             }
         }
     }
-    return false;
+    for (auto *spr : sprites) {
+        if (spr->collision == NONE) {
+            continue;
+        }
+        BoundingBox *check = spr->boundingBox;
+        if (BoundingBox::intersect(check, box)) {
+            return spr;
+        }
+    }
+    return nullptr;
 }
 
 void Map::addSprite(Sprite *sprite) {

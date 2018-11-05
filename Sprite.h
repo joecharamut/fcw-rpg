@@ -7,8 +7,16 @@
 #ifndef FCWRPG_SPRITE_H
 #define FCWRPG_SPRITE_H
 
+enum COLLISION_TYPE {
+    NONE,
+    TILE,
+    BOX
+};
+
 class Sprite {
 public:
+    COLLISION_TYPE collision;
+
     float x;
     float y;
     std::vector<std::string> frameStr;

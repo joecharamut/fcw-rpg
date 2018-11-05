@@ -184,7 +184,7 @@ public:
     Sprite* getSpriteById(std::string id);
     void handleEvent(ALLEGRO_EVENT event);
     void setEventHandlerFunction(void (*handler)(ALLEGRO_EVENT event));
-    bool checkCollision(Sprite *sprite);
+    Sprite* checkCollision(Sprite *sprite);
 
 
 };

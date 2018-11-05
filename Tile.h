@@ -7,17 +7,9 @@
 #include "Sprite.h"
 #include "cereal/cereal.hpp"
 
-enum COLLISION_TYPE {
-    NONE,
-    TILE,
-    BOX
-};
-
 class Tile : public Sprite {
 
 public:
-    COLLISION_TYPE collision;
-
     Tile(std::string image, COLLISION_TYPE collision);
     explicit Tile(std::string image) : Tile(std::move(image), NONE) {};
     Tile() = default;;

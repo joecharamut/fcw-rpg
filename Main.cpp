@@ -81,6 +81,14 @@ void mapEventHandler(ALLEGRO_EVENT event) {
 
             hat->setX(hat_x);
             hat->setY(hat_y);
+
+            Sprite* spr = current_map->checkCollision(hat);
+            if (spr) {
+                //printf("Collision! %s\n", spr->id.c_str());
+                std::vector<float> fix = BoundingBox::fixCollision(spr->boundingBox, hat->boundingBox);
+                hat->setX(fix[0]);
+                hat->setY(fix[1]);
+            }
         }
         redraw = true;
     } else if(event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
@@ -109,31 +117,24 @@ void mapEventHandler(ALLEGRO_EVENT event) {
             case ALLEGRO_KEY_UP:
                 key[KEY_UP] = true;
                 break;
-
             case ALLEGRO_KEY_DOWN:
                 key[KEY_DOWN] = true;
                 break;
-
             case ALLEGRO_KEY_LEFT:
                 key[KEY_LEFT] = true;
                 break;
-
             case ALLEGRO_KEY_RIGHT:
                 key[KEY_RIGHT] = true;
                 break;
-
             case ALLEGRO_KEY_W:
                 key[KEY_UP] = true;
                 break;
-
             case ALLEGRO_KEY_S:
                 key[KEY_DOWN] = true;
                 break;
-
             case ALLEGRO_KEY_A:
                 key[KEY_LEFT] = true;
                 break;
-
             case ALLEGRO_KEY_D:
                 key[KEY_RIGHT] = true;
                 break;
@@ -145,35 +146,27 @@ void mapEventHandler(ALLEGRO_EVENT event) {
             case ALLEGRO_KEY_UP:
                 key[KEY_UP] = false;
                 break;
-
             case ALLEGRO_KEY_DOWN:
                 key[KEY_DOWN] = false;
                 break;
-
             case ALLEGRO_KEY_LEFT:
                 key[KEY_LEFT] = false;
                 break;
-
             case ALLEGRO_KEY_RIGHT:
                 key[KEY_RIGHT] = false;
                 break;
-
             case ALLEGRO_KEY_W:
                 key[KEY_UP] = false;
                 break;
-
             case ALLEGRO_KEY_S:
                 key[KEY_DOWN] = false;
                 break;
-
             case ALLEGRO_KEY_A:
                 key[KEY_LEFT] = false;
                 break;
-
             case ALLEGRO_KEY_D:
                 key[KEY_RIGHT] = false;
                 break;
-
             case ALLEGRO_KEY_ESCAPE:
                 done = true;
                 break;
@@ -293,6 +286,7 @@ int main(int argc, char *argv[]) {
     //current_map = Map::loadMapFile("test.json");
     current_map = Map::loadMap("map_test");
     current_map->setEventHandlerFunction(mapEventHandler);
+    current_map->getSpriteById("anim_sprite")->collision = TILE;
 
     Util::log("Initialisation Finished, Starting Game");
     while (!done) {
