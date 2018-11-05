@@ -22,7 +22,7 @@ public:
     int speed = 0;
     int speedCount = 0;
 
-    Sprite() {};
+    Sprite() = default;;
     explicit Sprite(Sprite *spr) : Sprite(spr->x, spr->y, spr->id, spr->frameStr, spr->speed) {};
     Sprite(float x, float y, std::string id, std::string image);
     Sprite(float x, float y, std::string image) : Sprite(x, y, "", image) {};

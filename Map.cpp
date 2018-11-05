@@ -8,6 +8,9 @@
 #include "ActionSprite.h"
 #include "Util.h"
 
+static bool loaded = false;
+static std::map<std::string, std::string> mapList = {};
+
 Map::Map(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
         int length, int width, int layers, std::vector<Sprite> sprites, std::vector<Text> texts) {
     this->id = std::move(id);
@@ -23,7 +26,24 @@ Map::Map(std::string id, std::vector<std::string> tileset, std::vector<std::vect
     }
 }
 
-Map *Map::loadMap(std::string filename) {
+Map* Map::loadMap(std::string mapname) {
+    if (!loaded) enumerateMaps();
+    std::string filePath = mapList[mapname];
+    std::ifstream is(filePath, std::ios::binary);
+    if (!is.fail()) {
+        cereal::JSONInputArchive inputArchive(is);
+        MapJSON loaded = * new MapJSON();
+        inputArchive(cereal::make_nvp("mapdata", loaded));
+        Util::log("Loading Map " + loaded.id);
+        Map *m = new Map(loaded.id, loaded.tileset, loaded.tilemap, loaded.width, loaded.height, loaded.layers, loaded.sprites, loaded.texts);
+        return m;
+    } else {
+        Util::log("Error loading map " + filePath + " (Not Found)", ERROR);
+    }
+    return nullptr;
+}
+
+Map* Map::loadMapFile(std::string filename) {
     std::ifstream is(filename, std::ios::binary);
     if (!is.fail()) {
         cereal::JSONInputArchive inputArchive(is);
@@ -84,14 +104,25 @@ void Map::test() {
 }
 
 std::vector<std::string> Map::enumerateMaps() {
-    std::vector<std::string> maps;
+    std::vector<std::string> maps = {};
     std::string path = "resources/maps";
     if (!std::experimental::filesystem::exists(path)) {
         return maps;
     }
     for (const auto &p : std::experimental::filesystem::directory_iterator(path)) {
-        maps.push_back(p.path().string());
+        for (const auto &p2 : std::experimental::filesystem::directory_iterator(p.path().string())) {
+            std::string file = p2.path().string();
+            if (file.substr(file.length() - 5) == ".json") {
+                std::ifstream is(file, std::ios::binary);
+                cereal::JSONInputArchive inputArchive(is);
+                MapJSON loaded = {};
+                inputArchive(cereal::make_nvp("mapdata", loaded));
+                maps.push_back(loaded.id);
+                mapList[loaded.id] = file;
+            }
+        }
     }
+    loaded = true;
     return maps;
 }
 
@@ -146,7 +177,7 @@ bool Map::checkCollision(Sprite *sprite) {
                     continue;
                 }
                 BoundingBox *check = tile->boundingBox;
-                if (check->intersect(box)) {
+                if (BoundingBox::intersect(check, box)) {
                     return true;
                 }
             }

@@ -81,7 +81,7 @@ struct MapJSON {
     std::vector<Sprite> sprites;
     std::vector<Text> texts;
 
-    MapJSON() {};
+    MapJSON() = default;;
     MapJSON(int version, std::string id,
             int layers, int height, int width,
             std::vector<std::vector<std::vector<int>>> tilemap, std::vector<std::string> tileset,
@@ -162,15 +162,16 @@ struct MapJSON {
 class Map {
 public:
     std::string id;
-    std::vector<std::vector<std::vector<Tile *>>> tilemap;
+    std::vector<std::vector<std::vector<Tile *>>> tilemap = {};
     int length;
     int width;
     int layers;
-    std::vector<Sprite *> sprites;
-    std::vector<Text *> texts;
+    std::vector<Sprite *> sprites = {};
+    std::vector<Text *> texts = {};
     void (*handlerFunction)(ALLEGRO_EVENT event);
 
-    static Map* loadMap(std::string filename);
+    static Map* loadMap(std::string mapname);
+    static Map* loadMapFile(std::string filename);
     Map(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
             int length, int width, int layers, std::vector<Sprite> sprites, std::vector<Text> texts);
     static void test();

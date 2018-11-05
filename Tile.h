@@ -20,7 +20,7 @@ public:
 
     Tile(std::string image, COLLISION_TYPE collision);
     explicit Tile(std::string image) : Tile(std::move(image), NONE) {};
-    Tile() {};
+    Tile() = default;;
     Tile(const Tile &tile) : Tile(tile.frameStr[0]) {};
     void draw() override;
 };

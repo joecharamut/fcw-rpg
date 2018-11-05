@@ -89,7 +89,7 @@ void mapEventHandler(ALLEGRO_EVENT event) {
         for(auto *spr : current_map->sprites) {
             auto *actionSprite = dynamic_cast<ActionSprite *>(spr);
             if (actionSprite) {
-                if (actionSprite->boundingBox->intersect(event.mouse.x, event.mouse.y)) {
+                if (BoundingBox::intersect(actionSprite->boundingBox, event.mouse.x, event.mouse.y)) {
                     clickFunction(actionSprite, event);
                 }
             }
@@ -98,7 +98,7 @@ void mapEventHandler(ALLEGRO_EVENT event) {
         for(auto *spr : current_map->sprites) {
             auto *actionSprite = dynamic_cast<ActionSprite *>(spr);
             if (actionSprite) {
-                if (actionSprite->boundingBox->intersect(event.mouse.x, event.mouse.y)) {
+                if (BoundingBox::intersect(actionSprite->boundingBox, event.mouse.x, event.mouse.y)) {
                     if (actionSprite->hoverAction)
                         actionSprite->hoverAction(actionSprite, event);
                 }
@@ -195,13 +195,50 @@ void loadFonts() {
 }
 
 int main(int argc, char *argv[]) {
-    for (auto str : Map::enumerateMaps()) {
-        Util::log(str, "Test");
-    }
+/*
+    Util::log("Testing collision:");
+    BoundingBox *b1 = new BoundingBox(32, 32, 128, 128);
+    BoundingBox *b2 = new BoundingBox(64, 64, 72, 72);
+    BoundingBox *b3 = new BoundingBox(16, 16, 24, 24);
+
+    Util::log("Checking if point 64,64 intersects 32,32 x 128,128:", "Test");
+    Util::log((std::string) "Intersection: " + (BoundingBox::intersect(b1, 64, 64) ? "Yes" : "No") + " (Expect: Yes)", "Test");
+
+    Util::log("Checking if point 16,16 intersects 32,32 x 128,128:", "Test");
+    Util::log((std::string) "Intersection: " + (BoundingBox::intersect(b1, 16, 16) ? "Yes" : "No") + " (Expect: No)", "Test");
+
+    Util::log("Checking point remapping:", "Test");
+    std::vector<float> test = BoundingBox::fixCollision(b1, 64, 64);
+    Util::log((std::string) "Remap: 64,64 -> " + std::to_string(test[0]) + "," + std::to_string(test[1]) + " (Expect: 32,32)", "Test");
+
+    Util::log("Checking point remapping:", "Test");
+    test = BoundingBox::fixCollision(b1, 16, 16);
+    Util::log((std::string) "Remap: 16,16 -> " + std::to_string(test[0]) + "," + std::to_string(test[1]) + " (Expect: 16,16)", "Test");
+
+    Util::log("Checking if 64,64 x 72,72 intersects 32,32 x 128,128", "Test");
+    Util::log((std::string) "Intersection: " + (BoundingBox::intersect(b1, b2) ? "Yes" : "No") + " (Expect: Yes)", "Test");
+
+    Util::log("Checking if 16,16 x 24,24 intersects 32,32 x 128,128", "Test");
+    Util::log((std::string) "Intersection: " + (BoundingBox::intersect(b1, b3) ? "Yes" : "No") + " (Expect: No)", "Test");
+
+    Util::log("Checking box remapping:", "Test");
+    test = BoundingBox::fixCollision(b1, b2);
+    Util::log((std::string) "Remap: 64,64 x 72,72 -> " + std::to_string(test[0]) + "," + std::to_string(test[1]) +
+              " x " + std::to_string(test[2]) + "," + std::to_string(test[3]) +
+              " (Expect: 32,32 x 40,40)", "Test");
+
+    Util::log("Checking box remapping:", "Test");
+    test = BoundingBox::fixCollision(b1, b3);
+    Util::log((std::string) "Remap: 16,16 x 24,24 -> " + std::to_string(test[0]) + "," + std::to_string(test[1]) +
+              " x " + std::to_string(test[2]) + "," + std::to_string(test[3]) +
+              " (Expect: 16,16 x 24,24)", "Test");
+
+    Util::log("Test Complete");
+*/
     done = false;
     Util::log("Initialising Game");
 
-    if(!al_init()) {
+    if(al_init() == 0) {
         Util::log("Error initialising Allegro", "INIT", ERROR);
         return 1;
     }
@@ -246,8 +283,15 @@ int main(int argc, char *argv[]) {
     Util::log("Loading Fonts");
     loadFonts();
 
+    Util::log("Enumerating Maps");
+    for (const auto &str : Map::enumerateMaps()) {
+        Util::log(str);
+    }
+    Util::log("Done");
+
     //Map::test();
-    current_map = Map::loadMap("test.json");
+    //current_map = Map::loadMapFile("test.json");
+    current_map = Map::loadMap("map_test");
     current_map->setEventHandlerFunction(mapEventHandler);
 
     Util::log("Initialisation Finished, Starting Game");
