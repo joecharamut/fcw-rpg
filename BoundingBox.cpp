@@ -38,21 +38,10 @@ std::vector<float> BoundingBox::fixCollision(BoundingBox *bb, float px, float py
 }
 
 std::vector<float> BoundingBox::fixCollision(BoundingBox* bb1, BoundingBox* bb2) {
-    /*float x = bb1->x1;
-    float y = bb1->y1;
-    float w = bb1->x2 - x;
-    float h = bb1->y2 - y;
-*/
     float bx = bb2->x1;
     float by = bb2->y1;
     float bw = bb2->x2 - bx;
     float bh = bb2->y2 - by;
-    std::vector<float> newBox = {bx, by, bx+bw, by+bh};
-
-    if (!intersect(bb1, bb2)) {
-        return newBox;
-    }
-
     float w = 0.5f * ((bb1->x2-bb1->x1) + (bb2->x2-bb2->x1));
     float h = 0.5f * ((bb1->y2-bb1->y1) + (bb2->y2-bb2->y1));
     float dx = (bb1->x1+(bb1->x2-bb1->x1)) - (bb2->x1+(bb2->x2-bb2->x1));
@@ -64,23 +53,21 @@ std::vector<float> BoundingBox::fixCollision(BoundingBox* bb1, BoundingBox* bb2)
 
         if (wy > hx) {
             if (wy > -hx) {
-                /* collision at the bottom */
-                Util::log("collision: top", "CTest");
+                /* collision at the top */
+                by = bb1->y1 - bh;
             } else {
                 /* on the right */
-                Util::log("collision: left", "CTest");
+                bx = bb1->x2;
             }
+        } else {
             if (wy > -hx) {
                 /* on the left */
-                Util::log("collision: right", "CTest");
+                bx = bb1->x1 - bw;
             } else {
-                /* at the top */
-                Util::log("collision: bottom", "CTest");
+                /* at the bottom */
+                by = bb1->y2;
             }
         }
     }
-
-    newBox = {bx, by, bx+bw, by+bh};
-
-    return newBox;
+    return {bx, by, bx+bw, by+bh};
 }
