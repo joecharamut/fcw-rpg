@@ -74,7 +74,7 @@ add_dependencies(linux_package copy_linux_deps)
 
 add_custom_command(
         TARGET win_package
-        COMMAND ${CMAKE_COMMAND} -E tar "cvf" "linux_package.zip" --format=zip --
+        COMMAND ${CMAKE_COMMAND} -E tar "cvf" "win_package.zip" --format=zip --
         fcwrpg.exe
         resources
         allegro-5.2.dll
@@ -97,7 +97,7 @@ add_custom_command(
 
 add_custom_command(
         TARGET linux_package
-        COMMAND ${CMAKE_COMMAND} -E tar "cvf" "win_package.zip" --format=zip --
+        COMMAND ${CMAKE_COMMAND} -E tar "cvf" "linux_package.zip" --format=zip --
         fcwrpg
         resources
 )

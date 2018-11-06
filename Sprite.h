@@ -9,8 +9,7 @@
 
 enum COLLISION_TYPE {
     NONE,
-    TILE,
-    BOX
+    TILE
 };
 
 class Sprite {

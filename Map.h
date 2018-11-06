@@ -14,6 +14,7 @@
 #include "cereal/archives/json.hpp"
 #include "cereal/types/polymorphic.hpp"
 #include <fstream>
+#include <allegro5/allegro_audio.h>
 
 struct Text {
     std::string text;
@@ -80,12 +81,13 @@ struct MapJSON {
     std::vector<std::string> tileset;
     std::vector<Sprite> sprites;
     std::vector<Text> texts;
+    std::vector<std::string> music;
 
     MapJSON() = default;;
     MapJSON(int version, std::string id,
             int layers, int height, int width,
             std::vector<std::vector<std::vector<int>>> tilemap, std::vector<std::string> tileset,
-            std::vector<Sprite> sprites, std::vector<Text> texts) {
+            std::vector<Sprite> sprites, std::vector<Text> texts, std::vector<std::string>music) {
         this->version = version;
         this->id = std::move(id);
         this->layers = layers;
@@ -95,6 +97,7 @@ struct MapJSON {
         this->tileset = std::move(tileset);
         this->sprites = sprites;
         this->texts = texts;
+        this->music = music;
     }
 
     explicit MapJSON(MapJSON *in) {
@@ -107,6 +110,7 @@ struct MapJSON {
         this->tileset = in->tileset;
         this->sprites = in->sprites;
         this->texts = in->texts;
+        this->music = in->music;
     }
 
     template <class Archive>
@@ -120,7 +124,8 @@ struct MapJSON {
                 CEREAL_NVP(tilemap),
                 CEREAL_NVP(tileset),
                 CEREAL_NVP(sprites),
-                CEREAL_NVP(texts)
+                CEREAL_NVP(texts),
+                CEREAL_NVP(music)
         );
     }
 
@@ -133,6 +138,7 @@ struct MapJSON {
         std::vector<std::string> tileset;
         std::vector<Sprite> sprites;
         std::vector<Text> texts;
+        std::vector<std::string> music;
 
         archive(
                 CEREAL_NVP(version),
@@ -143,7 +149,8 @@ struct MapJSON {
                 CEREAL_NVP(tilemap),
                 CEREAL_NVP(tileset),
                 CEREAL_NVP(sprites),
-                CEREAL_NVP(texts)
+                CEREAL_NVP(texts),
+                CEREAL_NVP(music)
         );
         construct(
                 version,
@@ -154,7 +161,8 @@ struct MapJSON {
                 tilemap,
                 tileset,
                 sprites,
-                texts
+                texts,
+                music
         );
     }
 };
@@ -168,12 +176,14 @@ public:
     int layers;
     std::vector<Sprite *> sprites = {};
     std::vector<Text *> texts = {};
+    std::vector<ALLEGRO_SAMPLE *> music = {};
+
     void (*handlerFunction)(ALLEGRO_EVENT event);
 
     static Map* loadMap(std::string mapname);
     static Map* loadMapFile(std::string filename);
     Map(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
-            int length, int width, int layers, std::vector<Sprite> sprites, std::vector<Text> texts);
+            int length, int width, int layers, std::vector<Sprite> sprites, std::vector<Text> texts, std::vector<std::string> music);
     static void test();
 
     static std::vector<std::string> enumerateMaps();

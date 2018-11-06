@@ -633,6 +633,9 @@
         "g": 255,
         "b": 255
       }
+    ],
+    "music": [
+      "resources/cavey_stuff.ogg"
     ]
   }
 }

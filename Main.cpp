@@ -3,6 +3,8 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_image.h>
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 
 #include "Sprite.h"
 #include "Textbox.h"
@@ -215,6 +217,14 @@ int main(int argc, char *argv[]) {
         Util::log("Error initialising Mouse", "INIT", ERROR);
         return 1;
     }
+    if(!al_install_audio()) {
+        Util::log("Error initialising Audio", "INIT", ERROR);
+        return 1;
+    }
+    if(!al_init_acodec_addon()) {
+        Util::log("Error initialising Audio Codec", "INIT", ERROR);
+        return 1;
+    }
 
     display = al_create_display(SCREEN_W, SCREEN_H);
     if (!display) {
@@ -247,6 +257,17 @@ int main(int argc, char *argv[]) {
     current_map = Map::loadMap("map_test");
     current_map->setEventHandlerFunction(mapEventHandler);
     current_map->getSpriteById("anim_sprite")->collision = TILE;
+
+    Util::log("Loading Music");
+    al_reserve_samples(1);
+    ALLEGRO_MIXER* mixer = al_create_mixer(44100, ALLEGRO_AUDIO_DEPTH_FLOAT32, ALLEGRO_CHANNEL_CONF_2);
+    al_attach_mixer_to_mixer(mixer, al_get_default_mixer());
+
+    ALLEGRO_SAMPLE_INSTANCE* musicTest = al_create_sample_instance(current_map->music[0]);
+    al_set_sample_instance_playmode(musicTest, ALLEGRO_PLAYMODE_LOOP);
+    al_attach_sample_instance_to_mixer(musicTest, mixer);
+
+    al_set_sample_instance_playing(musicTest, true);
 
     Util::log("Initialisation Finished, Starting Game");
     while (!done) {

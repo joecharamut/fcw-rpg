@@ -12,7 +12,7 @@ static bool loaded = false;
 static std::map<std::string, std::string> mapList = {};
 
 Map::Map(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
-        int length, int width, int layers, std::vector<Sprite> sprites, std::vector<Text> texts) {
+        int length, int width, int layers, std::vector<Sprite> sprites, std::vector<Text> texts, std::vector<std::string> music) {
     this->id = std::move(id);
     this->tilemap = resolveMap(std::move(tileset), std::move(tilemap), length, width, layers);
     this->length = length;
@@ -24,23 +24,14 @@ Map::Map(std::string id, std::vector<std::string> tileset, std::vector<std::vect
     for (const auto &text : texts) {
         this->texts.push_back(new Text(text));
     }
+    for (const auto &file : music) {
+        this->music.push_back(al_load_sample(file.c_str()));
+    }
 }
 
 Map* Map::loadMap(std::string mapname) {
     if (!loaded) enumerateMaps();
-    std::string filePath = mapList[mapname];
-    std::ifstream is(filePath, std::ios::binary);
-    if (!is.fail()) {
-        cereal::JSONInputArchive inputArchive(is);
-        MapJSON loaded = * new MapJSON();
-        inputArchive(cereal::make_nvp("mapdata", loaded));
-        Util::log("Loading Map " + loaded.id);
-        Map *m = new Map(loaded.id, loaded.tileset, loaded.tilemap, loaded.width, loaded.height, loaded.layers, loaded.sprites, loaded.texts);
-        return m;
-    } else {
-        Util::log("Error loading map " + filePath + " (Not Found)", ERROR);
-    }
-    return nullptr;
+    return loadMapFile(mapList[mapname]);
 }
 
 Map* Map::loadMapFile(std::string filename) {
@@ -50,7 +41,7 @@ Map* Map::loadMapFile(std::string filename) {
         MapJSON loaded = * new MapJSON();
         inputArchive(cereal::make_nvp("mapdata", loaded));
         Util::log("Loading Map " + loaded.id);
-        Map *m = new Map(loaded.id, loaded.tileset, loaded.tilemap, loaded.width, loaded.height, loaded.layers, loaded.sprites, loaded.texts);
+        Map *m = new Map(loaded.id, loaded.tileset, loaded.tilemap, loaded.width, loaded.height, loaded.layers, loaded.sprites, loaded.texts, loaded.music);
         return m;
     } else {
         Util::log("Error loading map " + filename + " (File Not Found)", ERROR);
@@ -83,7 +74,8 @@ void Map::test() {
                                      "resources/rainbow/frame-11.png"
                                  }, 4),
                                  * new Sprite(0,0,"s_hat","resources/hat.png")},
-                                {* new Text("Test text tests text when test text tests texts.", 0, 0, "font16", 0xff, 0xff, 0xff)}));
+                                {* new Text("Test text tests text when test text tests texts.", 0, 0, "font16", 0xff, 0xff, 0xff)},
+                                {}));
         myData->tilemap.resize(2);
         myData->tilemap[0].resize(16);
         for (int h = 0; h < 16; h++) {

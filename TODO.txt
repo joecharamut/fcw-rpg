@@ -1,13 +1,8 @@
-TODO::Code - Collision with tiles
-
 TODO::Map Editor - Python Probably (how do i do guis in python help? (maybe try java i can do that kinda))
 TODO::Map Export - (Zip of .json, all tiles, (map.json{id/name, int tilemap[][][], String tileset[]}, resources{tiles, sounds?, events??}))
 TODO::Map Editor - Event tile : Transparent sprite, when stepped on triggers dialog or battle
 TODO::Map Editor - Add Sprites
 TODO::Map Editor - Add Dialogue/Text
-
-TODO::Map Loader - Enumerate maps folder and print list of maps ex: `map_test [10 Sprites, 16 Tiles, 1x16x16]`
-
 
 {
     "version": 0.1,
