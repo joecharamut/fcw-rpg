@@ -48,7 +48,6 @@ void update() {
 }
 
 void clickFunction(ActionSprite *as, ALLEGRO_EVENT event) {
-    printf("%i\n", current_map->checkCollision(as));
     switch (event.mouse.button) {
         case 1:
             printf("LMB\n");
@@ -193,7 +192,7 @@ int main(int argc, char *argv[]) {
     done = false;
     Util::log("Initialising Game");
 
-    if(al_init() == 0) {
+    if((int)al_init() == 0) {
         Util::log("Error initialising Allegro", "INIT", ERROR);
         return 1;
     }
@@ -257,6 +256,7 @@ int main(int argc, char *argv[]) {
     current_map = Map::loadMap("map_test");
     current_map->setEventHandlerFunction(mapEventHandler);
     current_map->getSpriteById("anim_sprite")->collision = TILE;
+    current_map->playerSprite = current_map->getSpriteById("s_hat");
 
     Util::log("Loading Music");
     al_reserve_samples(1);

@@ -1,31 +1,6 @@
-TODO::Map Editor - Python Probably (how do i do guis in python help? (maybe try java i can do that kinda))
-TODO::Map Export - (Zip of .json, all tiles, (map.json{id/name, int tilemap[][][], String tileset[]}, resources{tiles, sounds?, events??}))
-TODO::Map Editor - Event tile : Transparent sprite, when stepped on triggers dialog or battle
-TODO::Map Editor - Add Sprites
-TODO::Map Editor - Add Dialogue/Text
+TODO::Map Editor - Nope definetly Java
+TODO::Map Editor::Export - (Zip of .json, all resources in subdir [<mapid>/map.json, <mapid>/res/[texture, music, etc]]
+TODO::Map Editor - Event tile : Transparent sprite, when stepped on triggers something (Event Class?)
+TODO::Map Editor - Actually Make It
 
-{
-    "version": 0.1,
-    "id": "map0",
-    "tilemap": [
-        [
-            [0,0,0,0],
-            [0,0,0,0],
-            [0,0,0,0],
-            [0,0,0,0]
-        ]
-    ],
-    "tileset": [
-        {
-            "file": "resources/map0/tile00.png",
-            "collision": null, (null, tile, box)
-            "collisionBox": null, (null, [x1, y1, x2, y2])
-        }
-    ],
-    "sounds": [
-        {
-            "file": "music.mp3",
-            "play": "loop"
-        }
-    ]
-}
+TODO::Engine - Make viewport fixed 16x16 and scroll to main sprite (keep in center if possible)

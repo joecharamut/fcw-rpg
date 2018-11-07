@@ -12,11 +12,9 @@ static bool loaded = false;
 static std::map<std::string, std::string> mapList = {};
 
 Map::Map(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
-        int length, int width, int layers, std::vector<Sprite> sprites, std::vector<Text> texts, std::vector<std::string> music) {
+        int layers, std::vector<Sprite> sprites, std::vector<Text> texts, std::vector<std::string> music) {
     this->id = std::move(id);
-    this->tilemap = resolveMap(std::move(tileset), std::move(tilemap), length, width, layers);
-    this->length = length;
-    this->width = width;
+    this->tilemap = resolveMap(std::move(tileset), std::move(tilemap));
     this->layers = layers;
     for (auto spr : sprites) {
         this->sprites.push_back(new Sprite(&spr));
@@ -41,7 +39,7 @@ Map* Map::loadMapFile(std::string filename) {
         MapJSON loaded = * new MapJSON();
         inputArchive(cereal::make_nvp("mapdata", loaded));
         Util::log("Loading Map " + loaded.id);
-        Map *m = new Map(loaded.id, loaded.tileset, loaded.tilemap, loaded.width, loaded.height, loaded.layers, loaded.sprites, loaded.texts, loaded.music);
+        Map *m = new Map(loaded.id, loaded.tileset, loaded.tilemap, loaded.layers, loaded.sprites, loaded.texts, loaded.music);
         return m;
     } else {
         Util::log("Error loading map " + filename + " (File Not Found)", ERROR);
@@ -55,7 +53,7 @@ void Map::test() {
         cereal::JSONOutputArchive archive(os);
         std::unique_ptr<MapJSON> myData =
                 std::make_unique<MapJSON>(
-                        new MapJSON(1, "map_test", 2, 16, 16,
+                        new MapJSON(1, "map_test", 2,
                                 {{{}}},
                                 {"resources/tile00.png", "resources/tile01.png", "resources/tile02.png"},
                                 {* new Sprite(64, 64, "anim_sprite",
@@ -119,15 +117,18 @@ std::vector<std::string> Map::enumerateMaps() {
 }
 
 std::vector<std::vector<std::vector<Tile *>>> Map::resolveMap(std::vector<std::string> tileset,
-        std::vector<std::vector<std::vector<int>>> tilemap, int length, int height, int layers) {
-
+        std::vector<std::vector<std::vector<int>>> tilemap) {
     std::vector<std::vector<std::vector<Tile *>>> resolved;
+    int layers = tilemap.size();
+    int length = tilemap[0].size();
+    int width = tilemap[0][0].size();
+
     resolved.resize((unsigned long)layers);
     for (int l = 0; l < layers; l++) {
         resolved[l].resize((unsigned long)length);
         for (int x = 0; x < length; x++) {
-            resolved[l][x].resize((unsigned long)height);
-            for (int y = 0; y < height; y++) {
+            resolved[l][x].resize((unsigned long)width);
+            for (int y = 0; y < width; y++) {
                 if (tilemap[l][x][y] == -1) {
                     resolved[l][x][y] = new Tile();
                 } else {
@@ -144,8 +145,8 @@ std::vector<std::vector<std::vector<Tile *>>> Map::resolveMap(std::vector<std::s
 
 void Map::draw() {
     for (int l = 0; l < layers; l++) {
-        for (int x = 0; x < length; x++) {
-            for (int y = 0; y < width; y++) {
+        for (int x = 0; x < 16; x++) {
+            for (int y = 0; y < 16; y++) {
                 if (tilemap[l][x][y]->frames.empty()) continue;
                 tilemap[l][x][y]->draw();
             }
@@ -155,6 +156,14 @@ void Map::draw() {
         al_draw_text(fontMap.at(text->font), al_map_rgb(text->r, text->g, text->b), text->x, text->y, 0, text->text.c_str());
     }
     for (auto *spr : sprites) {
+        if (playerSprite) {
+            if (spr->id == playerSprite->id) {
+                if (spr->x < 0) spr->setX(0);
+                if (spr->x > 512 - spr->width) spr->setX(512 - spr->width);
+                if (spr->y < 0) spr->setY(0);
+                if (spr->y > 512 - spr->height) spr->setY(512 - spr->height);
+            }
+        }
         spr->draw();
     }
 }
@@ -162,8 +171,8 @@ void Map::draw() {
 Sprite* Map::checkCollision(Sprite *sprite) {
     BoundingBox *box = sprite->boundingBox;
     for (int l = 0; l < layers; l++) {
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < length; y++) {
+        for (int x = 0; x < 16; x++) {
+            for (int y = 0; y < 16; y++) {
                 Tile *tile = tilemap[l][x][y];
                 if (tile->collision == NONE) {
                     continue;
