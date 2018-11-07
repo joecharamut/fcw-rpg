@@ -51,30 +51,47 @@
         "id": "anim_sprite",
         "x": 64.0,
         "y": 64.0,
-        "frameStr": [
-          "resources/rainbow/frame-0.png",
-          "resources/rainbow/frame-1.png",
-          "resources/rainbow/frame-2.png",
-          "resources/rainbow/frame-3.png",
-          "resources/rainbow/frame-4.png",
-          "resources/rainbow/frame-5.png",
-          "resources/rainbow/frame-6.png",
-          "resources/rainbow/frame-7.png",
-          "resources/rainbow/frame-8.png",
-          "resources/rainbow/frame-9.png",
-          "resources/rainbow/frame-10.png",
-          "resources/rainbow/frame-11.png"
-        ],
-        "speed": 4
+        "frames": [
+          {
+            "type": "IDLE",
+            "frames": [
+              "resources/rainbow/frame-0.png",
+              "resources/rainbow/frame-1.png",
+              "resources/rainbow/frame-2.png",
+              "resources/rainbow/frame-3.png",
+              "resources/rainbow/frame-4.png",
+              "resources/rainbow/frame-5.png",
+              "resources/rainbow/frame-6.png",
+              "resources/rainbow/frame-7.png",
+              "resources/rainbow/frame-8.png",
+              "resources/rainbow/frame-9.png",
+              "resources/rainbow/frame-10.png",
+              "resources/rainbow/frame-11.png"
+            ],
+            "speed": 4
+          },
+          {
+            "type": "STILL",
+            "frames": [
+              "resources/rainbow/frame-0.png"
+            ],
+            "speed": 1
+          }
+        ]
       },
       {
         "id": "s_hat",
-        "x": 256.0,
-        "y": 256.0,
-        "frameStr": [
-          "resources/hat.png"
-        ],
-        "speed": 1
+        "x": 0.0,
+        "y": 0.0,
+        "frames": [
+          {
+            "type": "default",
+            "frames": [
+              "resources/hat.png"
+            ],
+            "speed": 1
+          }
+        ]
       }
     ],
     "texts": [

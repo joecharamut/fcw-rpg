@@ -4,37 +4,27 @@
 
 #include <utility>
 
+#include <utility>
+
 #include "Sprite.h"
 #include "Globals.h"
 #include <cstdarg>
 #include <cstdio>
 
-Sprite::Sprite(float x, float y, std::string id, std::string image) {
+Sprite::Sprite(float x, float y, std::string id, std::vector<Animation> frames) {
     this->x = x;
     this->y = y;
-    addFrame(std::move(image));
-    this->width = al_get_bitmap_width(frames[0]);
-    this->height = al_get_bitmap_height(frames[0]);
+    this->frames = std::move(frames);
+    this->frames[0].loadFrames();
+    this->width = al_get_bitmap_width(this->frames[0].loadedFrames[0]);
+    this->height = al_get_bitmap_height(this->frames[0].loadedFrames[0]);
     this->id = std::move(id);
-    this->speed = 1;
     this->boundingBox = new BoundingBox(x, y, x+width, y+height);
     this->collision = NONE;
 }
 
-Sprite::Sprite(float x, float y, std::string id, std::vector<std::string> frames, int speed) : Sprite(x, y, std::move(id), frames[0]) {
-    for (int i  = 1; i < frames.size(); i++) {
-        addFrame(frames[i]);
-    }
-    this->speed = speed;
-}
-
 void Sprite::draw() {
-     ++speedCount;
-     if (speedCount >= speed) {
-         speedCount = 0;
-         ++currentFrame %= frames.size();
-     }
-     al_draw_bitmap(frames[currentFrame], x, y, 0);
+     al_draw_bitmap(frames[animation].nextFrame(), x, y, 0);
 }
 
 void Sprite::setX(float newX) {
@@ -44,11 +34,6 @@ void Sprite::setX(float newX) {
 void Sprite::setY(float newY) {
     this->y = newY;
     updateBoundingBox();
-}
-
-void Sprite::addFrame(std::string image) {
-    frames.push_back(al_load_bitmap(image.c_str()));
-    frameStr.push_back(image);
 }
 
 void Sprite::updateBoundingBox() {

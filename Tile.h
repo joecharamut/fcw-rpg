@@ -10,11 +10,10 @@
 class Tile : public Sprite {
 
 public:
-    Tile(std::string image, COLLISION_TYPE collision);
-    explicit Tile(std::string image) : Tile(std::move(image), NONE) {};
+    Tile(Animation image, COLLISION_TYPE collision);
+    explicit Tile(Animation image) : Tile(std::move(image), NONE) {};
     Tile() = default;;
-    Tile(const Tile &tile) : Tile(tile.frameStr[0]) {};
-    void draw() override;
+    Tile(const Tile &tile) : Tile(tile.frames[0]) {};
 };
 
 

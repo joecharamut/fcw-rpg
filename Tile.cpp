@@ -3,10 +3,6 @@
 
 #include "Tile.h"
 
-Tile::Tile(std::string image, COLLISION_TYPE collision) : Sprite(0,0, std::move(image)) {
+Tile::Tile(Animation image, COLLISION_TYPE collision) : Sprite(0,0, std::move(image)) {
     this->collision = collision;
-}
-
-void Tile::draw()  {
-    Sprite::draw();
 }

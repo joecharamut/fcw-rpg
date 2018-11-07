@@ -139,6 +139,8 @@ void mapEventHandler(ALLEGRO_EVENT event) {
             case ALLEGRO_KEY_D:
                 key[KEY_RIGHT] = true;
                 break;
+            case ALLEGRO_KEY_SPACE:
+                current_map->getSpriteById("anim_sprite")->animation = ++current_map->getSpriteById("anim_sprite")->animation % 2;
             default:
                 break;
         }
@@ -252,6 +254,7 @@ int main(int argc, char *argv[]) {
     Util::log("Done");
 
     //Map::test();
+    //exit(0);
     //current_map = Map::loadMapFile("test.json");
     current_map = Map::loadMap("map_test");
     current_map->setEventHandlerFunction(mapEventHandler);

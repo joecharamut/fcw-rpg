@@ -56,7 +56,7 @@ void Map::test() {
                         new MapJSON(1, "map_test", 2,
                                 {{{}}},
                                 {"resources/tile00.png", "resources/tile01.png", "resources/tile02.png"},
-                                {* new Sprite(64, 64, "anim_sprite",
+                                {* new Sprite(64, 64, "anim_sprite", *new Animation("IDLE",
                                         std::vector<std::string>{
                                      "resources/rainbow/frame-0.png",
                                      "resources/rainbow/frame-1.png",
@@ -70,8 +70,8 @@ void Map::test() {
                                      "resources/rainbow/frame-9.png",
                                      "resources/rainbow/frame-10.png",
                                      "resources/rainbow/frame-11.png"
-                                 }, 4),
-                                 * new Sprite(0,0,"s_hat","resources/hat.png")},
+                                 }, 4)),
+                                 * new Sprite(0,0,"s_hat",*new Animation("resources/hat.png"))},
                                 {* new Text("Test text tests text when test text tests texts.", 0, 0, "font16", 0xff, 0xff, 0xff)},
                                 {}));
         myData->tilemap.resize(2);
@@ -132,7 +132,7 @@ std::vector<std::vector<std::vector<Tile *>>> Map::resolveMap(std::vector<std::s
                 if (tilemap[l][x][y] == -1) {
                     resolved[l][x][y] = new Tile();
                 } else {
-                    resolved[l][x][y] = new Tile(tileset[tilemap[l][x][y]]);
+                    resolved[l][x][y] = new Tile(*new Animation(tileset[tilemap[l][x][y]]));
                 }
                 resolved[l][x][y]->setX(x * resolved[l][x][y]->width);
                 resolved[l][x][y]->setY(y * resolved[l][x][y]->height);

@@ -13,14 +13,14 @@ class Textbox : public Sprite {
 public:
     float x;
     float y;
-    const char *text;
+    std::string text;
     ALLEGRO_FONT *font;
     ALLEGRO_COLOR color{};
 
     Sprite *background;
     Sprite *border;
-    Textbox(float x, float y, const char *text, ALLEGRO_FONT *font,
-            ALLEGRO_COLOR color, const char *background, const char *border);
+    Textbox(float x, float y, std::string text, ALLEGRO_FONT *font,
+            ALLEGRO_COLOR color, Animation background, Animation border);
 
     void draw() override;
 };
