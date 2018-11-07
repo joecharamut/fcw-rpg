@@ -4,3 +4,4 @@ TODO::Map Editor - Event tile : Transparent sprite, when stepped on triggers som
 TODO::Map Editor - Actually Make It
 
 TODO::Engine - Make viewport fixed 16x16 and scroll to main sprite (keep in center if possible)
+TODO::Sprite - Make textures an Animation with ids to be called from event/map (Ex. anim_sprite::textures["IDLE":[], "WALK":[]])
