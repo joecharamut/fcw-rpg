@@ -18,7 +18,3 @@ void Util::log(std::string message, LogLevel level) {
 void Util::log(std::string message) {
     log(std::move(message), "", INFO);
 }
-
-void Util::print(std::string message) {
-    std::cout << message << std::endl;
-}
