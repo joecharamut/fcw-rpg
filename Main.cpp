@@ -12,6 +12,7 @@
 #include "Globals.h"
 #include "ActionSprite.h"
 #include "Util.h"
+#include "Music.h"
 
 const float FPS = 60;
 const int SCREEN_H = 512;
@@ -261,16 +262,17 @@ int main(int argc, char *argv[]) {
     current_map->getSpriteById("anim_sprite")->collision = TILE;
     current_map->playerSprite = current_map->getSpriteById("s_hat");
 
-    Util::log("Loading Music");
+    /*Util::log("Loading Music");
     al_reserve_samples(1);
     ALLEGRO_MIXER* mixer = al_create_mixer(44100, ALLEGRO_AUDIO_DEPTH_FLOAT32, ALLEGRO_CHANNEL_CONF_2);
-    al_attach_mixer_to_mixer(mixer, al_get_default_mixer());
+    al_attach_mixer_to_mixer(mixer, al_get_default_mixer());*/
 
     ALLEGRO_SAMPLE_INSTANCE* musicTest = al_create_sample_instance(current_map->music[0]);
     al_set_sample_instance_playmode(musicTest, ALLEGRO_PLAYMODE_LOOP);
-    al_attach_sample_instance_to_mixer(musicTest, mixer);
-
     al_set_sample_instance_playing(musicTest, true);
+    al_set_sample_instance_gain(musicTest, 2.0);
+    Music::init();
+    Music::playMusic(musicTest);
 
     Util::log("Initialisation Finished, Starting Game");
     while (!done) {
