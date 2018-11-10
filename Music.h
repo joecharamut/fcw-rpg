@@ -11,6 +11,7 @@ public:
     static ALLEGRO_MIXER *musicMixer;
     static ALLEGRO_MIXER *sfxMixer;
     static ALLEGRO_MIXER *masterMixer;
+    static ALLEGRO_SAMPLE_INSTANCE *playing;
 
     static void init();
     static void update();

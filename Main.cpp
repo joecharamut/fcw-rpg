@@ -31,6 +31,10 @@ ALLEGRO_EVENT_QUEUE *queue;
 ALLEGRO_TIMER *timer;
 ALLEGRO_DISPLAY *display;
 
+ALLEGRO_SAMPLE_INSTANCE* music1;
+ALLEGRO_SAMPLE_INSTANCE* music2;
+int temp = 0;
+
 void update() {
     ALLEGRO_EVENT event;
     if (al_get_next_event(queue, &event)) {
@@ -45,6 +49,7 @@ void update() {
             current_map->draw();
         frameCounter = (++frameCounter % 60);
         al_flip_display();
+        Music::update();
     }
 }
 
@@ -141,7 +146,9 @@ void mapEventHandler(ALLEGRO_EVENT event) {
                 key[KEY_RIGHT] = true;
                 break;
             case ALLEGRO_KEY_SPACE:
-                current_map->getSpriteById("anim_sprite")->animation = ++current_map->getSpriteById("anim_sprite")->animation % 2;
+                if (temp) Music::playMusic(music1); else Music::playMusic(music2);
+                temp = !temp;
+                break;
             default:
                 break;
         }
@@ -267,12 +274,14 @@ int main(int argc, char *argv[]) {
     ALLEGRO_MIXER* mixer = al_create_mixer(44100, ALLEGRO_AUDIO_DEPTH_FLOAT32, ALLEGRO_CHANNEL_CONF_2);
     al_attach_mixer_to_mixer(mixer, al_get_default_mixer());*/
 
-    ALLEGRO_SAMPLE_INSTANCE* musicTest = al_create_sample_instance(current_map->music[0]);
-    al_set_sample_instance_playmode(musicTest, ALLEGRO_PLAYMODE_LOOP);
-    al_set_sample_instance_playing(musicTest, true);
-    al_set_sample_instance_gain(musicTest, 2.0);
+    music1 = al_create_sample_instance(current_map->music[0]);
+    al_set_sample_instance_playmode(music1, ALLEGRO_PLAYMODE_LOOP);
+    al_set_sample_instance_gain(music1, 1.0);
+    music2 = al_create_sample_instance(current_map->music[1]);
+    al_set_sample_instance_playmode(music2, ALLEGRO_PLAYMODE_LOOP);
+    al_set_sample_instance_gain(music2, 1.0);
     Music::init();
-    Music::playMusic(musicTest);
+    Music::playMusic(music1);
 
     Util::log("Initialisation Finished, Starting Game");
     while (!done) {
