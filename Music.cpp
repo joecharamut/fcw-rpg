@@ -45,11 +45,11 @@ void Music::update() {
         } else if (state == FADE_IN && gain >= 1.0) {
             state = NONE;
             switching = false;
+            gain = 1.0;
         }
         switch (state) {
             case FADE_OUT:
-                gain -= 0.05;
-                al_set_mixer_gain(musicMixer, gain);
+                gain -= 0.033;
                 break;
             case SWITCHING:
                 if (playing) al_set_sample_instance_playing(playing, false);
@@ -59,10 +59,12 @@ void Music::update() {
                 al_set_sample_instance_playing(playing, true);
                 break;
             case FADE_IN:
-                gain += 0.05;
-                al_set_mixer_gain(musicMixer, gain);
+                gain += 0.033;
+                break;
+            default:
                 break;
         }
+        al_set_mixer_gain(musicMixer, gain);
         //Util::log(std::to_string(gain));
     }
 }

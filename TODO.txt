@@ -3,8 +3,6 @@ TODO::Map Editor::Export - (Zip of .json, all resources in subdir [<mapid>/map.j
 TODO::Map Editor - Event tile : Transparent sprite, when stepped on triggers something (Event Class?)
 TODO::Map Editor - Actually Make It
 
-TODO::Music - Actually make music engine, (music + sfx) -> master -> default mixer
-TODO::Music - Add some nifty features like playSound or queueMusic or smth just make it good
 TODO::Engine - Make viewport fixed 16x16 and scroll to main sprite (keep in center if possible)
 TODO::Sprite - Make textures an Animation with ids to be called from event/map (Ex. anim_sprite::textures["IDLE":[], "WALK":[]])
 
