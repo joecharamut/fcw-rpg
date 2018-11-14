@@ -3,7 +3,13 @@ TODO::Map Editor::Export - (Zip of .json, all resources in subdir [<mapid>/map.j
 TODO::Map Editor - Event tile : Transparent sprite, when stepped on triggers something (Event Class?)
 TODO::Map Editor - Actually Make It
 
-TODO::Engine - Make viewport fixed 16x16 and scroll to main sprite (keep in center if possible)
 TODO::Sprite - Make textures an Animation with ids to be called from event/map (Ex. anim_sprite::textures["IDLE":[], "WALK":[]])
 
 TODO::Music - Music switch between areas, smooth fading (load next, fadeout, switch, fadein, destroy prev)
+
+TODO::Map - Take tilemap and stitch it together into 1 bitmap
+TODO::Map - Make viewport and scroll to main sprite (keep in center unless out of more map)
+TODO::Map - Then use viewport to cut it down
+TODO::Map - See if load times are better if all maps are loaded at start rather than dynamically
+TODO::Map - Fade transitions
+TODO::Map - Get destructors working to destroy the bitmaps

@@ -139,18 +139,34 @@ std::vector<std::vector<std::vector<Tile *>>> Map::resolveMap(std::vector<std::s
             }
         }
     }
+    //std::vector<ALLEGRO_BITMAP *> stitched = {};
+    for (int l = 0; l < layers; l++) {
+        backgrounds.push_back(al_create_bitmap(length*32, width*32));
+        al_set_target_bitmap(backgrounds[l]);
+        for (int x = 0; x < length; x++) {
+            for (int y = 0; y < width; y++) {
+                if (resolved[l][x][y]->frames.empty()) continue;
+                al_draw_bitmap(resolved[l][x][y]->frames[0].loadedFrames[0], resolved[l][x][y]->x, resolved[l][x][y]->y, 0);
+            }
+        }
+        //al_save_bitmap(("test"+std::to_string(l)+".bmp").c_str(), backgrounds[l]);
+    }
+    al_set_target_backbuffer(al_get_current_display());
     return resolved;
 }
 
 
 void Map::draw() {
-    for (int l = 0; l < layers; l++) {
+    /*for (int l = 0; l < layers; l++) {
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 if (tilemap[l][x][y]->frames.empty()) continue;
                 tilemap[l][x][y]->draw();
             }
         }
+    }*/
+    for (auto bitmap : backgrounds) {
+        al_draw_bitmap(bitmap, 0, 0, 0);
     }
     for (auto text : texts) {
         al_draw_text(fontMap.at(text->font), al_map_rgb(text->r, text->g, text->b), text->x, text->y, 0, text->text.c_str());

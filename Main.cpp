@@ -34,6 +34,8 @@ ALLEGRO_DISPLAY *display;
 ALLEGRO_SAMPLE_INSTANCE* music1;
 ALLEGRO_SAMPLE_INSTANCE* music2;
 int temp = 0;
+double oldTime, newTime, fps = 0;
+
 
 void update() {
     ALLEGRO_EVENT event;
@@ -48,6 +50,13 @@ void update() {
         if (current_map)
             current_map->draw();
         frameCounter = (++frameCounter % 60);
+
+        newTime = al_get_time();
+        if (frameCounter % 16 == 0)
+            fps = 1 / (newTime - oldTime);
+        oldTime = newTime;
+        al_draw_textf(font24, al_map_rgb(0xff, 0xff, 0xff), 0, 32, 0, "FPS: %.1f", (float) fps);
+
         al_flip_display();
         Music::update();
     }
@@ -284,6 +293,7 @@ int main(int argc, char *argv[]) {
     Music::playMusic(music1);
 
     Util::log("Initialisation Finished, Starting Game");
+    oldTime = al_get_time();
     while (!done) {
         update();
     }

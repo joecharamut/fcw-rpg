@@ -161,6 +161,7 @@ class Map {
 public:
     std::string id;
     std::vector<std::vector<std::vector<Tile *>>> tilemap = {};
+    std::vector<ALLEGRO_BITMAP *> backgrounds = {};
     int layers;
     std::vector<Sprite *> sprites = {};
     std::vector<Text *> texts = {};
