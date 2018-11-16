@@ -131,26 +131,18 @@ void mapEventHandler(ALLEGRO_EVENT event) {
     } else if(event.type == ALLEGRO_EVENT_KEY_DOWN) {
         switch(event.keyboard.keycode) {
             case ALLEGRO_KEY_UP:
-                key[KEY_UP] = true;
-                break;
-            case ALLEGRO_KEY_DOWN:
-                key[KEY_DOWN] = true;
-                break;
-            case ALLEGRO_KEY_LEFT:
-                key[KEY_LEFT] = true;
-                break;
-            case ALLEGRO_KEY_RIGHT:
-                key[KEY_RIGHT] = true;
-                break;
             case ALLEGRO_KEY_W:
                 key[KEY_UP] = true;
                 break;
+            case ALLEGRO_KEY_DOWN:
             case ALLEGRO_KEY_S:
                 key[KEY_DOWN] = true;
                 break;
+            case ALLEGRO_KEY_LEFT:
             case ALLEGRO_KEY_A:
                 key[KEY_LEFT] = true;
                 break;
+            case ALLEGRO_KEY_RIGHT:
             case ALLEGRO_KEY_D:
                 key[KEY_RIGHT] = true;
                 break;
@@ -158,37 +150,29 @@ void mapEventHandler(ALLEGRO_EVENT event) {
                 if (temp) Music::playMusic(music1); else Music::playMusic(music2);
                 temp = !temp;
                 break;
+            case ALLEGRO_KEY_ESCAPE:
+                done = true;
+                break;
             default:
                 break;
         }
     } else if(event.type == ALLEGRO_EVENT_KEY_UP) {
         switch(event.keyboard.keycode) {
             case ALLEGRO_KEY_UP:
-                key[KEY_UP] = false;
-                break;
-            case ALLEGRO_KEY_DOWN:
-                key[KEY_DOWN] = false;
-                break;
-            case ALLEGRO_KEY_LEFT:
-                key[KEY_LEFT] = false;
-                break;
-            case ALLEGRO_KEY_RIGHT:
-                key[KEY_RIGHT] = false;
-                break;
             case ALLEGRO_KEY_W:
                 key[KEY_UP] = false;
                 break;
+            case ALLEGRO_KEY_DOWN:
             case ALLEGRO_KEY_S:
                 key[KEY_DOWN] = false;
                 break;
+            case ALLEGRO_KEY_LEFT:
             case ALLEGRO_KEY_A:
                 key[KEY_LEFT] = false;
                 break;
+            case ALLEGRO_KEY_RIGHT:
             case ALLEGRO_KEY_D:
                 key[KEY_RIGHT] = false;
-                break;
-            case ALLEGRO_KEY_ESCAPE:
-                done = true;
                 break;
             default:
                 break;
@@ -278,17 +262,14 @@ int main(int argc, char *argv[]) {
     current_map->getSpriteById("anim_sprite")->collision = TILE;
     current_map->playerSprite = current_map->getSpriteById("s_hat");
 
-    /*Util::log("Loading Music");
-    al_reserve_samples(1);
-    ALLEGRO_MIXER* mixer = al_create_mixer(44100, ALLEGRO_AUDIO_DEPTH_FLOAT32, ALLEGRO_CHANNEL_CONF_2);
-    al_attach_mixer_to_mixer(mixer, al_get_default_mixer());*/
-
     music1 = al_create_sample_instance(current_map->music[0]);
     al_set_sample_instance_playmode(music1, ALLEGRO_PLAYMODE_LOOP);
     al_set_sample_instance_gain(music1, 1.0);
+
     music2 = al_create_sample_instance(current_map->music[1]);
     al_set_sample_instance_playmode(music2, ALLEGRO_PLAYMODE_LOOP);
     al_set_sample_instance_gain(music2, 1.0);
+
     Music::init();
     Music::playMusic(music1);
 

@@ -1,4 +1,6 @@
 #include <utility>
+
+#include <utility>
 #include <iostream>
 #include <memory>
 #include <experimental/filesystem>
@@ -14,7 +16,8 @@ static std::map<std::string, std::string> mapList = {};
 Map::Map(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
         int layers, std::vector<Sprite> sprites, std::vector<Text> texts, std::vector<std::string> music) {
     this->id = std::move(id);
-    this->tilemap = resolveMap(std::move(tileset), std::move(tilemap));
+    //this->tilemap = resolveMap(std::move(tileset), std::move(tilemap));
+    resolveMap(std::move(tileset), std::move(tilemap));
     this->layers = layers;
     for (auto spr : sprites) {
         this->sprites.push_back(new Sprite(&spr));
@@ -116,57 +119,40 @@ std::vector<std::string> Map::enumerateMaps() {
     return maps;
 }
 
-std::vector<std::vector<std::vector<Tile *>>> Map::resolveMap(std::vector<std::string> tileset,
-        std::vector<std::vector<std::vector<int>>> tilemap) {
-    std::vector<std::vector<std::vector<Tile *>>> resolved;
+std::vector<Animation *> resolveTileset(std::vector<std::string> in) {
+    std::vector<Animation *> out = {};
+    out.reserve(in.size());
+    for (const auto &frame : in) {
+        out.push_back(new Animation(frame));
+    }
+    return out;
+}
+
+void Map::resolveMap(std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap) {
     int layers = tilemap.size();
     int length = tilemap[0].size();
     int width = tilemap[0][0].size();
 
-    resolved.resize((unsigned long)layers);
-    for (int l = 0; l < layers; l++) {
-        resolved[l].resize((unsigned long)length);
-        for (int x = 0; x < length; x++) {
-            resolved[l][x].resize((unsigned long)width);
-            for (int y = 0; y < width; y++) {
-                if (tilemap[l][x][y] == -1) {
-                    resolved[l][x][y] = new Tile();
-                } else {
-                    resolved[l][x][y] = new Tile(*new Animation(tileset[tilemap[l][x][y]]));
-                }
-                resolved[l][x][y]->setX(x * resolved[l][x][y]->width);
-                resolved[l][x][y]->setY(y * resolved[l][x][y]->height);
-            }
-        }
-    }
-    //std::vector<ALLEGRO_BITMAP *> stitched = {};
+    std::vector<Animation *> animationMap = resolveTileset(std::move(tileset));
     for (int l = 0; l < layers; l++) {
         backgrounds.push_back(al_create_bitmap(length*32, width*32));
         al_set_target_bitmap(backgrounds[l]);
+        al_clear_to_color(al_map_rgba(0x00, 0x00, 0x00, 0x00));
         for (int x = 0; x < length; x++) {
             for (int y = 0; y < width; y++) {
-                if (resolved[l][x][y]->frames.empty()) continue;
-                al_draw_bitmap(resolved[l][x][y]->frames[0].loadedFrames[0], resolved[l][x][y]->x, resolved[l][x][y]->y, 0);
+                if (tilemap[l][x][y] != -1) {
+                    al_draw_bitmap(animationMap[tilemap[l][x][y]]->nextFrame(), x*32, y*32, 0);
+                }
             }
         }
-        //al_save_bitmap(("test"+std::to_string(l)+".bmp").c_str(), backgrounds[l]);
     }
     al_set_target_backbuffer(al_get_current_display());
-    return resolved;
 }
 
 
 void Map::draw() {
-    /*for (int l = 0; l < layers; l++) {
-        for (int x = 0; x < 16; x++) {
-            for (int y = 0; y < 16; y++) {
-                if (tilemap[l][x][y]->frames.empty()) continue;
-                tilemap[l][x][y]->draw();
-            }
-        }
-    }*/
-    for (auto bitmap : backgrounds) {
-        al_draw_bitmap(bitmap, 0, 0, 0);
+    for (auto bg : backgrounds) {
+        al_draw_bitmap_region(bg, viewportX, viewportY, al_get_bitmap_width(bg), al_get_bitmap_height(bg), 0, 0, 0);
     }
     for (auto text : texts) {
         al_draw_text(fontMap.at(text->font), al_map_rgb(text->r, text->g, text->b), text->x, text->y, 0, text->text.c_str());
@@ -186,7 +172,7 @@ void Map::draw() {
 
 Sprite* Map::checkCollision(Sprite *sprite) {
     BoundingBox *box = sprite->boundingBox;
-    for (int l = 0; l < layers; l++) {
+    /*for (int l = 0; l < layers; l++) {
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 Tile *tile = tilemap[l][x][y];
@@ -199,7 +185,7 @@ Sprite* Map::checkCollision(Sprite *sprite) {
                 }
             }
         }
-    }
+    }*/
     for (auto *spr : sprites) {
         if (spr->collision == NONE) {
             continue;

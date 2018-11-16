@@ -160,13 +160,16 @@ struct MapJSON {
 class Map {
 public:
     std::string id;
-    std::vector<std::vector<std::vector<Tile *>>> tilemap = {};
+    //std::vector<std::vector<std::vector<Tile *>>> tilemap = {};
     std::vector<ALLEGRO_BITMAP *> backgrounds = {};
     int layers;
     std::vector<Sprite *> sprites = {};
     std::vector<Text *> texts = {};
     std::vector<ALLEGRO_SAMPLE *> music = {};
     Sprite* playerSprite = nullptr;
+
+    float viewportX = 0;
+    float viewportY = 0;
 
     void (*handlerFunction)(ALLEGRO_EVENT event);
 
@@ -177,7 +180,7 @@ public:
     static void test();
 
     static std::vector<std::string> enumerateMaps();
-    std::vector<std::vector<std::vector<Tile *>>> resolveMap(std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap);
+    void resolveMap(std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap);
     void draw();
     void addSprite(Sprite *sprite);
     void addText(std::string text, std::string font, unsigned char r, unsigned char g, unsigned char b, float x, float y);
