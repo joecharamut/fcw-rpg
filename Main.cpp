@@ -270,6 +270,10 @@ int main(int argc, char *argv[]) {
     al_set_sample_instance_playmode(music2, ALLEGRO_PLAYMODE_LOOP);
     al_set_sample_instance_gain(music2, 1.0);
 
+    Sprite *spr = current_map->getSpriteById("s_hat");
+    spr->setX(256-(spr->width/2.0f));
+    spr->setY(256-(spr->height/2.0f));
+
     Music::init();
     Music::playMusic(music1);
 
