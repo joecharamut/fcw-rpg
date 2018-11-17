@@ -152,21 +152,42 @@ void Map::resolveMap(std::vector<std::string> tileset, std::vector<std::vector<s
 
 void Map::draw() {
     for (auto bg : backgrounds) {
-        al_draw_bitmap_region(bg, viewportX, viewportY, al_get_bitmap_width(bg), al_get_bitmap_height(bg), 0, 0, 0);
+        //al_draw_bitmap_region(bg, viewportX, viewportY, al_get_bitmap_width(bg), al_get_bitmap_height(bg), 0, 0, 0);
+        al_draw_bitmap_region(bg, viewportX, viewportY, 512, 512, 0, 0, 0);
     }
     for (auto text : texts) {
         al_draw_text(fontMap.at(text->font), al_map_rgb(text->r, text->g, text->b), text->x, text->y, 0, text->text.c_str());
     }
     for (auto *spr : sprites) {
-        if (playerSprite) {
-            if (spr->id == playerSprite->id) {
-                if (spr->x < 0) spr->setX(0);
-                if (spr->x > 512 - spr->width) spr->setX(512 - spr->width);
-                if (spr->y < 0) spr->setY(0);
-                if (spr->y > 512 - spr->height) spr->setY(512 - spr->height);
+        spr->draw();
+    }
+}
+
+void Map::updateViewport(Sprite *spr, bool override) {
+    float cX = SCREEN_W/2.0f;
+    float cY = SCREEN_H/2.0f;
+    float csX = (spr->x + (spr->width/2.0f));
+    float csY = (spr->y + (spr->height/2.0f));
+    if (csX != cX || csY != cY) {
+        float dX = cX - csX;
+        float dY = cY - csY;
+        if (override) {
+            viewportX -= dX;
+            viewportY -= dY;
+            spr->setX(spr->x+dX);
+            spr->setY(spr->y+dY);
+        } else {
+            float newX = viewportX - dX;
+            float newY = viewportY - dY;
+            if (newX >= 0 && newX <= al_get_bitmap_width(backgrounds[0])-SCREEN_W) {
+                viewportX -= dX;
+                spr->setX(spr->x+dX);
+            }
+            if (newY >= 0 && newY <= al_get_bitmap_height(backgrounds[0])-SCREEN_H) {
+                viewportY -= dY;
+                spr->setY(spr->y+dY);
             }
         }
-        spr->draw();
     }
 }
 

@@ -7,3 +7,6 @@ ALLEGRO_FONT *font32;
 bool done;
 int frameCounter;
 std::map<std::string, ALLEGRO_FONT *> fontMap;
+
+int SCREEN_W;
+int SCREEN_H;

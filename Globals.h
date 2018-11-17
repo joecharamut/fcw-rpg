@@ -9,3 +9,5 @@ extern ALLEGRO_FONT *font32;
 extern bool done;
 extern int frameCounter;
 extern std::map<std::string, ALLEGRO_FONT *> fontMap;
+extern int SCREEN_W;
+extern int SCREEN_H;

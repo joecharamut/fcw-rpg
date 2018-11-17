@@ -182,13 +182,14 @@ public:
     static std::vector<std::string> enumerateMaps();
     void resolveMap(std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap);
     void draw();
+
     void addSprite(Sprite *sprite);
     void addText(std::string text, std::string font, unsigned char r, unsigned char g, unsigned char b, float x, float y);
     Sprite* getSpriteById(std::string id);
     void handleEvent(ALLEGRO_EVENT event);
     void setEventHandlerFunction(void (*handler)(ALLEGRO_EVENT event));
     Sprite* checkCollision(Sprite *sprite);
-
+    void updateViewport(Sprite *spr, bool override);
 
 };
 

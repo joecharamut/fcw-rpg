@@ -15,8 +15,6 @@
 #include "Music.h"
 
 const float FPS = 60;
-const int SCREEN_H = 512;
-const int SCREEN_W = 512;
 
 enum KEYS {
     KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT
@@ -228,6 +226,8 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    SCREEN_W = 512;
+    SCREEN_H = 512;
     display = al_create_display(SCREEN_W, SCREEN_H);
     if (!display) {
         Util::log("Error creating display", "INIT", ERROR);
@@ -271,8 +271,10 @@ int main(int argc, char *argv[]) {
     al_set_sample_instance_gain(music2, 1.0);
 
     Sprite *spr = current_map->getSpriteById("s_hat");
-    spr->setX(256-(spr->width/2.0f));
-    spr->setY(256-(spr->height/2.0f));
+    //spr->setX(SCREEN_W/2.0f -(spr->width/2.0f));
+    spr->setX(SCREEN_W/4.0f -(spr->width/2.0f));
+    //spr->setY(SCREEN_H/2.0f -(spr->height/2.0f));
+    spr->setY(SCREEN_H/4.0f -(spr->height/2.0f));
 
     Music::init();
     Music::playMusic(music1);
@@ -281,5 +283,6 @@ int main(int argc, char *argv[]) {
     oldTime = al_get_time();
     while (!done) {
         update();
+        current_map->updateViewport(spr, false);
     }
 }
