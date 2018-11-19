@@ -34,6 +34,7 @@ ALLEGRO_SAMPLE_INSTANCE* music2;
 int temp = 0;
 double oldTime, newTime, fps = 0;
 
+Sprite *hat;
 
 void update() {
     ALLEGRO_EVENT event;
@@ -45,8 +46,10 @@ void update() {
     if(redraw && al_is_event_queue_empty(queue)) {
         redraw = false;
         al_clear_to_color(al_map_rgb(0x00, 0x00, 0x00));
-        if (current_map)
+        if (current_map) {
             current_map->draw();
+            current_map->updateViewport(hat, false);
+        }
         frameCounter = (++frameCounter % 60);
 
         newTime = al_get_time();
@@ -263,7 +266,6 @@ int main(int argc, char *argv[]) {
     current_map = Map::loadMap("map_test");
     current_map->setEventHandlerFunction(mapEventHandler);
     current_map->getSpriteById("anim_sprite")->collision = TILE;
-    current_map->playerSprite = current_map->getSpriteById("s_hat");
 
     music1 = al_create_sample_instance(current_map->music[0]);
     al_set_sample_instance_playmode(music1, ALLEGRO_PLAYMODE_LOOP);
@@ -277,6 +279,8 @@ int main(int argc, char *argv[]) {
     spr->setX(SCREEN_W/4.0f -(spr->width/2.0f));
     spr->setY(SCREEN_H/4.0f -(spr->height/2.0f));
 
+    hat = spr;
+
     Music::init();
     Music::playMusic(music1);
 
@@ -284,6 +288,5 @@ int main(int argc, char *argv[]) {
     oldTime = al_get_time();
     while (!done) {
         update();
-        current_map->updateViewport(spr, false);
     }
 }

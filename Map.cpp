@@ -16,9 +16,7 @@ static std::map<std::string, std::string> mapList = {};
 Map::Map(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
         int layers, std::vector<Sprite> sprites, std::vector<Text> texts, std::vector<std::string> music) {
     this->id = std::move(id);
-    //this->tilemap = resolveMap(std::move(tileset), std::move(tilemap));
     resolveMap(std::move(tileset), std::move(tilemap));
-    this->layers = layers;
     for (auto spr : sprites) {
         this->sprites.push_back(new Sprite(&spr));
     }
@@ -48,6 +46,13 @@ Map* Map::loadMapFile(std::string filename) {
         Util::log("Error loading map " + filename + " (File Not Found)", ERROR);
     }
     return nullptr;
+}
+
+std::string Map::getFilePath(std::string filename) {
+    std::string path = mapList[id];
+    path = path.substr(0, path.length() - 8) + filename;
+    Util::log(path);
+    return path;
 }
 
 void Map::test() {
@@ -112,6 +117,7 @@ std::vector<std::string> Map::enumerateMaps() {
                 inputArchive(cereal::make_nvp("mapdata", loaded));
                 maps.push_back(loaded.id);
                 mapList[loaded.id] = file;
+                Util::log(file);
             }
         }
     }

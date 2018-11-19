@@ -160,13 +160,10 @@ struct MapJSON {
 class Map {
 public:
     std::string id;
-    //std::vector<std::vector<std::vector<Tile *>>> tilemap = {};
     std::vector<ALLEGRO_BITMAP *> backgrounds = {};
-    int layers;
     std::vector<Sprite *> sprites = {};
     std::vector<Text *> texts = {};
     std::vector<ALLEGRO_SAMPLE *> music = {};
-    Sprite* playerSprite = nullptr;
 
     float viewportX = 0;
     float viewportY = 0;
@@ -178,8 +175,9 @@ public:
     Map(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
             int layers, std::vector<Sprite> sprites, std::vector<Text> texts, std::vector<std::string> music);
     static void test();
-
     static std::vector<std::string> enumerateMaps();
+
+    std::string getFilePath(std::string filename);
     void resolveMap(std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap);
     void draw();
 
