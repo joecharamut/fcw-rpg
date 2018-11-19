@@ -19,7 +19,6 @@ void Music::init() {
     al_attach_mixer_to_mixer(musicMixer, masterMixer);
     al_attach_mixer_to_mixer(sfxMixer, masterMixer);
     al_attach_mixer_to_mixer(masterMixer, al_get_default_mixer());
-    Util::log("Done");
 }
 
 bool switching = false;

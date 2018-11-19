@@ -191,8 +191,8 @@ void loadFonts() {
 
 int main(int argc, char *argv[]) {
     done = false;
-    Util::log("Initialising Game");
 
+    Util::log("Initialising Engine");
     if((int)al_init() == 0) {
         Util::log("Error initialising Allegro", "INIT", ERROR);
         return 1;
@@ -237,6 +237,9 @@ int main(int argc, char *argv[]) {
     al_set_display_icon(display, al_load_bitmap("resources/icon.png"));
     al_set_window_title(display, "FCW the RPG");
 
+    Util::log("Engine initialised successfully");
+
+    Util::log("Initialising Game");
     timer = al_create_timer(1.0 / FPS);
     al_start_timer(timer);
     queue = al_create_event_queue();
@@ -271,9 +274,7 @@ int main(int argc, char *argv[]) {
     al_set_sample_instance_gain(music2, 1.0);
 
     Sprite *spr = current_map->getSpriteById("s_hat");
-    //spr->setX(SCREEN_W/2.0f -(spr->width/2.0f));
     spr->setX(SCREEN_W/4.0f -(spr->width/2.0f));
-    //spr->setY(SCREEN_H/2.0f -(spr->height/2.0f));
     spr->setY(SCREEN_H/4.0f -(spr->height/2.0f));
 
     Music::init();
