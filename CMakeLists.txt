@@ -17,7 +17,6 @@ set(SOURCE_FILES
         Map.cpp Map.h
         Tile.cpp Tile.h
         Globals.h Globals.cpp
-        ActionSprite.cpp ActionSprite.h
         BoundingBox.cpp BoundingBox.h
         Util.cpp Util.h
         Animation.cpp Animation.h

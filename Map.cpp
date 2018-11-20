@@ -1,30 +1,40 @@
 #include <utility>
-
-#include <utility>
 #include <iostream>
 #include <memory>
 #include <experimental/filesystem>
 
 #include "Map.h"
 #include "Globals.h"
-#include "ActionSprite.h"
 #include "Util.h"
 
 static bool loaded = false;
 static std::map<std::string, std::string> mapList = {};
 
 Map::Map(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
-        int layers, std::vector<Sprite> sprites, std::vector<Text> texts, std::vector<std::string> music) {
+        std::vector<Sprite> sprites, std::vector<Text> texts, std::vector<std::string> music) {
     this->id = std::move(id);
+
+    for (auto &str : tileset) {
+        str = Map::getFilePath(str);
+    }
+
     resolveMap(std::move(tileset), std::move(tilemap));
+
     for (auto spr : sprites) {
+        for (auto &animation : spr.frames) {
+            for (auto &frame : animation.frames) {
+                frame = Map::getFilePath(frame);
+            }
+        }
         this->sprites.push_back(new Sprite(&spr));
     }
+
     for (const auto &text : texts) {
         this->texts.push_back(new Text(text));
     }
+
     for (const auto &file : music) {
-        this->music.push_back(al_load_sample(file.c_str()));
+        this->music.push_back(al_load_sample(Map::getFilePath(file).c_str()));
     }
 }
 
@@ -40,7 +50,7 @@ Map* Map::loadMapFile(std::string filename) {
         MapJSON loaded = * new MapJSON();
         inputArchive(cereal::make_nvp("mapdata", loaded));
         Util::log("Loading Map " + loaded.id);
-        Map *m = new Map(loaded.id, loaded.tileset, loaded.tilemap, loaded.layers, loaded.sprites, loaded.texts, loaded.music);
+        Map *m = new Map(loaded.id, loaded.tileset, loaded.tilemap, loaded.sprites, loaded.texts, loaded.music);
         return m;
     } else {
         Util::log("Error loading map " + filename + " (File Not Found)", ERROR);
@@ -50,8 +60,7 @@ Map* Map::loadMapFile(std::string filename) {
 
 std::string Map::getFilePath(std::string filename) {
     std::string path = mapList[id];
-    path = path.substr(0, path.length() - 8) + filename;
-    Util::log(path);
+    path = path.substr(0, path.length() - 8) + "data/" + filename;
     return path;
 }
 
@@ -61,7 +70,7 @@ void Map::test() {
         cereal::JSONOutputArchive archive(os);
         std::unique_ptr<MapJSON> myData =
                 std::make_unique<MapJSON>(
-                        new MapJSON(1, "map_test", 2,
+                        new MapJSON(1, "map_test",
                                 {{{}}},
                                 {"resources/tile00.png", "resources/tile01.png", "resources/tile02.png"},
                                 {* new Sprite(64, 64, "anim_sprite", *new Animation("IDLE",
@@ -117,7 +126,6 @@ std::vector<std::string> Map::enumerateMaps() {
                 inputArchive(cereal::make_nvp("mapdata", loaded));
                 maps.push_back(loaded.id);
                 mapList[loaded.id] = file;
-                Util::log(file);
             }
         }
     }
@@ -170,6 +178,8 @@ void Map::draw() {
 }
 
 void Map::updateViewport(Sprite *spr, bool override) {
+    bool changed = false;
+
     float cX = SCREEN_W/2.0f;
     float cY = SCREEN_H/2.0f;
     float csX = (spr->x + (spr->width/2.0f));
@@ -182,16 +192,26 @@ void Map::updateViewport(Sprite *spr, bool override) {
             viewportY -= dY;
             spr->setX(spr->x+dX);
             spr->setY(spr->y+dY);
+            changed = true;
         } else {
             float newX = viewportX - dX;
             float newY = viewportY - dY;
             if (newX >= 0 && newX <= al_get_bitmap_width(backgrounds[0])-SCREEN_W) {
                 viewportX -= dX;
                 spr->setX(spr->x+dX);
+                changed = true;
             }
             if (newY >= 0 && newY <= al_get_bitmap_height(backgrounds[0])-SCREEN_H) {
                 viewportY -= dY;
                 spr->setY(spr->y+dY);
+                changed = true;
+            }
+        }
+        if (changed) {
+            for (auto *sprite : sprites) {
+                if (sprite->id != spr->id) {
+                    sprite->setDisplace(viewportX, viewportY);
+                }
             }
         }
     }

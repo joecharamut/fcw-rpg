@@ -58,31 +58,32 @@
       ]
     ],
     "tileset": [
-      "resources/tile00.png",
-      "resources/tile01.png",
-      "resources/tile02.png"
+      "tile00.png",
+      "tile01.png",
+      "tile02.png"
     ],
     "sprites": [
       {
         "id": "anim_sprite",
         "x": 64.0,
         "y": 64.0,
+        "collision": 1,
         "frames": [
           {
             "type": "IDLE",
             "frames": [
-              "resources/rainbow/frame-0.png",
-              "resources/rainbow/frame-1.png",
-              "resources/rainbow/frame-2.png",
-              "resources/rainbow/frame-3.png",
-              "resources/rainbow/frame-4.png",
-              "resources/rainbow/frame-5.png",
-              "resources/rainbow/frame-6.png",
-              "resources/rainbow/frame-7.png",
-              "resources/rainbow/frame-8.png",
-              "resources/rainbow/frame-9.png",
-              "resources/rainbow/frame-10.png",
-              "resources/rainbow/frame-11.png"
+              "rainbow/frame-0.png",
+              "rainbow/frame-1.png",
+              "rainbow/frame-2.png",
+              "rainbow/frame-3.png",
+              "rainbow/frame-4.png",
+              "rainbow/frame-5.png",
+              "rainbow/frame-6.png",
+              "rainbow/frame-7.png",
+              "rainbow/frame-8.png",
+              "rainbow/frame-9.png",
+              "rainbow/frame-10.png",
+              "rainbow/frame-11.png"
             ],
             "speed": 4
           },
@@ -96,14 +97,41 @@
         ]
       },
       {
+        "id": "test2",
+        "x": 416.0,
+        "y": 64.0,
+        "collision": 1,
+        "frames": [
+          {
+            "type": "IDLE",
+            "frames": [
+              "rainbow/frame-0.png",
+              "rainbow/frame-1.png",
+              "rainbow/frame-2.png",
+              "rainbow/frame-3.png",
+              "rainbow/frame-4.png",
+              "rainbow/frame-5.png",
+              "rainbow/frame-6.png",
+              "rainbow/frame-7.png",
+              "rainbow/frame-8.png",
+              "rainbow/frame-9.png",
+              "rainbow/frame-10.png",
+              "rainbow/frame-11.png"
+            ],
+            "speed": 4
+          }
+        ]
+      },
+      {
         "id": "s_hat",
         "x": 0.0,
         "y": 0.0,
+        "collision": 0,
         "frames": [
           {
             "type": "default",
             "frames": [
-              "resources/hat.png"
+              "hat.png"
             ],
             "speed": 1
           }
@@ -122,8 +150,8 @@
       }
     ],
     "music": [
-      "resources/cavey_stuff.ogg",
-      "resources/fighty_fight_yeet.ogg"
+      "cavey_stuff.ogg",
+      "fighty_fight_yeet.ogg"
     ]
   }
 }

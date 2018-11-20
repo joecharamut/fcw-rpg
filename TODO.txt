@@ -7,7 +7,6 @@ TODO::Sprite - Make textures an Animation with ids to be called from event/map (
 
 TODO::Music - Music switch between areas, smooth fading (load next, fadeout, switch, fadein, destroy prev)
 
-TODO::Map - Anchor sprites to the viewport
 TODO::Map - See if load times are better if all maps are loaded at start rather than dynamically
 TODO::Map - Fade transitions
 TODO::Map - Get destructors working to destroy the bitmaps

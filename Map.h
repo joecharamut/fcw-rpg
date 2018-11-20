@@ -76,7 +76,6 @@ struct Text {
 struct MapJSON {
     int version;
     std::string id;
-    int layers;
     std::vector<std::vector<std::vector<int>>> tilemap;
     std::vector<std::string> tileset;
     std::vector<Sprite> sprites;
@@ -85,12 +84,10 @@ struct MapJSON {
 
     MapJSON() = default;;
     MapJSON(int version, std::string id,
-            int layers,
             std::vector<std::vector<std::vector<int>>> tilemap, std::vector<std::string> tileset,
             std::vector<Sprite> sprites, std::vector<Text> texts, std::vector<std::string>music) {
         this->version = version;
         this->id = std::move(id);
-        this->layers = layers;
         this->tilemap = std::move(tilemap);
         this->tileset = std::move(tileset);
         this->sprites = sprites;
@@ -101,7 +98,6 @@ struct MapJSON {
     explicit MapJSON(MapJSON *in) {
         this->version = in->version;
         this->id = in->id;
-        this->layers = in->layers;
         this->tilemap = in->tilemap;
         this->tileset = in->tileset;
         this->sprites = in->sprites;
@@ -114,7 +110,6 @@ struct MapJSON {
         archive(
                 CEREAL_NVP(version),
                 CEREAL_NVP(id),
-                CEREAL_NVP(layers),
                 CEREAL_NVP(tilemap),
                 CEREAL_NVP(tileset),
                 CEREAL_NVP(sprites),
@@ -127,7 +122,6 @@ struct MapJSON {
     static void load_and_construct(Archive &archive, cereal::construct<MapJSON> &construct) {
         int version = 0;
         std::string id;
-        int layers = 0;
         std::vector<std::vector<std::vector<int>>> tilemap;
         std::vector<std::string> tileset;
         std::vector<Sprite> sprites;
@@ -137,7 +131,6 @@ struct MapJSON {
         archive(
                 CEREAL_NVP(version),
                 CEREAL_NVP(id),
-                CEREAL_NVP(layers),
                 CEREAL_NVP(tilemap),
                 CEREAL_NVP(tileset),
                 CEREAL_NVP(sprites),
@@ -147,7 +140,6 @@ struct MapJSON {
         construct(
                 version,
                 id,
-                layers,
                 tilemap,
                 tileset,
                 sprites,
@@ -173,7 +165,7 @@ public:
     static Map* loadMap(std::string mapname);
     static Map* loadMapFile(std::string filename);
     Map(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
-            int layers, std::vector<Sprite> sprites, std::vector<Text> texts, std::vector<std::string> music);
+            std::vector<Sprite> sprites, std::vector<Text> texts, std::vector<std::string> music);
     static void test();
     static std::vector<std::string> enumerateMaps();
 

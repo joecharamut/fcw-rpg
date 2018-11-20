@@ -1,11 +1,5 @@
 #include <utility>
 
-#include <utility>
-
-#include <utility>
-
-#include <utility>
-
 #include "Sprite.h"
 #include "Globals.h"
 #include <cstdarg>
@@ -24,7 +18,7 @@ Sprite::Sprite(float x, float y, std::string id, std::vector<Animation> frames) 
 }
 
 void Sprite::draw() {
-     al_draw_bitmap(frames[animation].nextFrame(), x, y, 0);
+     al_draw_bitmap(frames[animation].nextFrame(), x-dX, y-dY, 0);
 }
 
 void Sprite::setX(float newX) {
@@ -36,8 +30,14 @@ void Sprite::setY(float newY) {
     updateBoundingBox();
 }
 
+void Sprite::setDisplace(float dX, float dY) {
+    this->dX = dX;
+    this->dY = dY;
+    updateBoundingBox();
+}
+
 void Sprite::updateBoundingBox() {
     delete boundingBox;
-    this->boundingBox = new BoundingBox(x, y, x+width, y+height);
+    this->boundingBox = new BoundingBox(x-dX, y-dY, x-dX+width, y-dY+height);
 }
 

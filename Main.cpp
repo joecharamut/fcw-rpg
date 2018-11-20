@@ -10,7 +10,6 @@
 #include "Textbox.h"
 #include "Map.h"
 #include "Globals.h"
-#include "ActionSprite.h"
 #include "Util.h"
 #include "Music.h"
 
@@ -63,10 +62,10 @@ void update() {
     }
 }
 
-void clickFunction(ActionSprite *as, ALLEGRO_EVENT event) {
+void clickFunction(Sprite *spr, ALLEGRO_EVENT event) {
     switch (event.mouse.button) {
         case 1:
-            printf("LMB\n");
+            printf("X: %f, Y: %f\n", spr->x, spr->y);
             break;
         case 2:
             printf("RMB\n");
@@ -112,20 +111,17 @@ void mapEventHandler(ALLEGRO_EVENT event) {
         done = true;
     } else if(event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
         for(auto *spr : current_map->sprites) {
-            auto *actionSprite = dynamic_cast<ActionSprite *>(spr);
-            if (actionSprite) {
-                if (BoundingBox::intersect(actionSprite->boundingBox, event.mouse.x, event.mouse.y)) {
-                    clickFunction(actionSprite, event);
+            if (spr->clickAction) {
+                if (BoundingBox::intersect(spr->boundingBox, event.mouse.x, event.mouse.y)) {
+                    spr->clickAction(spr, event);
                 }
             }
         }
     } else if (event.type == ALLEGRO_EVENT_MOUSE_AXES) {
         for(auto *spr : current_map->sprites) {
-            auto *actionSprite = dynamic_cast<ActionSprite *>(spr);
-            if (actionSprite) {
-                if (BoundingBox::intersect(actionSprite->boundingBox, event.mouse.x, event.mouse.y)) {
-                    if (actionSprite->hoverAction)
-                        actionSprite->hoverAction(actionSprite, event);
+            if (spr->hoverAction) {
+                if (BoundingBox::intersect(spr->boundingBox, event.mouse.x, event.mouse.y)) {
+                    spr->hoverAction(spr, event);
                 }
             }
         }
@@ -265,7 +261,8 @@ int main(int argc, char *argv[]) {
     //current_map = Map::loadMapFile("test.json");
     current_map = Map::loadMap("map_test");
     current_map->setEventHandlerFunction(mapEventHandler);
-    current_map->getSpriteById("anim_sprite")->collision = TILE;
+    //current_map->getSpriteById("anim_sprite")->collision = TILE;
+    //current_map->getSpriteById("test2")->collision = TILE;
 
     music1 = al_create_sample_instance(current_map->music[0]);
     al_set_sample_instance_playmode(music1, ALLEGRO_PLAYMODE_LOOP);
@@ -275,11 +272,10 @@ int main(int argc, char *argv[]) {
     al_set_sample_instance_playmode(music2, ALLEGRO_PLAYMODE_LOOP);
     al_set_sample_instance_gain(music2, 1.0);
 
-    Sprite *spr = current_map->getSpriteById("s_hat");
-    spr->setX(SCREEN_W/4.0f -(spr->width/2.0f));
-    spr->setY(SCREEN_H/4.0f -(spr->height/2.0f));
-
-    hat = spr;
+    hat = current_map->getSpriteById("s_hat");
+    hat->setX(SCREEN_W/4.0f -(hat->width/2.0f));
+    hat->setY(SCREEN_H/4.0f -(hat->height/2.0f));
+    hat->clickAction = clickFunction;
 
     Music::init();
     Music::playMusic(music1);
