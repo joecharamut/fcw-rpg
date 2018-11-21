@@ -30,10 +30,29 @@ ELSE(${WIN32})
     add_dependencies(fcwrpg copy_linux_deps)
 ENDIF(${WIN32})
 
-TARGET_LINK_LIBRARIES(fcwrpg
-        allegro_monolith
-        stdc++fs
-)
+IF(${WIN32})
+    TARGET_LINK_LIBRARIES(fcwrpg
+            allegro_monolith
+            stdc++fs
+    )
+ELSE(${WIN32})
+    TARGET_LINK_LIBRARIES(fcwrpg
+            allegro
+            allegro_acodec
+            allegro_audio
+            allegro_color
+            allegro_dialog
+            allegro_font
+            allegro_image
+            allegro_main
+            allegro_memfile
+            allegro_physfs
+            allegro_primitives
+            allegro_ttf
+            allegro_video
+            stdc++fs
+    )
+ENDIF(${WIN32})
 
 IF(${WIN32})
     find_file(pthread libwinpthread-1.dll)

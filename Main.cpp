@@ -100,7 +100,6 @@ void mapEventHandler(ALLEGRO_EVENT event) {
 
             Sprite* spr = current_map->checkCollision(hat);
             if (spr) {
-                //printf("Collision! %s\n", spr->id.c_str());
                 std::vector<float> fix = BoundingBox::fixCollision(spr->boundingBox, hat->boundingBox);
                 hat->setX(fix[0]);
                 hat->setY(fix[1]);
@@ -256,13 +255,11 @@ int main(int argc, char *argv[]) {
     }
     Util::log("Done");
 
+    Music::init();
+
     //Map::test();
-    //exit(0);
-    //current_map = Map::loadMapFile("test.json");
     current_map = Map::loadMap("map_test");
     current_map->setEventHandlerFunction(mapEventHandler);
-    //current_map->getSpriteById("anim_sprite")->collision = TILE;
-    //current_map->getSpriteById("test2")->collision = TILE;
 
     music1 = al_create_sample_instance(current_map->music[0]);
     al_set_sample_instance_playmode(music1, ALLEGRO_PLAYMODE_LOOP);
@@ -277,7 +274,6 @@ int main(int argc, char *argv[]) {
     hat->setY(SCREEN_H/4.0f -(hat->height/2.0f));
     hat->clickAction = clickFunction;
 
-    Music::init();
     Music::playMusic(music1);
 
     Util::log("Initialisation Finished, Starting Game");

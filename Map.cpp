@@ -143,9 +143,9 @@ std::vector<Animation *> resolveTileset(std::vector<std::string> in) {
 }
 
 void Map::resolveMap(std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap) {
-    int layers = tilemap.size();
-    int length = tilemap[0].size();
-    int width = tilemap[0][0].size();
+    int layers = (int) tilemap.size();
+    int length = (int) tilemap[0].size();
+    int width  = (int) tilemap[0][0].size();
 
     std::vector<Animation *> animationMap = resolveTileset(std::move(tileset));
     for (int l = 0; l < layers; l++) {
