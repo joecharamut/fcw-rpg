@@ -11,7 +11,8 @@ static bool loaded = false;
 static std::map<std::string, std::string> mapList = {};
 
 Map::Map(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
-        std::vector<Sprite> sprites, std::vector<Text> texts, std::vector<std::string> music) {
+        std::vector<Sprite> sprites, std::vector<std::string> events, std::vector<Text> texts,
+        std::vector<std::string> music) {
     this->id = std::move(id);
 
     for (auto &str : tileset) {
@@ -27,6 +28,10 @@ Map::Map(std::string id, std::vector<std::string> tileset, std::vector<std::vect
             }
         }
         this->sprites.push_back(new Sprite(&spr));
+    }
+
+    for (const auto &eventStr : events) {
+        this->events.push_back(Event::decode(eventStr));
     }
 
     for (const auto &text : texts) {
@@ -50,7 +55,7 @@ Map* Map::loadMapFile(std::string filename) {
         MapJSON loaded = * new MapJSON();
         inputArchive(cereal::make_nvp("mapdata", loaded));
         Util::log("Loading Map " + loaded.id);
-        Map *m = new Map(loaded.id, loaded.tileset, loaded.tilemap, loaded.sprites, loaded.texts, loaded.music);
+        Map *m = new Map(loaded.id, loaded.tileset, loaded.tilemap, loaded.sprites, loaded.events, loaded.texts, loaded.music);
         return m;
     } else {
         Util::log("Error loading map " + filename + " (File Not Found)", ERROR);
@@ -89,8 +94,9 @@ void Map::test() {
                                      "resources/rainbow/frame-11.png"
                                  }, 4)),
                                  * new Sprite(0,0,"s_hat",*new Animation("resources/hat.png"))},
-                                {* new Text("Test text tests text when test text tests texts.", 0, 0, "font16", 0xff, 0xff, 0xff)},
-                                {}));
+                                 {},
+                                 {* new Text("Test text tests text when test text tests texts.", 0, 0, "font16", 0xff, 0xff, 0xff)},
+                                 {}));
         myData->tilemap.resize(2);
         myData->tilemap[0].resize(16);
         for (int h = 0; h < 16; h++) {

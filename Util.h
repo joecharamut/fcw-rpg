@@ -24,6 +24,9 @@ public:
     static void log(std::string message, std::string src);
     static void log(std::string message, LogLevel level);
     static void log(std::string message);
+
+    static bool checkInt(std::string test);
+    static std::vector<std::string> splitString(std::string str, std::string delimiter);
 };
 
 

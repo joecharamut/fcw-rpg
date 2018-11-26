@@ -18,3 +18,21 @@ void Util::log(std::string message, LogLevel level) {
 void Util::log(std::string message) {
     log(std::move(message), "", INFO);
 }
+
+bool Util::checkInt(std::string test) {
+    for (char c : test) if (!isdigit(c) && c != '-') return false;
+    return true;
+}
+
+std::vector<std::string> Util::splitString(std::string str, std::string delimeter) {
+    size_t pos = 0;
+    std::vector<std::string> split = {};
+    std::string token;
+    while ((pos = str.find(delimeter)) != std::string::npos) {
+        token = str.substr(0, pos);
+        split.push_back(token);
+        str.erase(0, pos + delimeter.length());
+    }
+    split.push_back(str);
+    return split;
+}

@@ -1,12 +1,15 @@
 TODO::Map Editor - Nope definetly Java
-TODO::Map Editor::Export - (Zip of .json, all resources in subdir [<mapid>/map.json, <mapid>/res/[texture, music, etc]]
-TODO::Map Editor - Event tile : Transparent sprite, when stepped on triggers something (Event Class?)
+TODO::Map Editor::Export - All files > zip file[ /map.json, /data/{map resources} ]
+TODO::Map Editor::Export - Maybe save as a .map file, but have to unzip to temp folder on game load probably (Or possibly directly to mem?)
+TODO::Map Editor - Event tile : Transparent sprite, default event: intersect player - do something
 TODO::Map Editor - Actually Make It
 
-TODO::Sprite - Make textures an Animation with ids to be called from event/map (Ex. anim_sprite::textures["IDLE":[], "WALK":[]])
-
-TODO::Music - Music switch between areas, smooth fading (load next, fadeout, switch, fadein, destroy prev)
+TODO::Event - Add event action to play sprite animation
+TODO::Event - Finish implimenting events
+TODO::Event - Integrate it. IE check events on map update/draw/whatever
 
 TODO::Map - See if load times are better if all maps are loaded at start rather than dynamically
 TODO::Map - Fade transitions
 TODO::Map - Get destructors working to destroy the bitmaps
+
+TODO::General - Add comments / documentation (I mean its supposed to be collaborative right)

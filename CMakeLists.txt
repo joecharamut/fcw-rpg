@@ -16,11 +16,13 @@ set(SOURCE_FILES
         Textbox.cpp Textbox.h
         Map.cpp Map.h
         Tile.cpp Tile.h
-        Globals.h Globals.cpp
+        Globals.cpp Globals.h
         BoundingBox.cpp BoundingBox.h
         Util.cpp Util.h
         Animation.cpp Animation.h
-        Music.cpp Music.h)
+        Music.cpp Music.h
+        Event.cpp Event.h
+)
 
 add_executable(fcwrpg ${SOURCE_FILES})
 

@@ -12,6 +12,7 @@
 #include "Globals.h"
 #include "Util.h"
 #include "Music.h"
+#include "Event.h"
 
 const float FPS = 60;
 
@@ -190,7 +191,7 @@ void loadFonts() {
 int main(int argc, char *argv[]) {
     done = false;
 
-    Util::log("Initialising Engine");
+    Util::log("Initializing Engine");
     if((int)al_init() == 0) {
         Util::log("Error initialising Allegro", "INIT", ERROR);
         return 1;
@@ -235,9 +236,9 @@ int main(int argc, char *argv[]) {
     al_set_display_icon(display, al_load_bitmap("resources/icon.png"));
     al_set_window_title(display, "FCW the RPG");
 
-    Util::log("Engine initialised successfully");
+    Util::log("Engine initialized successfully");
 
-    Util::log("Initialising Game");
+    Util::log("Initializing Game");
     timer = al_create_timer(1.0 / FPS);
     al_start_timer(timer);
     queue = al_create_event_queue();
@@ -276,7 +277,7 @@ int main(int argc, char *argv[]) {
 
     Music::playMusic(music1);
 
-    Util::log("Initialisation Finished, Starting Game");
+    Util::log("Initialization Finished, Starting Game");
     oldTime = al_get_time();
     while (!done) {
         update();

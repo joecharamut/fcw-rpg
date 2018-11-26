@@ -138,6 +138,9 @@
         ]
       }
     ],
+    "events": [
+      "{s_hat.x LT 64} AND {s_hat.y LT 64}//{SET s_hat.x 128},{SET s_hat.y 128}"
+    ],
     "texts": [
       {
         "text": "Test text tests text when test text tests texts.",
