@@ -13,7 +13,6 @@ ENDIF(${WIN32})
 set(SOURCE_FILES
         Main.cpp
         Sprite.cpp Sprite.h
-        Textbox.cpp Textbox.h
         Map.cpp Map.h
         Tile.cpp Tile.h
         Globals.cpp Globals.h

@@ -7,7 +7,6 @@
 #include <allegro5/allegro_acodec.h>
 
 #include "Sprite.h"
-#include "Textbox.h"
 #include "Map.h"
 #include "Globals.h"
 #include "Util.h"
