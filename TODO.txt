@@ -15,5 +15,5 @@ TODO::Map - Get destructors working to destroy the bitmaps
 TODO::General - Add comments / documentation (I mean its supposed to be collaborative right)
 
 TODO::General - Add object as generic, then add subtypes, IE. Container, NPC, Sign, that have special properties
-TODO::General - Goddamnit https://uscilab.github.io/cereal/polymorphism.html
+TODO::General - Goddammit https://uscilab.github.io/cereal/polymorphism.html
 TODO::Event - ^

@@ -21,7 +21,7 @@ set(SOURCE_FILES
         Animation.cpp Animation.h
         Music.cpp Music.h
         Event.cpp Event.h
-)
+        Object.cpp Object.h)
 
 add_executable(fcwrpg ${SOURCE_FILES})
 

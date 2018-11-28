@@ -12,6 +12,7 @@
 #include "Util.h"
 #include "Music.h"
 #include "Event.h"
+#include "Object.h"
 
 const float FPS = 60;
 
@@ -188,6 +189,11 @@ void loadFonts() {
 }
 
 int main(int argc, char *argv[]) {
+
+    //Test::test();
+    //return 0;
+
+
     done = false;
 
     Util::log("Initializing Engine");
