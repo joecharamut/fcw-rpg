@@ -2,6 +2,7 @@
 #include <iostream>
 #include <memory>
 #include <experimental/filesystem>
+#include <chrono>
 
 #include "Map.h"
 #include "Globals.h"
@@ -49,13 +50,15 @@ Map* Map::loadMap(std::string mapname) {
 }
 
 Map* Map::loadMapFile(std::string filename) {
+    long long int start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
     std::ifstream is(filename, std::ios::binary);
     if (!is.fail()) {
         cereal::JSONInputArchive inputArchive(is);
         MapJSON loaded = * new MapJSON();
         inputArchive(cereal::make_nvp("mapdata", loaded));
-        Util::log("Loading Map " + loaded.id);
         Map *m = new Map(loaded.id, loaded.tileset, loaded.tilemap, loaded.sprites, loaded.events, loaded.texts, loaded.music);
+        long long int end = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+        Util::log("Loaded Map " + loaded.id + " (" + std::to_string(end-start) + "ms)");
         return m;
     } else {
         Util::log("Error loading map " + filename + " (File Not Found)", ERROR);

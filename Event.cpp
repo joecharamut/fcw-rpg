@@ -169,7 +169,7 @@ Event* Event::decode(std::string eventString) {
         std::smatch match = *i;
         std::string str = match.str();
         str = str.substr(2, str.length() - 3);
-        Util::log(str);
+        //Util::log(str);
     }
 
     //Util::log("Action Part: "+actionString, "Decode");
