@@ -7,13 +7,8 @@
 
 class Main {
 public:
-    static ALLEGRO_FONT *font8;
-    static ALLEGRO_FONT *font16;
-    static ALLEGRO_FONT *font24;
-    static ALLEGRO_FONT *font32;
     static bool done;
-    static int frameCounter;
-    static std::map<std::string, ALLEGRO_FONT *> fontMap;
+    static std::map<std::string, ALLEGRO_FONT *> fonts;
     const static int SCREEN_W = 512;
     const static int SCREEN_H = 512;
 

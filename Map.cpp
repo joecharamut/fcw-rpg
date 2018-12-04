@@ -179,7 +179,7 @@ void Map::draw() {
         al_draw_bitmap_region(bg, viewportX, viewportY, 512, 512, 0, 0, 0);
     }
     for (auto text : texts) {
-        al_draw_text(Main::fontMap.at(text->font), al_map_rgb(text->r, text->g, text->b), text->x, text->y, 0, text->text.c_str());
+        al_draw_text(Main::fonts[text->font], al_map_rgb(text->r, text->g, text->b), text->x, text->y, 0, text->text.c_str());
     }
     for (auto *spr : sprites) {
         spr->draw();
