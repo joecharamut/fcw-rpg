@@ -5,8 +5,8 @@
 #include <chrono>
 
 #include "Map.h"
-#include "Globals.h"
 #include "Util.h"
+#include "Main.h"
 
 static bool loaded = false;
 static std::map<std::string, std::string> mapList = {};
@@ -179,7 +179,7 @@ void Map::draw() {
         al_draw_bitmap_region(bg, viewportX, viewportY, 512, 512, 0, 0, 0);
     }
     for (auto text : texts) {
-        al_draw_text(fontMap.at(text->font), al_map_rgb(text->r, text->g, text->b), text->x, text->y, 0, text->text.c_str());
+        al_draw_text(Main::fontMap.at(text->font), al_map_rgb(text->r, text->g, text->b), text->x, text->y, 0, text->text.c_str());
     }
     for (auto *spr : sprites) {
         spr->draw();
@@ -189,8 +189,8 @@ void Map::draw() {
 void Map::updateViewport(Sprite *spr, bool override) {
     bool changed = false;
 
-    float cX = SCREEN_W/2.0f;
-    float cY = SCREEN_H/2.0f;
+    float cX = Main::SCREEN_W/2.0f;
+    float cY = Main::SCREEN_H/2.0f;
     float csX = (spr->x + (spr->width/2.0f));
     float csY = (spr->y + (spr->height/2.0f));
     if (csX != cX || csY != cY) {
@@ -205,12 +205,12 @@ void Map::updateViewport(Sprite *spr, bool override) {
         } else {
             float newX = viewportX - dX;
             float newY = viewportY - dY;
-            if (newX >= 0 && newX <= al_get_bitmap_width(backgrounds[0])-SCREEN_W) {
+            if (newX >= 0 && newX <= al_get_bitmap_width(backgrounds[0])-Main::SCREEN_W) {
                 viewportX -= dX;
                 spr->setX(spr->x+dX);
                 changed = true;
             }
-            if (newY >= 0 && newY <= al_get_bitmap_height(backgrounds[0])-SCREEN_H) {
+            if (newY >= 0 && newY <= al_get_bitmap_height(backgrounds[0])-Main::SCREEN_H) {
                 viewportY -= dY;
                 spr->setY(spr->y+dY);
                 changed = true;

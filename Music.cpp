@@ -7,10 +7,10 @@ ALLEGRO_MIXER *Music::sfxMixer;
 ALLEGRO_MIXER *Music::masterMixer;
 ALLEGRO_SAMPLE_INSTANCE *Music::playing;
 
-void Music::init() {
-    Util::log("Setting up audio");
+int Music::init() {
     if (!al_reserve_samples(4)) {
         Util::log("Error reserving samples", "Audio", ERROR);
+        return 0;
     }
     masterMixer = al_create_mixer(44100, ALLEGRO_AUDIO_DEPTH_FLOAT32, ALLEGRO_CHANNEL_CONF_2);
     musicMixer = al_create_mixer(44100, ALLEGRO_AUDIO_DEPTH_FLOAT32, ALLEGRO_CHANNEL_CONF_2);
@@ -19,6 +19,7 @@ void Music::init() {
     al_attach_mixer_to_mixer(musicMixer, masterMixer);
     al_attach_mixer_to_mixer(sfxMixer, masterMixer);
     al_attach_mixer_to_mixer(masterMixer, al_get_default_mixer());
+    return 1;
 }
 
 bool switching = false;

@@ -5,38 +5,47 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
+#include <chrono>
 
 #include "Sprite.h"
 #include "Map.h"
-#include "Globals.h"
 #include "Util.h"
 #include "Music.h"
 #include "Event.h"
 #include "Object.h"
+#include "Main.h"
 
 const float FPS = 60;
 
 enum KEYS {
     KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT
 };
+bool key[4] = { false, false, false, false };
 
 bool redraw = true;
-bool key[4] = { false, false, false, false };
 
 Map *current_map = nullptr;
 
 ALLEGRO_EVENT_QUEUE *queue;
 ALLEGRO_TIMER *timer;
 ALLEGRO_DISPLAY *display;
+double oldTime, newTime, fps = 0;
+
+ALLEGRO_FONT *Main::font8;
+ALLEGRO_FONT *Main::font16;
+ALLEGRO_FONT *Main::font24;
+ALLEGRO_FONT *Main::font32;
+bool Main::done = false;
+int Main::frameCounter = 0;
+std::map<std::string, ALLEGRO_FONT *> Main::fontMap;
+
 
 ALLEGRO_SAMPLE_INSTANCE* music1;
 ALLEGRO_SAMPLE_INSTANCE* music2;
 int temp = 0;
-double oldTime, newTime, fps = 0;
-
 Sprite *hat;
 
-void update() {
+void Main::update() {
     ALLEGRO_EVENT event;
     if (al_get_next_event(queue, &event)) {
         if (current_map) {
@@ -56,7 +65,7 @@ void update() {
         if (frameCounter % 16 == 0)
             fps = 1 / (newTime - oldTime);
         oldTime = newTime;
-        al_draw_textf(font24, al_map_rgb(0xff, 0xff, 0xff), 0, 32, 0, "FPS: %.1f", (float) fps);
+        al_draw_textf(font16, al_map_rgb(0xff, 0xff, 0xff), 0, 0, 0, "%.0f fps", (float) fps);
 
         al_flip_display();
         Music::update();
@@ -108,7 +117,7 @@ void mapEventHandler(ALLEGRO_EVENT event) {
         }
         redraw = true;
     } else if(event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-        done = true;
+        Main::done = true;
     } else if(event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
         for(auto *spr : current_map->sprites) {
             if (spr->clickAction) {
@@ -148,7 +157,7 @@ void mapEventHandler(ALLEGRO_EVENT event) {
                 temp = !temp;
                 break;
             case ALLEGRO_KEY_ESCAPE:
-                done = true;
+                Main::done = true;
                 break;
             default:
                 break;
@@ -177,7 +186,7 @@ void mapEventHandler(ALLEGRO_EVENT event) {
     }
 }
 
-void loadFonts() {
+void Main::loadFonts() {
     font8  = al_load_ttf_font("resources/font/DOSVGA.ttf",  8, 0);
     font16 = al_load_ttf_font("resources/font/DOSVGA.ttf", 16, 0);
     font24 = al_load_ttf_font("resources/font/DOSVGA.ttf", 24, 0);
@@ -188,62 +197,49 @@ void loadFonts() {
     fontMap["font32"] = font32;
 }
 
-int main(int argc, char *argv[]) {
-
-    //Test::test();
-    //return 0;
-
-
-    done = false;
-
-    Util::log("Initializing Engine");
-    if((int)al_init() == 0) {
+int Main::initialize() {
+    if(!al_init()) {
         Util::log("Error initialising Allegro", "INIT", ERROR);
-        return 1;
+        return 0;
     }
     if(!al_init_font_addon()) {
         Util::log("Error initialising Allegro Font", "INIT", ERROR);
-        return 1;
+        return 0;
     }
     if(!al_init_ttf_addon()) {
         Util::log("Error initialising Allegro TTF", "INIT", ERROR);
-        return 1;
+        return 0;
     }
     if(!al_init_image_addon()) {
         Util::log("Error initialising Allegro Image", "INIT", ERROR);
-        return 1;
+        return 0;
     }
     if(!al_install_keyboard()) {
         Util::log("Error initialising Keyboard", "INIT", ERROR);
-        return 1;
+        return 0;
     }
     if(!al_install_mouse()) {
         Util::log("Error initialising Mouse", "INIT", ERROR);
-        return 1;
+        return 0;
     }
     if(!al_install_audio()) {
         Util::log("Error initialising Audio", "INIT", ERROR);
-        return 1;
+        return 0;
     }
     if(!al_init_acodec_addon()) {
         Util::log("Error initialising Audio Codec", "INIT", ERROR);
-        return 1;
+        return 0;
     }
 
-    SCREEN_W = 512;
-    SCREEN_H = 512;
     display = al_create_display(SCREEN_W, SCREEN_H);
     if (!display) {
         Util::log("Error creating display", "INIT", ERROR);
-        return 1;
+        return 0;
     }
     al_set_new_display_flags(ALLEGRO_WINDOWED);
     al_set_display_icon(display, al_load_bitmap("resources/icon.png"));
     al_set_window_title(display, "FCW the RPG");
 
-    Util::log("Engine initialized successfully");
-
-    Util::log("Initializing Game");
     timer = al_create_timer(1.0 / FPS);
     al_start_timer(timer);
     queue = al_create_event_queue();
@@ -251,22 +247,16 @@ int main(int argc, char *argv[]) {
     al_register_event_source(queue, al_get_mouse_event_source());
     al_register_event_source(queue, al_get_timer_event_source(timer));
     al_register_event_source(queue, al_get_display_event_source(display));
+    return 1;
+}
 
-    Util::log("Loading Fonts");
-    loadFonts();
-
-    Util::log("Enumerating Maps");
-    for (const auto &str : Map::enumerateMaps()) {
-        Util::log(str);
-    }
-    Util::log("Done");
-
-    Music::init();
-
-    //Map::test();
+void testing() {
+    // Load the test map
     current_map = Map::loadMap("map_test");
+    // Set the event handler TODO: Replace with events from map file, maybe pass events from game to map
     current_map->setEventHandlerFunction(mapEventHandler);
 
+    // Load in some test music
     music1 = al_create_sample_instance(current_map->music[0]);
     al_set_sample_instance_playmode(music1, ALLEGRO_PLAYMODE_LOOP);
     al_set_sample_instance_gain(music1, 1.0);
@@ -275,16 +265,55 @@ int main(int argc, char *argv[]) {
     al_set_sample_instance_playmode(music2, ALLEGRO_PLAYMODE_LOOP);
     al_set_sample_instance_gain(music2, 1.0);
 
-    hat = current_map->getSpriteById("s_hat");
-    hat->setX(SCREEN_W/4.0f -(hat->width/2.0f));
-    hat->setY(SCREEN_H/4.0f -(hat->height/2.0f));
-    hat->clickAction = clickFunction;
-
+    // Get it playing
     Music::playMusic(music1);
 
+    // Set the hat position and click action
+    hat = current_map->getSpriteById("s_hat");
+    hat->setX(Main::SCREEN_W/4.0f -(hat->width/2.0f));
+    hat->setY(Main::SCREEN_H/4.0f -(hat->height/2.0f));
+    hat->clickAction = clickFunction;
+}
+
+int main(int argc, char *argv[]) {
+    // Get current system time
+    long long int start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+    Util::log("Initializing Engine");
+    // Run initialization
+    if (!Main::initialize()) {
+        // If failed, quit program
+        return 1;
+    }
+    // Get system time
+    long long int end = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+    // Print how long it took
+    Util::log("Success (" + std::to_string(end-start) + " ms)");
+
+    Util::log("Loading Fonts");
+    // Load fonts TODO: Move this
+    Main::loadFonts();
+
+    Util::log("Enumerating Maps");
+    // Get available maps and print them TODO: Maybe load them too
+    for (const auto &str : Map::enumerateMaps()) {
+        Util::log(str);
+    }
+    Util::log("Done");
+
+    Util::log("Setting up audio");
+    // Setup the audio
+    if (!Music::init()) {
+        return 1;
+    }
+
+    // Run some temp testing stuff
+    testing();
+
     Util::log("Initialization Finished, Starting Game");
+    // Set old time for fps counter
     oldTime = al_get_time();
-    while (!done) {
-        update();
+    // While we are not done, update the game
+    while (!Main::done) {
+        Main::update();
     }
 }

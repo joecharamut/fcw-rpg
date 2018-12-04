@@ -11,11 +11,10 @@ IF(${WIN32})
 ENDIF(${WIN32})
 
 set(SOURCE_FILES
-        Main.cpp
+        Main.cpp Main.h
         Sprite.cpp Sprite.h
         Map.cpp Map.h
         Tile.cpp Tile.h
-        Globals.cpp Globals.h
         BoundingBox.cpp BoundingBox.h
         Util.cpp Util.h
         Animation.cpp Animation.h

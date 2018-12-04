@@ -13,7 +13,7 @@ public:
     static ALLEGRO_MIXER *masterMixer;
     static ALLEGRO_SAMPLE_INSTANCE *playing;
 
-    static void init();
+    static int init();
     static void update();
     static void playSFX(ALLEGRO_SAMPLE_INSTANCE *sfx);
     static void playMusic(ALLEGRO_SAMPLE_INSTANCE *music);

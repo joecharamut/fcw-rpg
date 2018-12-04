@@ -1,7 +1,6 @@
 #include <utility>
 
 #include "Sprite.h"
-#include "Globals.h"
 #include <cstdarg>
 #include <cstdio>
 
