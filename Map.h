@@ -85,6 +85,7 @@ struct MapJSON {
     std::vector<std::string> music;
 
     MapJSON() = default;;
+
     MapJSON(int version, std::string id,
             std::vector<std::vector<std::vector<int>>> tilemap, std::vector<std::string> tileset,
             std::vector<Sprite> sprites, std::vector<std::string> events, std::vector<Text> texts,
@@ -99,17 +100,6 @@ struct MapJSON {
         this->music = music;
     }
 
-    explicit MapJSON(MapJSON *in) {
-        this->version = in->version;
-        this->id = in->id;
-        this->tilemap = in->tilemap;
-        this->tileset = in->tileset;
-        this->sprites = in->sprites;
-        this->events = in->events;
-        this->texts = in->texts;
-        this->music = in->music;
-    }
-
     template <class Archive>
     void serialize(Archive &archive) {
         archive(
@@ -121,39 +111,6 @@ struct MapJSON {
                 CEREAL_NVP(events),
                 CEREAL_NVP(texts),
                 CEREAL_NVP(music)
-        );
-    }
-
-    template <class Archive>
-    static void load_and_construct(Archive &archive, cereal::construct<MapJSON> &construct) {
-        int version = 0;
-        std::string id;
-        std::vector<std::vector<std::vector<int>>> tilemap;
-        std::vector<std::string> tileset;
-        std::vector<Sprite> sprites;
-        std::vector<std::string> events;
-        std::vector<Text> texts;
-        std::vector<std::string> music;
-
-        archive(
-                CEREAL_NVP(version),
-                CEREAL_NVP(id),
-                CEREAL_NVP(tilemap),
-                CEREAL_NVP(tileset),
-                CEREAL_NVP(sprites),
-                CEREAL_NVP(events),
-                CEREAL_NVP(texts),
-                CEREAL_NVP(music)
-        );
-        construct(
-                version,
-                id,
-                tilemap,
-                tileset,
-                sprites,
-                events,
-                texts,
-                music
         );
     }
 };
@@ -173,12 +130,11 @@ public:
 
     void (*handlerFunction)(ALLEGRO_EVENT event);
 
-    static Map* loadMap(std::string mapname);
+    static Map* loadMap(std::string id);
     static Map* loadMapFile(std::string filename);
     Map(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
             std::vector<Sprite> sprites, std::vector<std::string> events, std::vector<Text> texts,
             std::vector<std::string> music);
-    static void test();
     static std::vector<std::string> enumerateMaps();
 
     std::string getFilePath(std::string filename);

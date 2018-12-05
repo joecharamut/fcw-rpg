@@ -54,29 +54,6 @@ public:
                 CEREAL_NVP(frames)
         );
     }
-
-    template <class Archive>
-    static void load_and_construct(Archive &archive, cereal::construct<Sprite> &construct) {
-        float x;
-        float y;
-        std::vector<Animation> frames;
-        std::string id;
-        COLLISION_TYPE collision;
-        archive(
-                CEREAL_NVP(id),
-                CEREAL_NVP(x),
-                CEREAL_NVP(y),
-                CEREAL_NVP(collision),
-                CEREAL_NVP(frames)
-        );
-        construct(
-                id,
-                x,
-                y,
-                collision,
-                frames
-        );
-    }
 };
 
 #endif //FCWRPG_SPRITE_H

@@ -28,16 +28,6 @@ public:
     void serialize(Archive &archive) {
         archive(CEREAL_NVP(type), CEREAL_NVP(frames), CEREAL_NVP(speed));
     }
-
-    template <class Archive>
-    static void load_and_construct(Archive &archive, cereal::construct<Animation> &construct) {
-        std::string type;
-        std::vector<std::string> frames;
-        int speed;
-
-        archive(CEREAL_NVP(type), CEREAL_NVP(frames), CEREAL_NVP(speed));
-        construct(type, frames, speed);
-    }
 };
 
 

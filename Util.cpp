@@ -1,5 +1,6 @@
 #include <utility>
 #include <iostream>
+#include <chrono>
 
 #include "Util.h"
 
@@ -35,4 +36,10 @@ std::vector<std::string> Util::splitString(std::string str, std::string delimete
     }
     split.push_back(str);
     return split;
+}
+
+using namespace std;
+
+long long int Util::getMilliTime() {
+    return chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now().time_since_epoch()).count();
 }

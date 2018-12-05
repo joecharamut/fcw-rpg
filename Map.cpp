@@ -8,20 +8,24 @@
 #include "Util.h"
 #include "Main.h"
 
-static bool loaded = false;
 static std::map<std::string, std::string> mapList = {};
 
+// Constructor
 Map::Map(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
         std::vector<Sprite> sprites, std::vector<std::string> events, std::vector<Text> texts,
         std::vector<std::string> music) {
+    // Copy in id
     this->id = std::move(id);
 
+    // Copy in tileset, with path
     for (auto &str : tileset) {
         str = Map::getFilePath(str);
     }
 
+    // Load the tilemap as actual images into memory
     resolveMap(std::move(tileset), std::move(tilemap));
 
+    // Load in the sprites
     for (auto spr : sprites) {
         for (auto &animation : spr.frames) {
             for (auto &frame : animation.frames) {
@@ -31,104 +35,85 @@ Map::Map(std::string id, std::vector<std::string> tileset, std::vector<std::vect
         this->sprites.push_back(new Sprite(&spr));
     }
 
+    // Load in events
     for (const auto &eventStr : events) {
         this->events.push_back(Event::decode(eventStr));
     }
 
+    // Load in Texts
+    // TODO: Have texts hidden until event trigger?
     for (const auto &text : texts) {
         this->texts.push_back(new Text(text));
     }
 
+    // Load in music
     for (const auto &file : music) {
         this->music.push_back(al_load_sample(Map::getFilePath(file).c_str()));
     }
 }
 
-Map* Map::loadMap(std::string mapname) {
-    if (!loaded) enumerateMaps();
-    return loadMapFile(mapList[mapname]);
+// Load map by id
+Map* Map::loadMap(std::string id) {
+    if (mapList.empty()) enumerateMaps();
+    return loadMapFile(mapList[id]);
 }
 
+// Load map by file
 Map* Map::loadMapFile(std::string filename) {
-    long long int start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+    // Get system time to calculate load time
+    long long int start = Util::getMilliTime();
+    // Get the file as an input stream
     std::ifstream is(filename, std::ios::binary);
+    // If the stream opened successfully
     if (!is.fail()) {
+        // Load the file as JSON input
         cereal::JSONInputArchive inputArchive(is);
-        MapJSON loaded = * new MapJSON();
+        // MapJSON object
+        MapJSON loaded;
+        // Load the data to the object
         inputArchive(cereal::make_nvp("mapdata", loaded));
+        // Create the map with the loaded data
         Map *m = new Map(loaded.id, loaded.tileset, loaded.tilemap, loaded.sprites, loaded.events, loaded.texts, loaded.music);
-        long long int end = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
-        Util::log("Loaded Map " + loaded.id + " (" + std::to_string(end-start) + "ms)");
+        // Get end time
+        long long int end = Util::getMilliTime();
+        // Print delta
+        Util::log("Loaded Map " + loaded.id + " (" + std::to_string(end-start) + " ms)");
+        // Return loaded map
         return m;
-    } else {
-        Util::log("Error loading map " + filename + " (File Not Found)", ERROR);
     }
+    // If it didn't open, send error and return null
+    Util::log("Error loading map " + filename + " (File Not Found)", ERROR);
     return nullptr;
 }
 
+// Get the path for a map file
 std::string Map::getFilePath(std::string filename) {
-    std::string path = mapList[id];
-    path = path.substr(0, path.length() - 8) + "data/" + filename;
+    // Get the base path
+    std::string path = * new std::string(mapList[id]);
+    // Remove map filename from path and add the new file
+    path = path.substr(0, path.length() - Util::splitString(path, "/").back().length()) + "data/" + filename;
     return path;
 }
 
-void Map::test() {
-    {
-        std::ofstream os("test.json", std::ios::binary);
-        cereal::JSONOutputArchive archive(os);
-        std::unique_ptr<MapJSON> myData =
-                std::make_unique<MapJSON>(
-                        new MapJSON(1, "map_test",
-                                {{{}}},
-                                {"resources/tile00.png", "resources/tile01.png", "resources/tile02.png"},
-                                {* new Sprite(64, 64, "anim_sprite", *new Animation("IDLE",
-                                        std::vector<std::string>{
-                                     "resources/rainbow/frame-0.png",
-                                     "resources/rainbow/frame-1.png",
-                                     "resources/rainbow/frame-2.png",
-                                     "resources/rainbow/frame-3.png",
-                                     "resources/rainbow/frame-4.png",
-                                     "resources/rainbow/frame-5.png",
-                                     "resources/rainbow/frame-6.png",
-                                     "resources/rainbow/frame-7.png",
-                                     "resources/rainbow/frame-8.png",
-                                     "resources/rainbow/frame-9.png",
-                                     "resources/rainbow/frame-10.png",
-                                     "resources/rainbow/frame-11.png"
-                                 }, 4)),
-                                 * new Sprite(0,0,"s_hat",*new Animation("resources/hat.png"))},
-                                 {},
-                                 {* new Text("Test text tests text when test text tests texts.", 0, 0, "font16", 0xff, 0xff, 0xff)},
-                                 {}));
-        myData->tilemap.resize(2);
-        myData->tilemap[0].resize(16);
-        for (int h = 0; h < 16; h++) {
-            myData->tilemap[0][h].resize(16);
-            for (int w = 0; w < 16; w++) {
-                myData->tilemap[0][h][w] = 0;
-            }
-        }
-        myData->tilemap[1].resize(16);
-        for (int h = 0; h < 16; h++) {
-            myData->tilemap[1][h].resize(16);
-            for (int w = 0; w < 16; w++) {
-                myData->tilemap[1][h][w] = (h%3 != 0 ? (h%3) : -1);
-            }
-        }
-        archive(cereal::make_nvp("mapdata", *myData));
-    }
-}
-
+// Load a list of all maps
 std::vector<std::string> Map::enumerateMaps() {
+    // Create the list
     std::vector<std::string> maps = {};
+    // Define the base path
     std::string path = "resources/maps";
+    // If the path doesn't exist, return empty list
     if (!std::experimental::filesystem::exists(path)) {
         return maps;
     }
+    // For each folder in the maps directory,
     for (const auto &p : std::experimental::filesystem::directory_iterator(path)) {
+        // and each file in that folder,
         for (const auto &p2 : std::experimental::filesystem::directory_iterator(p.path().string())) {
+            // Get the filename/path
             std::string file = p2.path().string();
+            // If it ends in .json
             if (file.substr(file.length() - 5) == ".json") {
+                // Load it and store its id and path
                 std::ifstream is(file, std::ios::binary);
                 cereal::JSONInputArchive inputArchive(is);
                 MapJSON loaded = {};
@@ -138,20 +123,26 @@ std::vector<std::string> Map::enumerateMaps() {
             }
         }
     }
-    loaded = true;
+    // Return the maps list
     return maps;
 }
 
+// Function to resolve the tileset to a list of Animations with the frames loaded in memory
 std::vector<Animation *> resolveTileset(std::vector<std::string> in) {
+    // Create out array
     std::vector<Animation *> out = {};
+    // Reserve space
     out.reserve(in.size());
-    for (const auto &frame : in) {
-        out.push_back(new Animation(frame));
+    // For each tile, create an Animation and store it
+    for (const auto &tile : in) {
+        out.push_back(new Animation(tile));
     }
     return out;
 }
 
+// Function to resolve the tileset and tilemap into images
 void Map::resolveMap(std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap) {
+    // Get layers, width, and height
     int layers = (int) tilemap.size();
     int length = (int) tilemap[0].size();
     int width  = (int) tilemap[0][0].size();
@@ -228,20 +219,6 @@ void Map::updateViewport(Sprite *spr, bool override) {
 
 Sprite* Map::checkCollision(Sprite *sprite) {
     BoundingBox *box = sprite->boundingBox;
-    /*for (int l = 0; l < layers; l++) {
-        for (int x = 0; x < 16; x++) {
-            for (int y = 0; y < 16; y++) {
-                Tile *tile = tilemap[l][x][y];
-                if (tile->collision == NONE) {
-                    continue;
-                }
-                BoundingBox *check = tile->boundingBox;
-                if (BoundingBox::intersect(check, box)) {
-                    return tile;
-                }
-            }
-        }
-    }*/
     for (auto *spr : sprites) {
         if (spr->collision == NONE) {
             continue;

@@ -86,7 +86,7 @@ void Main::update() {
     Music::update();
 }
 // Testing Function when you click on the hat
-// TODO: Remove this
+// TODO: Remove this, no mouse in game (probably)
 void clickFunction(Sprite *spr, ALLEGRO_EVENT event) {
     switch (event.mouse.button) {
         // If MB1, print X/Y of sprite
@@ -243,6 +243,12 @@ int Main::initialize() {
         return 0;
     }
 
+    // Initialize my modules
+    if (!Music::init()) {
+        Util::log("Error initializing Audio Module", "INIT", ERROR);
+        return 0;
+    }
+
     // Create the window
     display = al_create_display(SCREEN_W, SCREEN_H);
     if (!display) {
@@ -294,7 +300,7 @@ void testing() {
 
 int main(int argc, char *argv[]) {
     // Get current system time
-    long long int start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+    long long int start = Util::getMilliTime();
     Util::log("Initializing Engine");
     // Run initialization
     if (!Main::initialize()) {
@@ -302,28 +308,22 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     // Get system time
-    long long int end = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+    long long int end = Util::getMilliTime();
     // Print how long it took
     Util::log("Success (" + std::to_string(end-start) + " ms)");
 
-    Util::log("Loading Fonts");
+    Util::log("Loading fonts");
     // Load fonts TODO: Move this
     Main::loadFonts();
 
-    Util::log("Enumerating Maps");
+    //Util::log("Enumerating Maps");
     // Get available maps and print them
     // TODO: Maybe load them too
-    // TODO: Remove the printing
-    for (const auto &str : Map::enumerateMaps()) {
-        Util::log(str);
-    }
-    Util::log("Done");
-
-    Util::log("Setting up audio");
-    // Setup the audio
-    if (!Music::init()) {
-        return 1;
-    }
+    //for (const auto &str : Map::enumerateMaps()) {
+    //    Util::log(str);
+    //}
+    //Util::log("Done");
+    Map::enumerateMaps();
 
     // Run some temp testing stuff
     // TODO: Eventually remove this
