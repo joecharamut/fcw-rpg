@@ -15,7 +15,7 @@ enum COLLISION_TYPE {
 
 class Sprite {
 public:
-    COLLISION_TYPE collision;
+    COLLISION_TYPE collision = NONE;
 
     void (*clickAction)(Sprite*, ALLEGRO_EVENT event) = nullptr;
     void (*hoverAction)(Sprite*, ALLEGRO_EVENT event) = nullptr;

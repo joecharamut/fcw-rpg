@@ -4,7 +4,9 @@
 #include <cstdarg>
 #include <cstdio>
 
+// Constructor
 Sprite::Sprite(float x, float y, std::string id, std::vector<Animation> frames) {
+    // Set values
     this->x = x;
     this->y = y;
     this->frames = std::move(frames);
@@ -13,10 +15,11 @@ Sprite::Sprite(float x, float y, std::string id, std::vector<Animation> frames) 
     this->height = al_get_bitmap_height(this->frames[0].loadedFrames[0]);
     this->id = std::move(id);
     this->boundingBox = new BoundingBox(x, y, x+width, y+height);
-    this->collision = NONE;
 }
 
+// Function to draw the sprite
 void Sprite::draw() {
+    // Call draw function with the next animation frame and the coordinates of the sprite
      al_draw_bitmap(frames[animation].nextFrame(), x-dX, y-dY, 0);
 }
 
