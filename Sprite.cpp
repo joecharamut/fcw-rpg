@@ -23,23 +23,33 @@ void Sprite::draw() {
      al_draw_bitmap(frames[animation].nextFrame(), x-dX, y-dY, 0);
 }
 
+// Set X coordinate of the sprite
 void Sprite::setX(float newX) {
     this->x = newX;
-    updateBoundingBox();
-}
-void Sprite::setY(float newY) {
-    this->y = newY;
+    // And update the bounding box
     updateBoundingBox();
 }
 
+// Set Y coordinate
+void Sprite::setY(float newY) {
+    this->y = newY;
+    // And update the bounding box
+    updateBoundingBox();
+}
+
+// Set the displacement values for when the screen scrolls
 void Sprite::setDisplace(float dX, float dY) {
     this->dX = dX;
     this->dY = dY;
+    // And update the bounding box
     updateBoundingBox();
 }
 
+// Function to update the bounding box
 void Sprite::updateBoundingBox() {
+    // Delete the old one
     delete boundingBox;
+    // Create new one
     this->boundingBox = new BoundingBox(x-dX, y-dY, x-dX+width, y-dY+height);
 }
 
