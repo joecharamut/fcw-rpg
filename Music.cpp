@@ -86,8 +86,10 @@ void Music::update() {
     }
 }
 
-void Music::playSFX(ALLEGRO_SAMPLE_INSTANCE *sfx) {
-
+bool Music::registerMusic(ALLEGRO_SAMPLE_INSTANCE *reg, std::string id) {
+    if (Music::registeredMusic.count(id)) return false;
+    Music::registeredMusic[id] = reg;
+    return true;
 }
 
 void Music::playMusic(ALLEGRO_SAMPLE_INSTANCE *music) {
@@ -96,3 +98,9 @@ void Music::playMusic(ALLEGRO_SAMPLE_INSTANCE *music) {
     // Trigger switch
     switching = true;
 }
+
+void Music::playSFX(ALLEGRO_SAMPLE_INSTANCE *sfx) {
+
+}
+
+

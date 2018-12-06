@@ -25,10 +25,10 @@ struct Text {
 
     Text() = default;;
     Text(std::string text, float x, float y, std::string font, unsigned char r, unsigned char g, unsigned char b) {
-        this->text = text;
+        this->text = std::move(text);
         this->x = x;
         this->y = y;
-        this->font = font;
+        this->font = std::move(font);
         this->r = r;
         this->g = g;
         this->b = b;
@@ -46,36 +46,10 @@ struct Text {
                 CEREAL_NVP(b)
         );
     }
-
-    template <class Archive>
-    static void load_and_construct(Archive &archive, cereal::construct<Text> &construct) {
-        std::string text;
-        float x = 0, y = 0;
-        std::string font;
-        int r = 0, g = 0, b = 0;
-        archive(
-                CEREAL_NVP(text),
-                CEREAL_NVP(x),
-                CEREAL_NVP(y),
-                CEREAL_NVP(font),
-                CEREAL_NVP(r),
-                CEREAL_NVP(g),
-                CEREAL_NVP(b)
-        );
-        construct(
-                text,
-                x,
-                y,
-                font,
-                r,
-                g,
-                b
-        );
-    }
 };
 
 struct MapJSON {
-    int version;
+    int version = 1;
     std::string id;
     std::vector<std::vector<std::vector<int>>> tilemap;
     std::vector<std::string> tileset;
@@ -94,10 +68,10 @@ struct MapJSON {
         this->id = std::move(id);
         this->tilemap = std::move(tilemap);
         this->tileset = std::move(tileset);
-        this->sprites = sprites;
-        this->events = events;
-        this->texts = texts;
-        this->music = music;
+        this->sprites = std::move(sprites);
+        this->events = std::move(events);
+        this->texts = std::move(texts);
+        this->music = std::move(music);
     }
 
     template <class Archive>
@@ -142,7 +116,8 @@ public:
     void draw();
 
     void addSprite(Sprite *sprite);
-    void addText(std::string text, std::string font, unsigned char r, unsigned char g, unsigned char b, float x, float y);
+    void addText(std::string text, std::string font,
+            unsigned char r, unsigned char g, unsigned char b, float x, float y);
     Sprite* getSpriteById(std::string id);
     void handleEvent(ALLEGRO_EVENT event);
     void setEventHandlerFunction(void (*handler)(ALLEGRO_EVENT event));

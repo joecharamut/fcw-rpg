@@ -19,7 +19,7 @@ public:
 
     Animation() = default;;
     Animation(std::string type, std::vector<std::string> frames, int speed);
-    Animation(std::string image) : Animation("default", {std::move(image)}, 1) {};
+    explicit Animation(std::string image) : Animation("default", {std::move(image)}, 1) {};
 
     void loadFrames();
     ALLEGRO_BITMAP* nextFrame();

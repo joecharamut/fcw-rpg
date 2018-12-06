@@ -73,7 +73,8 @@ Map* Map::loadMapFile(std::string filename) {
         // Load the data to the object
         inputArchive(cereal::make_nvp("mapdata", loaded));
         // Create the map with the loaded data
-        Map *m = new Map(loaded.id, loaded.tileset, loaded.tilemap, loaded.sprites, loaded.events, loaded.texts, loaded.music);
+        Map *m = new Map(loaded.id, loaded.tileset, loaded.tilemap,
+                loaded.sprites, loaded.events, loaded.texts, loaded.music);
         // Get end time
         long long int end = Util::getMilliTime();
         // Print delta
@@ -143,45 +144,61 @@ std::vector<Animation *> resolveTileset(std::vector<std::string> in) {
 // Function to resolve the tileset and tilemap into images
 void Map::resolveMap(std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap) {
     // Get layers, width, and height
-    int layers = (int) tilemap.size();
-    int length = (int) tilemap[0].size();
-    int width  = (int) tilemap[0][0].size();
+    auto layers = (int) tilemap.size();
+    auto width = (int) tilemap[0].size();
+    auto height  = (int) tilemap[0][0].size();
 
+    // Get the tileset as images
     std::vector<Animation *> animationMap = resolveTileset(std::move(tileset));
+    // For each layer
     for (int l = 0; l < layers; l++) {
-        backgrounds.push_back(al_create_bitmap(length*32, width*32));
+        // Create a new blank bitmap
+        backgrounds.push_back(al_create_bitmap(width*32, height*32));
+        // Set it as the target
         al_set_target_bitmap(backgrounds[l]);
+        // Clear it to transparent
         al_clear_to_color(al_map_rgba(0x00, 0x00, 0x00, 0x00));
-        for (int x = 0; x < length; x++) {
-            for (int y = 0; y < width; y++) {
+        // For every tile in the tilemap
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                // If it's not transparent
                 if (tilemap[l][x][y] != -1) {
+                    // Draw it to the bitmap
                     al_draw_bitmap(animationMap[tilemap[l][x][y]]->nextFrame(), x*32, y*32, 0);
                 }
             }
         }
     }
+    // Reset the target to the display
     al_set_target_backbuffer(al_get_current_display());
 }
 
-
+// Function to draw a map to the screen
 void Map::draw() {
+    // For every background image
     for (auto bg : backgrounds) {
-        //al_draw_bitmap_region(bg, viewportX, viewportY, al_get_bitmap_width(bg), al_get_bitmap_height(bg), 0, 0, 0);
+        // Draw the viewable portion of it to the screen
         al_draw_bitmap_region(bg, viewportX, viewportY, 512, 512, 0, 0, 0);
     }
+    // For the texts, draw them
+    // TODO: Make this event controlled. Maybe something similar to music module, but scrolling text and playing a sound
     for (auto text : texts) {
-        al_draw_text(Main::fonts[text->font], al_map_rgb(text->r, text->g, text->b), text->x, text->y, 0, text->text.c_str());
+        al_draw_text(Main::fonts[text->font], al_map_rgb(text->r, text->g, text->b),
+                text->x, text->y, 0, text->text.c_str());
     }
+    // For each sprite, draw it
     for (auto *spr : sprites) {
         spr->draw();
     }
 }
 
+
+// Function to update the viewport based on a sprite (Presumably the player)
 void Map::updateViewport(Sprite *spr, bool override) {
     bool changed = false;
 
-    float cX = Main::SCREEN_W/2.0f;
-    float cY = Main::SCREEN_H/2.0f;
+    float cX = SCREEN_W/2.0f;
+    float cY = SCREEN_H/2.0f;
     float csX = (spr->x + (spr->width/2.0f));
     float csY = (spr->y + (spr->height/2.0f));
     if (csX != cX || csY != cY) {
@@ -196,12 +213,12 @@ void Map::updateViewport(Sprite *spr, bool override) {
         } else {
             float newX = viewportX - dX;
             float newY = viewportY - dY;
-            if (newX >= 0 && newX <= al_get_bitmap_width(backgrounds[0])-Main::SCREEN_W) {
+            if (newX >= 0 && newX <= al_get_bitmap_width(backgrounds[0])-SCREEN_W) {
                 viewportX -= dX;
                 spr->setX(spr->x+dX);
                 changed = true;
             }
-            if (newY >= 0 && newY <= al_get_bitmap_height(backgrounds[0])-Main::SCREEN_H) {
+            if (newY >= 0 && newY <= al_get_bitmap_height(backgrounds[0])-SCREEN_H) {
                 viewportY -= dY;
                 spr->setY(spr->y+dY);
                 changed = true;
@@ -235,7 +252,8 @@ void Map::addSprite(Sprite *sprite) {
     sprites.push_back(sprite);
 }
 
-void Map::addText(std::string text, std::string font, unsigned char r, unsigned char g, unsigned char b, float x, float y) {
+void Map::addText(std::string text, std::string font,
+        unsigned char r, unsigned char g, unsigned char b, float x, float y) {
     auto *add = new Text();
     add->text = std::move(text);
     add->x = x;

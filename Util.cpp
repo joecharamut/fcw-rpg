@@ -25,14 +25,14 @@ bool Util::checkInt(std::string test) {
     return true;
 }
 
-std::vector<std::string> Util::splitString(std::string str, std::string delimeter) {
+std::vector<std::string> Util::splitString(std::string str, std::string delimiter) {
     size_t pos = 0;
     std::vector<std::string> split = {};
     std::string token;
-    while ((pos = str.find(delimeter)) != std::string::npos) {
+    while ((pos = str.find(delimiter)) != std::string::npos) {
         token = str.substr(0, pos);
         split.push_back(token);
-        str.erase(0, pos + delimeter.length());
+        str.erase(0, pos + delimiter.length());
     }
     split.push_back(str);
     return split;

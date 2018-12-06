@@ -15,8 +15,6 @@
 #include "Object.h"
 #include "Main.h"
 
-const float FPS = 60;
-
 enum KEYS {
     KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT
 };
@@ -168,7 +166,7 @@ void mapEventHandler(ALLEGRO_EVENT event) {
                 key[KEY_RIGHT] = true;
                 break;
             case ALLEGRO_KEY_SPACE:
-                if (temp) Music::playMusic(music1); else Music::playMusic(music2);
+                //if (temp) Music::playMusic(music1); else Music::playMusic(music2);
                 temp = !temp;
                 break;
             default:
@@ -209,37 +207,37 @@ void Main::loadFonts() {
 // Function to initialize the game engine
 int Main::initialize() {
     // Initialize Allegro
-    if(!al_init()) {
-        Util::log("Error initialising Allegro", "INIT", ERROR);
+    if(al_init() == 0) {
+        Util::log("Error initializing Allegro", "INIT", ERROR);
         return 0;
     }
     // And all of the addons needed
     if(!al_init_font_addon()) {
-        Util::log("Error initialising Allegro Font", "INIT", ERROR);
+        Util::log("Error initializing Allegro Font", "INIT", ERROR);
         return 0;
     }
     if(!al_init_ttf_addon()) {
-        Util::log("Error initialising Allegro TTF", "INIT", ERROR);
+        Util::log("Error initializing Allegro TTF", "INIT", ERROR);
         return 0;
     }
     if(!al_init_image_addon()) {
-        Util::log("Error initialising Allegro Image", "INIT", ERROR);
+        Util::log("Error initializing Allegro Image", "INIT", ERROR);
         return 0;
     }
     if(!al_install_keyboard()) {
-        Util::log("Error initialising Keyboard", "INIT", ERROR);
+        Util::log("Error initializing Keyboard", "INIT", ERROR);
         return 0;
     }
     if(!al_install_mouse()) {
-        Util::log("Error initialising Mouse", "INIT", ERROR);
+        Util::log("Error initializing Mouse", "INIT", ERROR);
         return 0;
     }
     if(!al_install_audio()) {
-        Util::log("Error initialising Audio", "INIT", ERROR);
+        Util::log("Error initializing Audio", "INIT", ERROR);
         return 0;
     }
     if(!al_init_acodec_addon()) {
-        Util::log("Error initialising Audio Codec", "INIT", ERROR);
+        Util::log("Error initializing Audio Codec", "INIT", ERROR);
         return 0;
     }
 
@@ -293,8 +291,8 @@ void testing() {
 
     // Set the hat position and click action
     hat = current_map->getSpriteById("s_hat");
-    hat->setX(Main::SCREEN_W/4.0f -(hat->width/2.0f));
-    hat->setY(Main::SCREEN_H/4.0f -(hat->height/2.0f));
+    hat->setX(SCREEN_W/4.0f -(hat->width/2.0f));
+    hat->setY(SCREEN_H/4.0f -(hat->height/2.0f));
     hat->clickAction = clickFunction;
 }
 
@@ -310,7 +308,7 @@ int main(int argc, char *argv[]) {
     // Get system time
     long long int end = Util::getMilliTime();
     // Print how long it took
-    Util::log("Success (" + std::to_string(end-start) + " ms)");
+    Util::log("Done (" + std::to_string(end-start) + " ms)");
 
     Util::log("Loading fonts");
     // Load fonts TODO: Move this

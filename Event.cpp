@@ -1,3 +1,5 @@
+#include <utility>
+
 #include <regex>
 #include <stdexcept>
 #include <iostream>
@@ -114,7 +116,7 @@ std::pair<OperandType, OperandObject*> makeOperand(const std::string &str) {
         auto split = Util::splitString(str, ".");
         object = new OperandProperty(split[0], split[1]);
     }
-    return {type, object};
+    return std::make_pair(type, object);
 }
 
 Event* Event::decode(std::string eventString) {
@@ -122,10 +124,11 @@ Event* Event::decode(std::string eventString) {
     std::regex rCondition("{[^{}]*}", std::regex_constants::basic);
     std::regex rOperation("\\} (AND|OR) \\{", std::regex_constants::extended);
 
-    auto eventParts = Util::splitString(eventString, "//");
+    auto eventParts = Util::splitString(std::move(eventString), "//");
 
     if (eventParts.size() != 2) {
-        throw std::invalid_argument("Invalid Event Format ("+std::to_string(eventParts.size())+" Parts Found, Expected 2)");
+        throw std::invalid_argument(
+                "Invalid Event Format ("+std::to_string(eventParts.size())+" Parts Found, Expected 2)");
     }
 
     std::string conditionString = eventParts[0];
@@ -180,7 +183,7 @@ Event* Event::decode(std::string eventString) {
         auto split = Util::splitString(str, " ");
         int key = 0;
         EventAction action = {};
-        for (auto part : split) {
+        for (const auto &part : split) {
             switch (key++) {
                 case 0:
                     if (actionMap.count(part)) {
