@@ -194,6 +194,10 @@ void Map::draw() {
     for (auto *spr : sprites) {
         spr->draw();
     }
+
+    for (auto *ev : events) {
+        // TODO: Implement this
+    }
 }
 
 
