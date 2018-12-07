@@ -27,7 +27,7 @@ Map *current_map = nullptr;
 ALLEGRO_EVENT_QUEUE *queue;
 ALLEGRO_TIMER *timer;
 ALLEGRO_DISPLAY *display;
-double oldTime, newTime, fps = 0;
+double oldTime, newTime, delayTime, fps = 0;
 
 bool Main::done = false;
 std::map<std::string, ALLEGRO_FONT *> Main::fonts;
@@ -70,7 +70,10 @@ void Main::update() {
 
         // Calculate fps
         newTime = al_get_time();
-        if ((newTime-oldTime) > 0.1 == 0) fps = (1 / (newTime - oldTime));
+        if ((newTime-delayTime) > 0.15) {
+            fps = (1 / (newTime - oldTime));
+            delayTime = newTime;
+        }
         // Reset newTime
         oldTime = newTime;
         // And display it
@@ -330,6 +333,7 @@ int main(int argc, char *argv[]) {
     Util::log("Initialization Finished, Starting Game");
     // Set old time for fps counter
     oldTime = al_get_time();
+    delayTime = al_get_time();
     // While we are not done, update the game
     while (!Main::done) {
         Main::update();

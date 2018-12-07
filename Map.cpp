@@ -3,6 +3,7 @@
 #include <memory>
 #include <experimental/filesystem>
 #include <chrono>
+#include <algorithm>
 
 #include "Map.h"
 #include "Util.h"
@@ -90,9 +91,10 @@ Map* Map::loadMapFile(std::string filename) {
 // Get the path for a map file
 std::string Map::getFilePath(std::string filename) {
     // Get the base path
-    std::string path = * new std::string(mapList[id]);
+    std::string path = mapList[id];
+    std::vector<std::string> split = Util::splitString(path, "/");
     // Remove map filename from path and add the new file
-    path = path.substr(0, path.length() - Util::splitString(path, "/").back().length()) + "data/" + filename;
+    path = path.substr(0, path.length() - split.back().length()) + "data/" + filename;
     return path;
 }
 
@@ -112,6 +114,8 @@ std::vector<std::string> Map::enumerateMaps() {
         for (const auto &p2 : std::experimental::filesystem::directory_iterator(p.path().string())) {
             // Get the filename/path
             std::string file = p2.path().string();
+            // Fix Windows being mega gay (Replace \ with /)
+            std::replace(file.begin(), file.end(), '\\', '/');
             // If it ends in .json
             if (file.substr(file.length() - 5) == ".json") {
                 // Load it and store its id and path
@@ -144,9 +148,9 @@ std::vector<Animation *> resolveTileset(std::vector<std::string> in) {
 // Function to resolve the tileset and tilemap into images
 void Map::resolveMap(std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap) {
     // Get layers, width, and height
-    auto layers = (int) tilemap.size();
-    auto width = (int) tilemap[0].size();
-    auto height  = (int) tilemap[0][0].size();
+    int layers = (int) tilemap.size();
+    int width = (int) tilemap[0].size();
+    int height  = (int) tilemap[0][0].size();
 
     // Get the tileset as images
     std::vector<Animation *> animationMap = resolveTileset(std::move(tileset));

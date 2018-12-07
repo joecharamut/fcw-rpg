@@ -8,12 +8,25 @@
 #include <string>
 #include <map>
 
+// Fade progress states
+enum State {
+    STATE_NONE,
+    STATE_FADEOUT,
+    STATE_SWITCHING,
+    STATE_FADEIN
+};
+
 class Music {
 public:
     static ALLEGRO_MIXER *musicMixer;
     static ALLEGRO_MIXER *sfxMixer;
     static ALLEGRO_MIXER *masterMixer;
     static ALLEGRO_SAMPLE_INSTANCE *playing;
+
+    static bool switching;
+    static State state;
+    static float gain;
+    static ALLEGRO_SAMPLE_INSTANCE *next;
 
     static std::map<std::string, ALLEGRO_SAMPLE_INSTANCE *> registeredMusic;
     static std::map<std::string, ALLEGRO_SAMPLE_INSTANCE *> registeredSFX;

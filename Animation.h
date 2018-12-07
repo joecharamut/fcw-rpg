@@ -17,9 +17,9 @@ public:
     int speedCount = 0;
     int currentFrame = 0;
 
-    Animation() = default;;
+    Animation() = default;
     Animation(std::string type, std::vector<std::string> frames, int speed);
-    explicit Animation(std::string image) : Animation("default", {std::move(image)}, 1) {};
+    Animation(std::string image) : Animation("default", {std::move(image)}, 1) {};
 
     void loadFrames();
     ALLEGRO_BITMAP* nextFrame();

@@ -27,49 +27,43 @@ int Music::init() {
 }
 
 // Music switching flag
-bool switching = false;
-// Fade progress states
-enum State {
-    NONE,
-    FADE_OUT,
-    SWITCHING,
-    FADE_IN
-};
+bool Music::switching = false;
+
 // Current state
-State state = NONE;
+State Music::state = STATE_NONE;
 // Music gain
-float gain = 1.0;
+float Music::gain = 1.0;
 
 // Next music
-ALLEGRO_SAMPLE_INSTANCE *next;
+ALLEGRO_SAMPLE_INSTANCE *Music::next;
 
 void Music::update() {
     // If we are switching
     if (switching) {
         // If the state is NONE and gain is 1.0, set state FADE_OUT
-        if (state == NONE && gain == 1.0) state = FADE_OUT;
+        if (state == STATE_NONE && gain == 1.0) state = STATE_FADEOUT;
         // If state FADE_OUT and gain is <= 0 (muted), set state SWITCHING
-        else if (state == FADE_OUT && gain <= 0.0) state = SWITCHING;
+        else if (state == STATE_FADEOUT && gain <= 0.0) state = STATE_SWITCHING;
         // Set state FADE_IN if state is SWITCHING
-        else if (state == SWITCHING) state = FADE_IN;
+        else if (state == STATE_SWITCHING) state = STATE_FADEIN;
         // If FADE_IN and gain >= 1.0 set state NONE, switching false and gain 1.0
-        else if (state == FADE_IN && gain >= 1.0) {
-            state = NONE;
+        else if (state == STATE_FADEIN && gain >= 1.0) {
+            state = STATE_NONE;
             switching = false;
             gain = 1.0;
         }
         // For every loop
         switch (state) {
             // If the state is FADE_OUT
-            case FADE_OUT:
+            case STATE_FADEOUT:
                 // Subtract 0.033 from gain
                 gain -= 0.033;
                 break;
-            case FADE_IN:
+            case STATE_FADEIN:
                 // Add 0.033 to gain
                 gain += 0.033;
                 break;
-            case SWITCHING:
+            case STATE_SWITCHING:
                 // Stop last playing
                 if (playing) al_set_sample_instance_playing(playing, false);
                 if (playing) al_detach_sample_instance(playing);
@@ -86,12 +80,6 @@ void Music::update() {
     }
 }
 
-bool Music::registerMusic(ALLEGRO_SAMPLE_INSTANCE *reg, std::string id) {
-    if (Music::registeredMusic.count(id)) return false;
-    Music::registeredMusic[id] = reg;
-    return true;
-}
-
 void Music::playMusic(ALLEGRO_SAMPLE_INSTANCE *music) {
     // Set next music
     next = music;
@@ -103,4 +91,11 @@ void Music::playSFX(ALLEGRO_SAMPLE_INSTANCE *sfx) {
 
 }
 
+std::map<std::string, ALLEGRO_SAMPLE_INSTANCE *> Music::registeredMusic = {};
+std::map<std::string, ALLEGRO_SAMPLE_INSTANCE *> Music::registeredSFX = {};
 
+bool Music::registerMusic(ALLEGRO_SAMPLE_INSTANCE *reg, std::string id) {
+    if (registeredMusic.count(id)) return false;
+    registeredMusic[id] = reg;
+    return true;
+}
