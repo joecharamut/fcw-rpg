@@ -172,6 +172,7 @@ Event* Event::decode(std::string eventString) {
         std::smatch match = *i;
         std::string str = match.str();
         str = str.substr(2, str.length() - 3);
+        event->conditionOperators.push_back(str == "AND" ? AND : OR);
         //Util::log(str);
     }
 
@@ -205,4 +206,22 @@ Event* Event::decode(std::string eventString) {
     }
 
     return event;
+}
+
+bool Event::evaluateCondition(EventCondition condition, Map *map) {
+
+    return false;
+}
+
+void Event::doEvent(Map *map) {
+    bool state = evaluateCondition(conditions[0], map);
+    for (auto c : conditions) {
+
+        state &= evaluateCondition(c, map);
+    }
+    if (state) {
+        for (auto a : actions) {
+
+        }
+    }
 }
