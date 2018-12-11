@@ -6,22 +6,20 @@
 #include <vector>
 #include <string>
 #include <map>
+
 #include "Map.h"
+class Map;
 
 enum ConditionType {
     NOT_EQUAL, EQUALS, GREATER, LESS, GREATER_OR_EQUAL, LESS_OR_EQUAL
 };
 
 enum OperandType {
-    CONSTANT, PROPERTY
+    TYPE_CONSTANT, TYPE_PROPERTY
 };
 
 enum ActionType {
-    SET
-};
-
-enum Operator {
-    AND, OR
+    ACTION_SET
 };
 
 struct OperandObject {};
@@ -57,7 +55,6 @@ struct EventAction {
 class Event {
 public:
     std::vector<EventCondition> conditions = {};
-    std::vector<Operator> conditionOperators = {};
     std::vector<EventAction> actions = {};
 
     static void test();
@@ -68,6 +65,7 @@ public:
     Event();
     static Event* decode(std::string eventString);
     bool evaluateCondition(EventCondition condition, Map *map);
+    bool evaluateAction(EventAction action, Map *map);
     void doEvent(Map *map);
 
 private:

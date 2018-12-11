@@ -17,7 +17,7 @@ std::map<std::string, ConditionType> Event::conditionMap =  {
 };
 
 std::map<std::string, ActionType > Event::actionMap =  {
-        {"SET", SET}
+        {"SET", ACTION_SET}
 };
 
 Event::Event() = default;
@@ -26,19 +26,19 @@ std::string Event::to_string(EventCondition e) {
     std::string str;
     str += std::to_string(e.type) + ", ";
     str += "(" + std::to_string(e.operand1.first) + ":";
-    if (e.operand1.first == CONSTANT) {
+    if (e.operand1.first == TYPE_CONSTANT) {
         auto *o = (OperandConstant*) e.operand1.second;
         str += std::to_string(o->value) + ")";
-    } else if (e.operand1.first == PROPERTY) {
+    } else if (e.operand1.first == TYPE_PROPERTY) {
         auto *o = (OperandProperty*) e.operand1.second;
         str += o->spr + "::" + o->prop + ")";
     }
     str += ", ";
     str += "(" + std::to_string(e.operand2.first) + ":";
-    if (e.operand2.first == CONSTANT) {
+    if (e.operand2.first == TYPE_CONSTANT) {
         auto *o = (OperandConstant*) e.operand2.second;
         str += std::to_string(o->value) + ")";
-    } else if (e.operand2.first == PROPERTY) {
+    } else if (e.operand2.first == TYPE_PROPERTY) {
         auto *o = (OperandProperty*) e.operand2.second;
         str += o->spr + "::" + o->prop + ")";
     }
@@ -49,19 +49,19 @@ std::string Event::to_string(EventAction a) {
     std::string str;
     str += std::to_string(a.type) + ", ";
     str += "(" + std::to_string(a.operand1.first) + ":";
-    if (a.operand1.first == CONSTANT) {
+    if (a.operand1.first == TYPE_CONSTANT) {
         auto *o = (OperandConstant*) a.operand1.second;
         str += std::to_string(o->value) + ")";
-    } else if (a.operand1.first == PROPERTY) {
+    } else if (a.operand1.first == TYPE_PROPERTY) {
         auto *o = (OperandProperty*) a.operand1.second;
         str += o->spr + "::" + o->prop + ")";
     }
     str += ", ";
     str += "(" + std::to_string(a.operand2.first) + ":";
-    if (a.operand2.first == CONSTANT) {
+    if (a.operand2.first == TYPE_CONSTANT) {
         auto *o = (OperandConstant*) a.operand2.second;
         str += std::to_string(o->value) + ")";
-    } else if (a.operand2.first == PROPERTY) {
+    } else if (a.operand2.first == TYPE_PROPERTY) {
         auto *o = (OperandProperty*) a.operand2.second;
         str += o->spr + "::" + o->prop + ")";
     }
@@ -109,10 +109,10 @@ std::pair<OperandType, OperandObject*> makeOperand(const std::string &str) {
     OperandType type;
     OperandObject *object;
     if (Util::checkInt(str)) {
-        type = CONSTANT;
+        type = TYPE_CONSTANT;
         object = new OperandConstant(std::stoi(str));
     } else {
-        type = PROPERTY;
+        type = TYPE_PROPERTY;
         auto split = Util::splitString(str, ".");
         object = new OperandProperty(split[0], split[1]);
     }
@@ -122,7 +122,6 @@ std::pair<OperandType, OperandObject*> makeOperand(const std::string &str) {
 Event* Event::decode(std::string eventString) {
     auto *event = new Event();
     std::regex rCondition("{[^{}]*}", std::regex_constants::basic);
-    std::regex rOperation("\\} (AND|OR) \\{", std::regex_constants::extended);
 
     auto eventParts = Util::splitString(std::move(eventString), "//");
 
@@ -166,16 +165,6 @@ Event* Event::decode(std::string eventString) {
         event->conditions.push_back(condition);
     }
 
-    conditionString = eventParts[0];
-    auto ops = std::sregex_iterator(conditionString.begin(), conditionString.end(), rOperation);
-    for (auto i = ops; i != std::sregex_iterator(); ++i) {
-        std::smatch match = *i;
-        std::string str = match.str();
-        str = str.substr(2, str.length() - 3);
-        event->conditionOperators.push_back(str == "AND" ? AND : OR);
-        //Util::log(str);
-    }
-
     //Util::log("Action Part: "+actionString, "Decode");
 
     auto actionParts = Util::splitString(actionString, ",");
@@ -208,7 +197,35 @@ Event* Event::decode(std::string eventString) {
     return event;
 }
 
+float getValue(std::pair<OperandType, OperandObject *> op, Map *map) {
+    switch (op.first) {
+        case TYPE_CONSTANT:
+            return ((OperandConstant*) op.second)->value;
+        break;
+        case TYPE_PROPERTY:
+            Sprite *sprite = map->getSpriteById(((OperandProperty*) op.second)->spr);
+            std::string prop = ((OperandProperty*) op.second)->prop;
+            if (!sprite) {
+                return -1;
+            }
+            if (prop == "x") {
+                return sprite->getX();
+            } else if (prop == "y") {
+                return sprite->getY();
+            }
+        break;
+    }
+    return -1;
+}
+
 bool Event::evaluateCondition(EventCondition condition, Map *map) {
+    float value1 = getValue(condition.operand1, map);
+    float value2 = getValue(condition.operand2, map);
+
+    return false;
+}
+
+bool Event::evaluateAction(EventAction action, Map *map) {
 
     return false;
 }
@@ -216,12 +233,11 @@ bool Event::evaluateCondition(EventCondition condition, Map *map) {
 void Event::doEvent(Map *map) {
     bool state = evaluateCondition(conditions[0], map);
     for (auto c : conditions) {
-
         state &= evaluateCondition(c, map);
     }
     if (state) {
         for (auto a : actions) {
-
+            evaluateAction(a, map);
         }
     }
 }

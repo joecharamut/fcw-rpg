@@ -41,6 +41,8 @@ public:
     virtual void draw();
     virtual void setX(float newX);
     virtual void setY(float newY);
+    virtual float getX();
+    virtual float getY();
     void setDisplace(float dX, float dY);
     void updateBoundingBox();
 
