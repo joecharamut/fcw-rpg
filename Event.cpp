@@ -198,46 +198,86 @@ Event* Event::decode(std::string eventString) {
 }
 
 float getValue(std::pair<OperandType, OperandObject *> op, Map *map) {
-    switch (op.first) {
-        case TYPE_CONSTANT:
-            return ((OperandConstant*) op.second)->value;
-        break;
-        case TYPE_PROPERTY:
-            Sprite *sprite = map->getSpriteById(((OperandProperty*) op.second)->spr);
-            std::string prop = ((OperandProperty*) op.second)->prop;
-            if (!sprite) {
-                return -1;
-            }
-            if (prop == "x") {
-                return sprite->getX();
-            } else if (prop == "y") {
-                return sprite->getY();
-            }
-        break;
+    if (op.first == TYPE_CONSTANT) {
+        return ((OperandConstant*) op.second)->value;
+    } else if (op.first == TYPE_PROPERTY) {
+        Sprite *sprite = map->getSpriteById(((OperandProperty*) op.second)->spr);
+        std::string prop = ((OperandProperty*) op.second)->prop;
+        if (!sprite) {
+            return INT_MIN;
+        }
+        if (prop == "x") {
+            return sprite->getX();
+        } else if (prop == "y") {
+            return sprite->getY();
+        }
     }
-    return -1;
+    return INT_MIN;
+}
+
+bool setValue(std::pair<OperandType, OperandObject *> op1, std::pair<OperandType, OperandObject *> op2, Map *map) {
+    if (op1.first == TYPE_PROPERTY) {
+        float newValue = getValue(op2, map);
+        Sprite *sprite = map->getSpriteById(((OperandProperty*) op1.second)->spr);
+        std::string prop = ((OperandProperty*) op1.second)->prop;
+
+        if (!sprite || newValue == INT_MIN) {
+            return false;
+        }
+        if (prop == "x") {
+            sprite->setX(newValue);
+        } else if (prop == "y") {
+            sprite->setY(newValue);
+        }
+        return true;
+    }
+    return false;
 }
 
 bool Event::evaluateCondition(EventCondition condition, Map *map) {
     float value1 = getValue(condition.operand1, map);
     float value2 = getValue(condition.operand2, map);
-
-    return false;
+    if (value1 == INT_MIN || value2 == INT_MIN) return false;
+    switch (condition.type) {
+        case NOT_EQUAL:
+            return value1 != value2;
+        case EQUALS:
+            return value1 == value2;
+        case GREATER:
+            return value1 > value2;
+        case LESS:
+            return value1 < value2;
+        case GREATER_OR_EQUAL:
+            return value1 >= value2;
+        case LESS_OR_EQUAL:
+            return value1 <= value2;
+        default:
+            return false;
+    }
 }
 
 bool Event::evaluateAction(EventAction action, Map *map) {
-
+    if (action.type == ACTION_SET) {
+        return setValue(action.operand1, action.operand2, map);
+    }
     return false;
 }
 
 void Event::doEvent(Map *map) {
-    bool state = evaluateCondition(conditions[0], map);
+    long long int start = Util::getMilliTime();
+    bool state = true;
     for (auto c : conditions) {
         state &= evaluateCondition(c, map);
     }
     if (state) {
         for (auto a : actions) {
-            evaluateAction(a, map);
+            state &= evaluateAction(a, map);
+        }
+        if (state) {
+            std::cout << "[DEBUG]: Event group executed successfully in " << std::to_string(Util::getMilliTime()-start) << "ms" << std::endl;
+        } else {
+            std::cout << "[DEBUG]: Event group failed in " << std::to_string(Util::getMilliTime()-start) << "ms" << std::endl;
         }
     }
+
 }
