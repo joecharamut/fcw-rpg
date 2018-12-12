@@ -1,4 +1,6 @@
 #include <utility>
+
+#include <utility>
 #include <iostream>
 #include <memory>
 #include <experimental/filesystem>
@@ -41,7 +43,7 @@ Room::Room(std::string id, std::vector<std::string> tileset, std::vector<std::ve
         this->events.push_back(Event::decode(eventStr));
     }
 
-    // Load in Texts
+    /*// Load in Texts
     // TODO: Have texts hidden until event trigger?
     for (const auto &text : texts) {
         this->texts.push_back(new Text(text));
@@ -50,7 +52,7 @@ Room::Room(std::string id, std::vector<std::string> tileset, std::vector<std::ve
     // Load in music
     for (const auto &file : music) {
         this->music.push_back(al_load_sample(Map::getFilePath(file, parent).c_str()));
-    }
+    }*/
 }
 
 // Function to resolve the tileset to a list of Animations with the frames loaded in memory
@@ -148,10 +150,10 @@ void Room::draw() {
     }
     // For the texts, draw them
     // TODO: Make this event controlled. Maybe something similar to music module, but scrolling text and playing a sound
-    for (auto text : texts) {
+    /*for (auto text : texts) {
         al_draw_text(Main::fonts[text->font], al_map_rgb(text->r, text->g, text->b),
                      text->x, text->y, 0, text->text.c_str());
-    }
+    }*/
     // For each sprite, draw it
     for (auto *spr : sprites) {
         spr->draw();
@@ -193,7 +195,27 @@ Sprite* Room::checkCollision(Sprite *sprite) {
 Map::Map(std::string id, std::string defaultRoom, std::vector<std::string> roomFiles,
          std::map<std::string, Text> textsString, std::map<std::string, std::string> soundEffectsString,
          std::map<std::string, std::string> musicString) {
+    this->id = std::move(id);
+    this->defaultRoom = defaultRoom;
+    this->currentRoom = defaultRoom;
+    for (const auto &roomStr : roomFiles) {
+        std::ifstream inStream(getFilePath(roomStr, this), std::ios::binary);
+        if (!inStream.fail()) {
+            cereal::JSONInputArchive input(inStream);
+            RoomJSON roomJSON;
+            input(cereal::make_nvp("mapdata", roomJSON));
+            //this->rooms[roomJSON.id] = new Room();
+        }
+    }
+    for (const auto &text : textsString) {
+        this->texts[text.first] = new Text(text.second);
+    }
+    for (auto sfx : soundEffectsString) {
 
+    }
+    for (auto music : musicString) {
+
+    }
 }
 
 // Load map by id
@@ -280,7 +302,7 @@ std::vector<Sprite *> Map::getSprites() {
 }
 
 Sprite* Map::getSpriteById(std::string id) {
-    return rooms[currentRoom]->getSpriteById(id);
+    return rooms[currentRoom]->getSpriteById(std::move(id));
 }
 
 Sprite* Map::checkCollision(Sprite *sprite) {
