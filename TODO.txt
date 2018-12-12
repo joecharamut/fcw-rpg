@@ -1,14 +1,17 @@
 TODO::Map Editor - Nope definitely Java
 TODO::Map Editor::Export - All files > zip file[ /map.json, /data/{map resources} ]
-TODO::Map Editor::Export - Maybe save as a .map file, but have to unzip to temp folder on game load probably (Or possibly directly to mem?)
+TODO::Map Editor::Export - Maybe save as a .map file, but have to unzip to temp folder on game load probably
+    (Or possibly directly to mem?)
 TODO::Map Editor - Event tile : Transparent sprite, default event: intersect player - do something
 TODO::Map Editor - Actually Make It
+TODO::Map Editor - Have Editor load/save all the rooms as a project and export as a zip/map
 
 TODO::Event - Add event action to play sprite animation
 TODO::Event - Finish implementing events
 TODO::Event - Integrate it. IE check events on map update/draw/whatever
 
-TODO::Map - See if load times are better if all maps are loaded at start rather than dynamically - Significant current load times, perf hit probable
+TODO::Map - See if load times are better if all maps are loaded at start rather than dynamically -
+    Significant current load times, perf hit probable
 TODO::Map - Test performance with large amount of sprites - OK: Max before perf hit ~3000, Load times up
 
 TODO::Map - Fade transitions
@@ -19,3 +22,29 @@ TODO::General - Add comments / documentation (I mean its supposed to be collabor
 TODO::General - Add object as generic, then add subtypes, IE. Container, NPC, Sign, that have special properties
 TODO::General - Goddammit https://uscilab.github.io/cereal/polymorphism.html
 TODO::Event - ^
+
+TODO::Map Spec - Split map up into 'rooms' of current map class/spec and have a second file for global things,
+    like dialogue or sfx or music or cutscenes or w/e
+
+map_id/
+|   map.json
+|-- data
+|   |-- (images/sounds/whatever)
+|   |-- rooms
+|   |   |-- room0.json
+|   |   |-- room1.json
+|   |   |-- roomN.json
+
+map.json:
+    version
+    default_room
+    id
+    lookup by id:
+        rooms
+        dialogue
+        sfx
+        music
+        cutscenes/action sequences
+
+roomN.json:
+    its just the current map spec lol
