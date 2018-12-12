@@ -37,6 +37,18 @@ void Sprite::setY(float newY) {
     updateBoundingBox();
 }
 
+// Get X coordinate
+float Sprite::getX() {
+    // X plus X displacement
+    return x+dX;
+}
+
+// Get Y coordinate
+float Sprite::getY() {
+    // Y plus Y displacement
+    return y+dY;
+}
+
 // Set the displacement values for when the screen scrolls
 void Sprite::setDisplace(float dX, float dY) {
     this->dX = dX;

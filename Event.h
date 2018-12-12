@@ -1,24 +1,25 @@
-#include <utility>
-
 
 #ifndef FCWRPG_EVENT_H
 #define FCWRPG_EVENT_H
 
+#include <utility>
 #include <vector>
 #include <string>
 #include <map>
 
+#include "Map.h"
+class Map;
 
 enum ConditionType {
     NOT_EQUAL, EQUALS, GREATER, LESS, GREATER_OR_EQUAL, LESS_OR_EQUAL
 };
 
 enum OperandType {
-    CONSTANT, PROPERTY
+    TYPE_CONSTANT, TYPE_PROPERTY
 };
 
 enum ActionType {
-    SET
+    ACTION_SET
 };
 
 struct OperandObject {};
@@ -63,7 +64,10 @@ public:
 
     Event();
     static Event* decode(std::string eventString);
-    static std::string encode(Event* event);
+    bool evaluateCondition(EventCondition condition, Map *map);
+    bool evaluateAction(EventAction action, Map *map);
+    void doEvent(Map *map);
+
 private:
     static std::map<std::string, ConditionType> conditionMap;
     static std::map<std::string, ActionType> actionMap;

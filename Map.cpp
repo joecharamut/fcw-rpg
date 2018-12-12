@@ -195,8 +195,8 @@ void Map::draw() {
         spr->draw();
     }
 
-    for (auto *ev : events) {
-        // TODO: Implement this
+    for (auto *event : events) {
+        event->doEvent(this);
     }
 }
 

@@ -1,21 +1,22 @@
-#include <utility>
-
 
 #ifndef FCWRPG_MAP_H
 #define FCWRPG_MAP_H
 
-
-#include <allegro5/allegro_font.h>
-#include "Tile.h"
+#include <utility>
+#include <fstream>
 
 #include "cereal/cereal.hpp"
 #include "cereal/types/vector.hpp"
 #include "cereal/types/memory.hpp"
 #include "cereal/archives/json.hpp"
 #include "cereal/types/polymorphic.hpp"
-#include "Event.h"
-#include <fstream>
+
+#include <allegro5/allegro_font.h>
 #include <allegro5/allegro_audio.h>
+
+#include "Tile.h"
+#include "Event.h"
+class Event;
 
 struct Text {
     std::string text;
