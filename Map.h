@@ -100,6 +100,8 @@ struct MapJSON {
 
 class Room {
 public:
+    Map *parent;
+
     std::string id;
     std::vector<ALLEGRO_BITMAP *> backgrounds = {};
     std::vector<Sprite *> sprites = {};
@@ -108,8 +110,7 @@ public:
     float viewportY = 0;
 
     Room(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
-        std::vector<Sprite> sprites, std::vector<std::string> events, std::vector<Text> texts,
-        std::vector<std::string> music, Map *parent);
+        std::vector<Sprite> sprites, std::vector<std::string> events, Map *parent);
 
     std::vector<Animation *> resolveTileset(std::vector<std::string> in);
     void resolveMap(std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap);

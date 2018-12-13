@@ -15,8 +15,9 @@ static std::map<std::string, std::string> mapList = {};
 
 // Constructor
 Room::Room(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
-        std::vector<Sprite> sprites, std::vector<std::string> events, std::vector<Text> texts,
-        std::vector<std::string> music, Map *parent) {
+        std::vector<Sprite> sprites, std::vector<std::string> events, Map *parent) {
+    this->parent = parent;
+
     // Copy in id
     this->id = std::move(id);
 
@@ -42,17 +43,6 @@ Room::Room(std::string id, std::vector<std::string> tileset, std::vector<std::ve
     for (const auto &eventStr : events) {
         this->events.push_back(Event::decode(eventStr));
     }
-
-    /*// Load in Texts
-    // TODO: Have texts hidden until event trigger?
-    for (const auto &text : texts) {
-        this->texts.push_back(new Text(text));
-    }
-
-    // Load in music
-    for (const auto &file : music) {
-        this->music.push_back(al_load_sample(Map::getFilePath(file, parent).c_str()));
-    }*/
 }
 
 // Function to resolve the tileset to a list of Animations with the frames loaded in memory
@@ -148,20 +138,15 @@ void Room::draw() {
         // Draw the viewable portion of it to the screen
         al_draw_bitmap_region(bg, viewportX, viewportY, 512, 512, 0, 0, 0);
     }
-    // For the texts, draw them
-    // TODO: Make this event controlled. Maybe something similar to music module, but scrolling text and playing a sound
-    /*for (auto text : texts) {
-        al_draw_text(Main::fonts[text->font], al_map_rgb(text->r, text->g, text->b),
-                     text->x, text->y, 0, text->text.c_str());
-    }*/
+
     // For each sprite, draw it
     for (auto *spr : sprites) {
         spr->draw();
     }
 
+    // Check and execute events
     for (auto *event : events) {
-        // TODO: Fix
-        event->doEvent(nullptr);
+        event->doEvent(parent);
     }
 }
 
@@ -204,18 +189,31 @@ Map::Map(std::string id, std::string defaultRoom, std::vector<std::string> roomF
             cereal::JSONInputArchive input(inStream);
             RoomJSON roomJSON;
             input(cereal::make_nvp("mapdata", roomJSON));
-            //this->rooms[roomJSON.id] = new Room();
+            this->rooms[roomJSON.id] = new Room(roomJSON.id, roomJSON.tileset, roomJSON.tilemap, roomJSON.sprites, roomJSON.events, this);
         }
     }
+
     for (const auto &text : textsString) {
         this->texts[text.first] = new Text(text.second);
     }
-    for (auto sfx : soundEffectsString) {
 
+    for (const auto &sfx : soundEffectsString) {
+        this->soundEffects[sfx.first] = al_create_sample_instance(al_load_sample(sfx.second.c_str()));
     }
-    for (auto music : musicString) {
 
+    for (const auto &music : musicString) {
+        this->music[music.first] = al_create_sample_instance(al_load_sample(music.second.c_str()));
     }
+    /*// Load in Texts
+    // TODO: Have texts hidden until event trigger?
+    for (const auto &text : texts) {
+        this->texts.push_back(new Text(text));
+    }
+
+    // Load in music
+    for (const auto &file : music) {
+        this->music.push_back(al_load_sample(Map::getFilePath(file, parent).c_str()));
+    }*/
 }
 
 // Load map by id
@@ -315,6 +313,14 @@ void Map::updateViewport(Sprite *spr, bool override) {
 
 void Map::draw() {
     rooms[currentRoom]->draw();
+
+    // For the texts, draw them
+    // TODO: Make this event controlled. Maybe something similar to music module, but scrolling text and playing a sound
+    for (auto textMap : texts) {
+        auto text = textMap.second;
+        al_draw_text(Main::fonts[text->font], al_map_rgb(text->r, text->g, text->b), text->x, text->y, 0,
+                text->text.c_str());
+    }
 }
 
 void Map::handleEvent(ALLEGRO_EVENT event) {
