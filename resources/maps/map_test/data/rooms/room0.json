@@ -139,7 +139,8 @@
       }
     ],
     "events": [
-      "{s_hat.x LT 64},{s_hat.y LT 64}//{SET s_hat.x 128},{SET s_hat.y 128}"
+      "{s_hat.x LT 64},{s_hat.y LT 64}//{SET s_hat.x 128},{SET s_hat.y 128}",
+      "{key EQ KEY_SPACE}//{PLAY MUSIC mus_fight}"
     ]
   }
 }

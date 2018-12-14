@@ -11,7 +11,6 @@
 #include "Map.h"
 #include "Util.h"
 #include "Music.h"
-#include "Event.h"
 #include "Object.h"
 #include "Main.h"
 

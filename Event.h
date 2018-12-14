@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <allegro5/keycodes.h>
 
 #include "Map.h"
 class Map;
@@ -15,11 +16,11 @@ enum ConditionType {
 };
 
 enum OperandType {
-    TYPE_CONSTANT, TYPE_PROPERTY
+    TYPE_CONSTANT, TYPE_PROPERTY, TYPE_EVENT, TYPE_STRING, TYPE_KEY
 };
 
 enum ActionType {
-    ACTION_SET
+    ACTION_SET, ACTION_PLAY
 };
 
 struct OperandObject {};
@@ -37,6 +38,20 @@ struct OperandProperty : OperandObject {
     OperandProperty(std::string spr, std::string prop) {
         this->spr = std::move(spr);
         this->prop = std::move(prop);
+    };
+};
+
+struct OperandString : OperandObject {
+    std::string string;
+    OperandString(std::string string) {
+        this->string = std::move(string);
+    };
+};
+
+struct OperandKey : OperandObject {
+    int key;
+    OperandProperty(std::string keyStr) {
+        this->string = std::move(string);
     };
 };
 
@@ -71,7 +86,9 @@ public:
 private:
     static std::map<std::string, ConditionType> conditionMap;
     static std::map<std::string, ActionType> actionMap;
+    static std::map<std::string, int> stringToKeyCode;
 };
+
 
 
 #endif //FCWRPG_EVENT_H
