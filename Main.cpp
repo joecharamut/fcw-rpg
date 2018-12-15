@@ -11,7 +11,6 @@
 #include "Map.h"
 #include "Util.h"
 #include "Music.h"
-#include "Event.h"
 #include "Object.h"
 #include "Main.h"
 
@@ -135,7 +134,7 @@ void mapEventHandler(ALLEGRO_EVENT event) {
             }
         }
     } else if(event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
-        for(auto *spr : current_map->sprites) {
+        for(auto *spr : current_map->getSprites()) {
             if (spr->clickAction) {
                 if (BoundingBox::intersect(spr->boundingBox, event.mouse.x, event.mouse.y)) {
                     spr->clickAction(spr, event);
@@ -143,7 +142,7 @@ void mapEventHandler(ALLEGRO_EVENT event) {
             }
         }
     } else if (event.type == ALLEGRO_EVENT_MOUSE_AXES) {
-        for(auto *spr : current_map->sprites) {
+        for(auto *spr : current_map->getSprites()) {
             if (spr->hoverAction) {
                 if (BoundingBox::intersect(spr->boundingBox, event.mouse.x, event.mouse.y)) {
                     spr->hoverAction(spr, event);
@@ -280,7 +279,7 @@ void testing() {
     // Set the event handler TODO: Replace with events from map file, maybe pass events from game to map
     current_map->setEventHandlerFunction(mapEventHandler);
 
-    // Load in some test music
+    /*// Load in some test music
     music1 = al_create_sample_instance(current_map->music[0]);
     al_set_sample_instance_playmode(music1, ALLEGRO_PLAYMODE_LOOP);
     al_set_sample_instance_gain(music1, 1.0);
@@ -290,7 +289,7 @@ void testing() {
     al_set_sample_instance_gain(music2, 1.0);
 
     // Get it playing
-    Music::playMusic(music1);
+    Music::playMusic(music1);*/
 
     // Set the hat position and click action
     hat = current_map->getSpriteById("s_hat");

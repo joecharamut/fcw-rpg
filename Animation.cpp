@@ -1,11 +1,6 @@
 #include <utility>
 
-#include <utility>
-
-#include <utility>
-
 #include "Animation.h"
-#include "Util.h"
 
 // Constructor
 Animation::Animation(std::string type, std::vector<std::string> frames, int speed) {

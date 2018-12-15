@@ -1,7 +1,6 @@
 #include <utility>
 
 #include <regex>
-#include <stdexcept>
 #include <iostream>
 
 #include "Event.h"
@@ -17,7 +16,7 @@ std::map<std::string, ConditionType> Event::conditionMap =  {
 };
 
 std::map<std::string, ActionType > Event::actionMap =  {
-        {"SET", ACTION_SET}
+        {"SET", ACTION_SET}, {"PLAY", ACTION_PLAY}
 };
 
 Event::Event() = default;
@@ -111,10 +110,13 @@ std::pair<OperandType, OperandObject*> makeOperand(const std::string &str) {
     if (Util::checkInt(str)) {
         type = TYPE_CONSTANT;
         object = new OperandConstant(std::stoi(str));
-    } else {
+    } else if (str.find('.') != std::string::npos) {
         type = TYPE_PROPERTY;
         auto split = Util::splitString(str, ".");
         object = new OperandProperty(split[0], split[1]);
+    } else {
+        type = TYPE_STRING;
+        object = new OperandString(str);
     }
     return std::make_pair(type, object);
 }
