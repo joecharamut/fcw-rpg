@@ -10,6 +10,8 @@ TODO::Event - Add event action to play sprite animation
 TODO::Event - Finish implementing events
 TODO::Event - Integrate it. IE check events on map update/draw/whatever
 
+TODO::General - Keyboard module, bool values for each key and allegro event hooks for key down/up
+
 TODO::Map - See if load times are better if all maps are loaded at start rather than dynamically -
     Significant current load times, perf hit probable
 TODO::Map - Test performance with large amount of sprites - OK: Max before perf hit ~3000, Load times up

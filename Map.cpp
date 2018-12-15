@@ -191,6 +191,7 @@ Map::Map(std::string id, std::string defaultRoom, std::vector<std::string> roomF
         }
     }
 
+    // TODO: Have texts hidden until event trigger?
     for (const auto &text : textsString) {
         this->texts[text.first] = new Text(text.second);
     }
@@ -203,7 +204,7 @@ Map::Map(std::string id, std::string defaultRoom, std::vector<std::string> roomF
         this->music[music.first] = al_create_sample_instance(al_load_sample(music.second.c_str()));
     }
     /*// Load in Texts
-    // TODO: Have texts hidden until event trigger?
+
     for (const auto &text : texts) {
         this->texts.push_back(new Text(text));
     }

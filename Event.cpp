@@ -16,47 +16,7 @@ std::map<std::string, ConditionType> Event::conditionMap =  {
 };
 
 std::map<std::string, ActionType > Event::actionMap =  {
-        {"SET", ACTION_SET}
-};
-
-std::map<std::string, int> Event::stringToKeyCode = {
-        {"KEY_A", ALLEGRO_KEY_A},
-        {"KEY_B", ALLEGRO_KEY_B},
-        {"KEY_C", ALLEGRO_KEY_C},
-        {"KEY_D", ALLEGRO_KEY_D},
-        {"KEY_E", ALLEGRO_KEY_E},
-        {"KEY_F", ALLEGRO_KEY_F},
-        {"KEY_G", ALLEGRO_KEY_G},
-        {"KEY_H", ALLEGRO_KEY_H},
-        {"KEY_I", ALLEGRO_KEY_I},
-        {"KEY_J", ALLEGRO_KEY_J},
-        {"KEY_K", ALLEGRO_KEY_K},
-        {"KEY_L", ALLEGRO_KEY_L},
-        {"KEY_M", ALLEGRO_KEY_M},
-        {"KEY_N", ALLEGRO_KEY_N},
-        {"KEY_O", ALLEGRO_KEY_O},
-        {"KEY_P", ALLEGRO_KEY_P},
-        {"KEY_Q", ALLEGRO_KEY_Q},
-        {"KEY_R", ALLEGRO_KEY_R},
-        {"KEY_S", ALLEGRO_KEY_S},
-        {"KEY_T", ALLEGRO_KEY_T},
-        {"KEY_U", ALLEGRO_KEY_U},
-        {"KEY_V", ALLEGRO_KEY_B},
-        {"KEY_W", ALLEGRO_KEY_W},
-        {"KEY_X", ALLEGRO_KEY_X},
-        {"KEY_Y", ALLEGRO_KEY_Y},
-        {"KEY_Z", ALLEGRO_KEY_Z},
-        {"KEY_1", ALLEGRO_KEY_1},
-        {"KEY_2", ALLEGRO_KEY_2},
-        {"KEY_3", ALLEGRO_KEY_3},
-        {"KEY_4", ALLEGRO_KEY_4},
-        {"KEY_5", ALLEGRO_KEY_5},
-        {"KEY_6", ALLEGRO_KEY_6},
-        {"KEY_7", ALLEGRO_KEY_7},
-        {"KEY_8", ALLEGRO_KEY_8},
-        {"KEY_9", ALLEGRO_KEY_9},
-        {"KEY_0", ALLEGRO_KEY_0},
-        {"KEY_ENTER", ALLEGRO_KEY_ENTER}
+        {"SET", ACTION_SET}, {"PLAY", ACTION_PLAY}
 };
 
 Event::Event() = default;
