@@ -5,6 +5,8 @@
 
 #include "Event.h"
 #include "Util.h"
+#include "Keyboard.h"
+#include "Music.h"
 
 std::map<std::string, ConditionType> Event::conditionMap =  {
         {"NE", NOT_EQUAL},
@@ -12,7 +14,8 @@ std::map<std::string, ConditionType> Event::conditionMap =  {
         {"GT", GREATER},
         {"LT", LESS},
         {"GE", GREATER_OR_EQUAL},
-        {"LE", LESS_OR_EQUAL}
+        {"LE", LESS_OR_EQUAL},
+        {"DOWN", DOWN}
 };
 
 std::map<std::string, ActionType > Event::actionMap =  {
@@ -81,29 +84,6 @@ std::string Event::to_string(Event *ev) {
     return str;
 }
 
-void Event::test() {
-    std::string input = "{s_hat.x LT 64} AND {s_hat.y LT 64}//{SET s_hat.x 128},{SET s_hat.y 128}";
-    Util::log("Input String: " + input, "Test");
-    Event *dec;
-    try {
-        dec = decode(input);
-    } catch (std::exception &e) {
-        Util::log(e.what(), ERROR);
-        exit(1);
-    }
-    Util::log("Output Event:", "Test");
-    int i = 0;
-    for (EventCondition e : dec->conditions) {
-        Util::log(to_string(e), "Condition "+std::to_string(++i));
-    }
-    i = 0;
-    for (EventAction a : dec->actions) {
-        Util::log(to_string(a), "Action "+std::to_string(++i));
-    }
-    //Util::log("Input Event: (Prev.)", "Test");
-    //Util::log("Output String: ", "Test");
-}
-
 std::pair<OperandType, OperandObject*> makeOperand(const std::string &str) {
     OperandType type;
     OperandObject *object;
@@ -114,6 +94,9 @@ std::pair<OperandType, OperandObject*> makeOperand(const std::string &str) {
         type = TYPE_PROPERTY;
         auto split = Util::splitString(str, ".");
         object = new OperandProperty(split[0], split[1]);
+    } else if (str.substr(0, 4) == "KEY_") {
+        type = TYPE_KEY;
+        object = new OperandKey(str);
     } else {
         type = TYPE_STRING;
         object = new OperandString(str);
@@ -123,24 +106,22 @@ std::pair<OperandType, OperandObject*> makeOperand(const std::string &str) {
 
 Event* Event::decode(std::string eventString) {
     auto *event = new Event();
-    std::regex rCondition("{[^{}]*}", std::regex_constants::basic);
 
     auto eventParts = Util::splitString(std::move(eventString), "//");
 
-    if (eventParts.size() != 2) {
+    if (eventParts.size() < 2) {
         throw std::invalid_argument(
-                "Invalid Event Format ("+std::to_string(eventParts.size())+" Parts Found, Expected 2)");
+                "Invalid Event Format ("+std::to_string(eventParts.size())+" Parts Found, Expected 2 or 3)");
     }
 
     std::string conditionString = eventParts[0];
     std::string actionString = eventParts[1];
+    std::string delay = (eventParts.size() > 2 ? eventParts[2] : "");
 
     //Util::log("Condition Part: " + conditionString, "Decode");
 
-    auto iter = std::sregex_iterator(conditionString.begin(), conditionString.end(), rCondition);
-    for (auto i = iter; i != std::sregex_iterator(); ++i) {
-        std::smatch match = *i;
-        std::string str = match.str();
+    auto conditionParts = Util::splitString(conditionString, ",");
+    for (auto str : conditionParts) {
         str = str.substr(1, str.length()-2);
         auto split = Util::splitString(str, " ");
 
@@ -196,15 +177,21 @@ Event* Event::decode(std::string eventString) {
         event->actions.push_back(action);
     }
 
+    if (!delay.empty()) {
+        if (Util::checkInt(delay)) {
+            event->delay = std::stoi(delay);
+        }
+    }
+
     return event;
 }
 
 float getValue(std::pair<OperandType, OperandObject *> op, Map *map) {
     if (op.first == TYPE_CONSTANT) {
-        return ((OperandConstant*) op.second)->value;
+        return ((OperandConstant *) op.second)->value;
     } else if (op.first == TYPE_PROPERTY) {
-        Sprite *sprite = map->getSpriteById(((OperandProperty*) op.second)->spr);
-        std::string prop = ((OperandProperty*) op.second)->prop;
+        Sprite *sprite = map->getSpriteById(((OperandProperty *) op.second)->spr);
+        std::string prop = ((OperandProperty *) op.second)->prop;
         if (!sprite) {
             return INT_MIN;
         }
@@ -213,8 +200,23 @@ float getValue(std::pair<OperandType, OperandObject *> op, Map *map) {
         } else if (prop == "y") {
             return sprite->getY();
         }
+    } else if (op.first == TYPE_KEY) {
+        Keycode key = ((OperandKey *) op.second)->key;
+        if (key == -1) return INT_MIN;
+        return key;
+    } else if (op.first == TYPE_STRING) {
+        std::string str = ((OperandString *) op.second)->string;
+        if (str == "key") return 0;
+        return -1;
     }
     return INT_MIN;
+}
+
+std::string getValueString(std::pair<OperandType, OperandObject *> op) {
+    if (op.first == TYPE_STRING) {
+        return ((OperandString *) op.second)->string;
+    }
+    return "";
 }
 
 bool setValue(std::pair<OperandType, OperandObject *> op1, std::pair<OperandType, OperandObject *> op2, Map *map) {
@@ -236,6 +238,26 @@ bool setValue(std::pair<OperandType, OperandObject *> op1, std::pair<OperandType
     return false;
 }
 
+bool play(std::pair<OperandType, OperandObject *> op1, std::pair<OperandType, OperandObject *> op2, Map *map) {
+    std::string key = getValueString(op1);
+    std::string value = getValueString(op2);
+    if (key.empty() || value.empty()) {
+        return false;
+    }
+    if (key == "MUSIC") {
+        if (map->music.find(value) != map->music.end()) {
+            Music::playMusic(map->music.at(value));
+            return true;
+        }
+    } else if (key == "SFX") {
+        if (map->soundEffects.find(value) != map->soundEffects.end()) {
+            Music::playMusic(map->soundEffects.at(value));
+            return true;
+        }
+    }
+    return false;
+}
+
 bool Event::evaluateCondition(EventCondition condition, Map *map) {
     float value1 = getValue(condition.operand1, map);
     float value2 = getValue(condition.operand2, map);
@@ -253,6 +275,8 @@ bool Event::evaluateCondition(EventCondition condition, Map *map) {
             return value1 >= value2;
         case LESS_OR_EQUAL:
             return value1 <= value2;
+        case DOWN:
+            return Keyboard::getKeyState((Keycode) value2);
         default:
             return false;
     }
@@ -261,17 +285,24 @@ bool Event::evaluateCondition(EventCondition condition, Map *map) {
 bool Event::evaluateAction(EventAction action, Map *map) {
     if (action.type == ACTION_SET) {
         return setValue(action.operand1, action.operand2, map);
+    } else if (action.type == ACTION_PLAY) {
+        return play(action.operand1, action.operand2, map);
     }
     return false;
 }
 
 void Event::doEvent(Map *map) {
+    if (timer > 0) {
+        timer--;
+        return;
+    }
     long long int start = Util::getMilliTime();
     bool state = true;
     for (auto c : conditions) {
         state &= evaluateCondition(c, map);
     }
-    if (state) {
+    if (state && timer == 0) {
+        timer = delay;
         for (auto a : actions) {
             state &= evaluateAction(a, map);
         }

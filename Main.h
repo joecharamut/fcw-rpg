@@ -13,11 +13,13 @@ class Main {
 public:
     static bool done;
     static std::map<std::string, ALLEGRO_FONT *> fonts;
-
+    static std::vector<Event *> globalEvents;
 
     static void update();
+    static bool initGlobalEvents();
+    static void executeGlobalEvents();
     static void loadFonts();
-    static int initialize();
+    static int init();
 };
 
 

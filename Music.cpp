@@ -71,6 +71,7 @@ void Music::update() {
                 playing = next;
                 // Attach to mixer
                 al_attach_sample_instance_to_mixer(playing, musicMixer);
+                al_set_sample_instance_position(playing, 0);
                 al_set_sample_instance_playing(playing, true);
                 break;
             default: break;

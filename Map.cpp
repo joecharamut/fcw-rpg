@@ -200,19 +200,9 @@ Map::Map(std::string id, std::string defaultRoom, std::vector<std::string> roomF
         this->soundEffects[sfx.first] = al_create_sample_instance(al_load_sample(sfx.second.c_str()));
     }
 
-    for (const auto &music : musicString) {
-        this->music[music.first] = al_create_sample_instance(al_load_sample(music.second.c_str()));
+    for (const auto &str : musicString) {
+        this->music[str.first] = al_create_sample_instance(al_load_sample(Map::getFilePath(str.second, this).c_str()));
     }
-    /*// Load in Texts
-
-    for (const auto &text : texts) {
-        this->texts.push_back(new Text(text));
-    }
-
-    // Load in music
-    for (const auto &file : music) {
-        this->music.push_back(al_load_sample(Map::getFilePath(file, parent).c_str()));
-    }*/
 }
 
 // Load map by id
