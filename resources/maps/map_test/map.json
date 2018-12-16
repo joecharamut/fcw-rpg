@@ -20,7 +20,12 @@
         }
       }
     ],
-    "soundEffects": [],
+    "soundEffects": [
+      {
+        "key": "snd_test",
+        "value": "cavey_stuff.ogg"
+      }
+    ],
     "music": [
       {
         "key": "mus_cave",
