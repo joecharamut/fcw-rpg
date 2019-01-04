@@ -8,6 +8,7 @@ TODO::Map Editor - Have Editor load/save all the rooms as a project and export a
 
 TODO::Event - Add event action to play sprite animation
 TODO::Event - Add more event triggers/actions
+TODO::Event - Scrap current event system, replace with JS using https://duktape.org/
 
 TODO::Map - See if load times are better if all maps are loaded at start rather than dynamically -
     Significant current load times, perf hit probable
@@ -16,6 +17,14 @@ TODO::Map - Test performance with large amount of sprites - OK: Max before perf 
 TODO::Map - Fade transitions
 TODO::Map - Get destructors working to destroy the bitmaps
 TODO::Map - Add cut scenes / pathing / pathfinding to a point
+
+TODO::Engine - Multithreading (Console thread, GFX thread, Event thread, etc)
+TODO::General - Console and debug log output
+e.g.
+[Main/DEBUG] blah
+[Main/INFO] blah
+
+> help,map,etc
 
 TODO::General - Add comments / documentation (I mean its supposed to be collaborative right)
 
