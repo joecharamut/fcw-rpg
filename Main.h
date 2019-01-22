@@ -14,6 +14,7 @@ public:
     static bool done;
     static std::map<std::string, ALLEGRO_FONT *> fonts;
     static std::vector<Event *> globalEvents;
+    static Map *current_map;
 
     static void update();
     static bool initGlobalEvents();

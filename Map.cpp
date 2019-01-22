@@ -39,7 +39,7 @@ Room::Room(std::string id, std::vector<std::string> tileset, std::vector<std::ve
 
     // Load in events
     for (const auto &eventStr : events) {
-        this->events.push_back(Event::decode(eventStr));
+
     }
 }
 
@@ -144,7 +144,7 @@ void Room::draw() {
 
     // Check and execute events
     for (auto *event : events) {
-        event->doEvent(parent);
+
     }
 }
 

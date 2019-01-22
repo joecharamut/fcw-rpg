@@ -17,7 +17,7 @@
 
 bool redraw = true;
 
-Map *current_map = nullptr;
+Map *Main::current_map = nullptr;
 
 ALLEGRO_EVENT_QUEUE *queue;
 ALLEGRO_TIMER *timer;
@@ -94,14 +94,13 @@ bool Main::initGlobalEvents() {
 
 void Main::executeGlobalEvents() {
     for (auto event : globalEvents) {
-        if (current_map)
-            event->doEvent(current_map);
+
     }
 }
 
 void mapEventHandler(ALLEGRO_EVENT event) {
     if (event.type == ALLEGRO_EVENT_TIMER) {
-        Sprite *hat = current_map->getSpriteById("s_hat");
+        Sprite *hat = Main::current_map->getSpriteById("s_hat");
         if (hat != nullptr) {
             float hat_x = hat->x;
             float hat_y = hat->y;
@@ -121,7 +120,7 @@ void mapEventHandler(ALLEGRO_EVENT event) {
             hat->setX(hat_x);
             hat->setY(hat_y);
 
-            Sprite *spr = current_map->checkCollision(hat);
+            Sprite *spr = Main::current_map->checkCollision(hat);
             if (spr) {
                 std::vector<float> fix = BoundingBox::fixCollision(spr->boundingBox, hat->boundingBox);
                 hat->setX(fix[0]);
@@ -210,17 +209,19 @@ int Main::init() {
 // Function for testing features and stuff
 void testing() {
     // Load the test map
-    current_map = Map::loadMap("map_test");
+    Main::current_map = Map::loadMap("map_test");
     // Set the event handler TODO: Replace with events from map file, maybe pass events from game to map
-    current_map->setEventHandlerFunction(mapEventHandler);
+    Main::current_map->setEventHandlerFunction(mapEventHandler);
+
+    Event::test();
 
     // Load in some test music
-    ALLEGRO_SAMPLE_INSTANCE *music = current_map->music.at("mus_cave");
+    ALLEGRO_SAMPLE_INSTANCE *music = Main::current_map->music.at("mus_cave");
     al_set_sample_instance_playmode(music, ALLEGRO_PLAYMODE_LOOP);
     Music::playMusic(music);
 
     // Set the hat position and click action
-    hat = current_map->getSpriteById("s_hat");
+    hat = Main::current_map->getSpriteById("s_hat");
     hat->setX(SCREEN_W/4.0f -(hat->width/2.0f));
     hat->setY(SCREEN_H/4.0f -(hat->height/2.0f));
 }

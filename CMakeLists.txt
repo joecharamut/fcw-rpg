@@ -4,9 +4,9 @@ project(fcwrpg)
 set(CMAKE_CXX_STANDARD 14)
 #set(CMAKE_VERBOSE_MAKEFILE  ON)
 
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libs/cereal)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libs/cereal ${CMAKE_SOURCE_DIR}/libs/duktape)
 IF(${WIN32})
-    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libs/allegro_win/include ${CMAKE_SOURCE_DIR}/libs/cereal)
+    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libs/allegro_win/include ${CMAKE_SOURCE_DIR}/libs/cereal ${CMAKE_SOURCE_DIR}/libs/duktape)
     LINK_DIRECTORIES(${CMAKE_SOURCE_DIR}/libs/allegro_win/lib)
 ENDIF(${WIN32})
 
@@ -24,6 +24,8 @@ set(SOURCE_FILES
         Keyboard.cpp Keyboard.h)
 
 add_executable(fcwrpg ${SOURCE_FILES})
+add_library(duktape STATIC ${CMAKE_SOURCE_DIR}/libs/duktape/duktape.c)
+target_link_libraries(duktape m dl rt)
 
 IF(${WIN32})
     add_dependencies(fcwrpg copy_win_deps)
@@ -35,6 +37,7 @@ IF(${WIN32})
     TARGET_LINK_LIBRARIES(fcwrpg
             allegro_monolith
             stdc++fs
+            duktape
     )
 ELSE(${WIN32})
     TARGET_LINK_LIBRARIES(fcwrpg
@@ -52,6 +55,7 @@ ELSE(${WIN32})
             allegro_ttf
             allegro_video
             stdc++fs
+            duktape
     )
 ENDIF(${WIN32})
 
