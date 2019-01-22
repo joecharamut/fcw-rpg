@@ -10,10 +10,10 @@ const static int SCREEN_H = 512;
 const static float FPS = 60;
 
 class Main {
+
 public:
     static bool done;
     static std::map<std::string, ALLEGRO_FONT *> fonts;
-
 
     static void update();
     static void loadFonts();
