@@ -6,20 +6,22 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <allegro5/keycodes.h>
+#include "Keyboard.h"
 
 #include "Map.h"
 class Map;
 
 enum ConditionType {
-    NOT_EQUAL, EQUALS, GREATER, LESS, GREATER_OR_EQUAL, LESS_OR_EQUAL
+    NOT_EQUAL, EQUALS, GREATER, LESS, GREATER_OR_EQUAL, LESS_OR_EQUAL, DOWN
 };
 
 enum OperandType {
-    TYPE_CONSTANT, TYPE_PROPERTY
+    TYPE_CONSTANT, TYPE_PROPERTY, TYPE_EVENT, TYPE_STRING, TYPE_KEY
 };
 
 enum ActionType {
-    ACTION_SET
+    ACTION_SET, ACTION_PLAY
 };
 
 struct OperandObject {};
@@ -40,6 +42,20 @@ struct OperandProperty : OperandObject {
     };
 };
 
+struct OperandString : OperandObject {
+    std::string string;
+    OperandString(std::string string) {
+        this->string = std::move(string);
+    };
+};
+
+struct OperandKey : OperandObject {
+    int key;
+    OperandKey(std::string keyStr) {
+        this->key = (stringToKeycode.find(keyStr) != stringToKeycode.end() ? stringToKeycode.at(keyStr) : -1);
+    };
+};
+
 struct EventCondition {
     ConditionType type;
     std::pair<OperandType, OperandObject*> operand1;
@@ -54,10 +70,11 @@ struct EventAction {
 
 class Event {
 public:
+    int timer = 0;
+    int delay = 0;
     std::vector<EventCondition> conditions = {};
     std::vector<EventAction> actions = {};
 
-    static void test();
     static std::string to_string(EventCondition e);
     static std::string to_string(EventAction a);
     static std::string to_string(Event *ev);
@@ -72,6 +89,7 @@ private:
     static std::map<std::string, ConditionType> conditionMap;
     static std::map<std::string, ActionType> actionMap;
 };
+
 
 
 #endif //FCWRPG_EVENT_H

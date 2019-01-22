@@ -2,7 +2,6 @@
 
 #include "Sprite.h"
 #include <cstdarg>
-#include <cstdio>
 
 // Constructor
 Sprite::Sprite(float x, float y, std::string id, std::vector<Animation> frames) {

@@ -1,5 +1,4 @@
 #include "Object.h"
-#include <iostream>
 #include <fstream>
 
 void Container::type() {

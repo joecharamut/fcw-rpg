@@ -17,9 +17,6 @@ class Sprite {
 public:
     COLLISION_TYPE collision = NONE;
 
-    void (*clickAction)(Sprite*, ALLEGRO_EVENT event) = nullptr;
-    void (*hoverAction)(Sprite*, ALLEGRO_EVENT event) = nullptr;
-
     float x;
     float y;
     std::vector<Animation> frames;

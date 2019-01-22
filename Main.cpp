@@ -11,14 +11,9 @@
 #include "Map.h"
 #include "Util.h"
 #include "Music.h"
-#include "Event.h"
 #include "Object.h"
 #include "Main.h"
-
-enum KEYS {
-    KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT
-};
-bool key[4] = { false, false, false, false };
+#include "Keyboard.h"
 
 bool redraw = true;
 
@@ -32,9 +27,6 @@ double oldTime, newTime, delayTime, fps = 0;
 bool Main::done = false;
 std::map<std::string, ALLEGRO_FONT *> Main::fonts;
 
-ALLEGRO_SAMPLE_INSTANCE* music1;
-ALLEGRO_SAMPLE_INSTANCE* music2;
-int temp = 0;
 Sprite *hat;
 
 // Main game loop
@@ -45,11 +37,14 @@ void Main::update() {
         // If the 60fps timer ticks, set screen redraw
         if (event.type == ALLEGRO_EVENT_TIMER) redraw = true;
         // If user clicks close button, end the game
-        // TODO: Save Popup?
         if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) done = true;
         // If user presses [ESC], close game
         // TODO: Replace with menu
         if (event.type == ALLEGRO_EVENT_KEY_UP && event.keyboard.keycode == ALLEGRO_KEY_ESCAPE) done = true;
+        // Register a key event with the keyboard module
+        if (event.type == ALLEGRO_EVENT_KEY_DOWN || event.type == ALLEGRO_EVENT_KEY_UP)
+            Keyboard::registerKeyEvent(event);
+
         // If there is a map loaded, hand the event over
         if (current_map) {
             current_map->handleEvent(event);
@@ -67,6 +62,9 @@ void Main::update() {
             // TODO: Remove this
             current_map->updateViewport(hat, false);
         }
+
+        // Process Global Events, e.g. movement, menu
+        Main::executeGlobalEvents();
 
         // Calculate fps
         newTime = al_get_time();
@@ -86,22 +84,18 @@ void Main::update() {
     // Run music update routine - Used to fade audio
     Music::update();
 }
-// Testing Function when you click on the hat
-// TODO: Remove this, no mouse in game (probably)
-void clickFunction(Sprite *spr, ALLEGRO_EVENT event) {
-    switch (event.mouse.button) {
-        // If MB1, print X/Y of sprite
-        case 1:
-            printf("X: %f, Y: %f\n", spr->x, spr->y);
-            break;
-        // If MB2 print "RMB"
-        case 2:
-            printf("RMB\n");
-            break;
-        // Else just print the button
-        default:
-            printf("Other: %i\n", event.mouse.button);
-            break;
+
+std::vector<Event *> Main::globalEvents;
+
+bool Main::initGlobalEvents() {
+    //globalEvents.push_back(Event::decode("{SAMPLE}//{EVENT}"));
+    return true;
+}
+
+void Main::executeGlobalEvents() {
+    for (auto event : globalEvents) {
+        if (current_map)
+            event->doEvent(current_map);
     }
 }
 
@@ -111,16 +105,16 @@ void mapEventHandler(ALLEGRO_EVENT event) {
         if (hat != nullptr) {
             float hat_x = hat->x;
             float hat_y = hat->y;
-            if(key[KEY_UP]) {
+            if (Keyboard::getKeyState(ALLEGRO_KEY_UP) || Keyboard::getKeyState(ALLEGRO_KEY_W)) {
                 hat_y -= 4;
             }
-            if(key[KEY_DOWN]) {
+            if (Keyboard::getKeyState(ALLEGRO_KEY_DOWN) || Keyboard::getKeyState(ALLEGRO_KEY_S)) {
                 hat_y += 4;
             }
-            if(key[KEY_LEFT]) {
+            if (Keyboard::getKeyState(ALLEGRO_KEY_LEFT) || Keyboard::getKeyState(ALLEGRO_KEY_A)) {
                 hat_x -= 4;
             }
-            if(key[KEY_RIGHT]) {
+            if (Keyboard::getKeyState(ALLEGRO_KEY_RIGHT) || Keyboard::getKeyState(ALLEGRO_KEY_D)) {
                 hat_x += 4;
             }
 
@@ -134,68 +128,6 @@ void mapEventHandler(ALLEGRO_EVENT event) {
                 hat->setY(fix[1]);
             }
         }
-    } else if(event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
-        for(auto *spr : current_map->sprites) {
-            if (spr->clickAction) {
-                if (BoundingBox::intersect(spr->boundingBox, event.mouse.x, event.mouse.y)) {
-                    spr->clickAction(spr, event);
-                }
-            }
-        }
-    } else if (event.type == ALLEGRO_EVENT_MOUSE_AXES) {
-        for(auto *spr : current_map->sprites) {
-            if (spr->hoverAction) {
-                if (BoundingBox::intersect(spr->boundingBox, event.mouse.x, event.mouse.y)) {
-                    spr->hoverAction(spr, event);
-                }
-            }
-        }
-    } else if(event.type == ALLEGRO_EVENT_KEY_DOWN) {
-        switch(event.keyboard.keycode) {
-            case ALLEGRO_KEY_UP:
-            case ALLEGRO_KEY_W:
-                key[KEY_UP] = true;
-                break;
-            case ALLEGRO_KEY_DOWN:
-            case ALLEGRO_KEY_S:
-                key[KEY_DOWN] = true;
-                break;
-            case ALLEGRO_KEY_LEFT:
-            case ALLEGRO_KEY_A:
-                key[KEY_LEFT] = true;
-                break;
-            case ALLEGRO_KEY_RIGHT:
-            case ALLEGRO_KEY_D:
-                key[KEY_RIGHT] = true;
-                break;
-            case ALLEGRO_KEY_SPACE:
-                //if (temp) Music::playMusic(music1); else Music::playMusic(music2);
-                temp = !temp;
-                break;
-            default:
-                break;
-        }
-    } else if(event.type == ALLEGRO_EVENT_KEY_UP) {
-        switch(event.keyboard.keycode) {
-            case ALLEGRO_KEY_UP:
-            case ALLEGRO_KEY_W:
-                key[KEY_UP] = false;
-                break;
-            case ALLEGRO_KEY_DOWN:
-            case ALLEGRO_KEY_S:
-                key[KEY_DOWN] = false;
-                break;
-            case ALLEGRO_KEY_LEFT:
-            case ALLEGRO_KEY_A:
-                key[KEY_LEFT] = false;
-                break;
-            case ALLEGRO_KEY_RIGHT:
-            case ALLEGRO_KEY_D:
-                key[KEY_RIGHT] = false;
-                break;
-            default:
-                break;
-        }
     }
 }
 
@@ -208,7 +140,7 @@ void Main::loadFonts() {
 }
 
 // Function to initialize the game engine
-int Main::initialize() {
+int Main::init() {
     // Initialize Allegro
     if(al_init() == 0) {
         Util::log("Error initializing Allegro", "INIT", ERROR);
@@ -231,10 +163,6 @@ int Main::initialize() {
         Util::log("Error initializing Keyboard", "INIT", ERROR);
         return 0;
     }
-    if(!al_install_mouse()) {
-        Util::log("Error initializing Mouse", "INIT", ERROR);
-        return 0;
-    }
     if(!al_install_audio()) {
         Util::log("Error initializing Audio", "INIT", ERROR);
         return 0;
@@ -244,9 +172,16 @@ int Main::initialize() {
         return 0;
     }
 
+    // Setup Global Events
+    initGlobalEvents();
+
     // Initialize my modules
     if (!Music::init()) {
         Util::log("Error initializing Audio Module", "INIT", ERROR);
+        return 0;
+    }
+    if (!Keyboard::init()) {
+        Util::log("Error initializing Keyboard Module", "INIT", ERROR);
         return 0;
     }
 
@@ -267,7 +202,6 @@ int Main::initialize() {
     queue = al_create_event_queue();
     // Register events
     al_register_event_source(queue, al_get_keyboard_event_source());
-    al_register_event_source(queue, al_get_mouse_event_source());
     al_register_event_source(queue, al_get_timer_event_source(timer));
     al_register_event_source(queue, al_get_display_event_source(display));
     return 1;
@@ -281,22 +215,14 @@ void testing() {
     current_map->setEventHandlerFunction(mapEventHandler);
 
     // Load in some test music
-    music1 = al_create_sample_instance(current_map->music[0]);
-    al_set_sample_instance_playmode(music1, ALLEGRO_PLAYMODE_LOOP);
-    al_set_sample_instance_gain(music1, 1.0);
-
-    music2 = al_create_sample_instance(current_map->music[1]);
-    al_set_sample_instance_playmode(music2, ALLEGRO_PLAYMODE_LOOP);
-    al_set_sample_instance_gain(music2, 1.0);
-
-    // Get it playing
-    Music::playMusic(music1);
+    ALLEGRO_SAMPLE_INSTANCE *music = current_map->music.at("mus_cave");
+    al_set_sample_instance_playmode(music, ALLEGRO_PLAYMODE_LOOP);
+    Music::playMusic(music);
 
     // Set the hat position and click action
     hat = current_map->getSpriteById("s_hat");
     hat->setX(SCREEN_W/4.0f -(hat->width/2.0f));
     hat->setY(SCREEN_H/4.0f -(hat->height/2.0f));
-    hat->clickAction = clickFunction;
 }
 
 int main(int argc, char *argv[]) {
@@ -304,7 +230,7 @@ int main(int argc, char *argv[]) {
     long long int start = Util::getMilliTime();
     Util::log("Initializing Engine");
     // Run initialization
-    if (!Main::initialize()) {
+    if (!Main::init()) {
         // If failed, quit program
         return 1;
     }
@@ -317,13 +243,7 @@ int main(int argc, char *argv[]) {
     // Load fonts TODO: Move this
     Main::loadFonts();
 
-    //Util::log("Enumerating Maps");
-    // Get available maps and print them
-    // TODO: Maybe load them too
-    //for (const auto &str : Map::enumerateMaps()) {
-    //    Util::log(str);
-    //}
-    //Util::log("Done");
+    // TODO: Maybe load maps at start time
     Map::enumerateMaps();
 
     // Run some temp testing stuff
