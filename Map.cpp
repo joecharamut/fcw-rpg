@@ -8,6 +8,8 @@
 #include "Map.h"
 #include "Util.h"
 #include "Main.h"
+#include "Log.h"
+#include "Engine.h"
 
 static std::map<std::string, std::string> mapList = {};
 
@@ -39,7 +41,7 @@ Room::Room(std::string id, std::vector<std::string> tileset, std::vector<std::ve
 
     // Load in events
     for (const auto &eventStr : events) {
-        this->events.push_back(Event::decode(eventStr));
+
     }
 }
 
@@ -92,8 +94,8 @@ void Room::resolveMap(std::vector<std::string> tileset, std::vector<std::vector<
 void Room::updateViewport(Sprite *spr, bool override) {
     bool changed = false;
 
-    float cX = SCREEN_W/2.0f;
-    float cY = SCREEN_H/2.0f;
+    float cX = Engine::SCREEN_W/2.0f;
+    float cY = Engine::SCREEN_H/2.0f;
     float csX = (spr->x + (spr->width/2.0f));
     float csY = (spr->y + (spr->height/2.0f));
     if (csX != cX || csY != cY) {
@@ -108,12 +110,12 @@ void Room::updateViewport(Sprite *spr, bool override) {
         } else {
             float newX = viewportX - dX;
             float newY = viewportY - dY;
-            if (newX >= 0 && newX <= al_get_bitmap_width(backgrounds[0])-SCREEN_W) {
+            if (newX >= 0 && newX <= al_get_bitmap_width(backgrounds[0])-Engine::SCREEN_W) {
                 viewportX -= dX;
                 spr->setX(spr->x+dX);
                 changed = true;
             }
-            if (newY >= 0 && newY <= al_get_bitmap_height(backgrounds[0])-SCREEN_H) {
+            if (newY >= 0 && newY <= al_get_bitmap_height(backgrounds[0])-Engine::SCREEN_H) {
                 viewportY -= dY;
                 spr->setY(spr->y+dY);
                 changed = true;
@@ -144,7 +146,7 @@ void Room::draw() {
 
     // Check and execute events
     for (auto *event : events) {
-        event->doEvent(parent);
+
     }
 }
 
@@ -180,7 +182,6 @@ Map::Map(std::string id, std::string defaultRoom, std::vector<std::string> roomF
          std::map<std::string, std::string> musicString) {
     this->id = std::move(id);
     this->defaultRoom = defaultRoom;
-    this->currentRoom = defaultRoom;
     for (const auto &roomStr : roomFiles) {
         std::ifstream inStream(getFilePath(roomStr, this), std::ios::binary);
         if (!inStream.fail()) {
@@ -190,6 +191,7 @@ Map::Map(std::string id, std::string defaultRoom, std::vector<std::string> roomF
             this->rooms[roomJSON.id] = new Room(roomJSON.id, roomJSON.tileset, roomJSON.tilemap, roomJSON.sprites, roomJSON.events, this);
         }
     }
+    this->current_room = rooms[defaultRoom];
 
     // TODO: Have texts hidden until event trigger?
     for (const auto &text : textsString) {
@@ -197,11 +199,11 @@ Map::Map(std::string id, std::string defaultRoom, std::vector<std::string> roomF
     }
 
     for (const auto &sfx : soundEffectsString) {
-        this->soundEffects[sfx.first] = al_create_sample_instance(al_load_sample(sfx.second.c_str()));
+        this->soundEffects[sfx.first] = al_create_sample_instance(Engine::loadSample(Map::getFilePath(sfx.second, this).c_str()));
     }
 
     for (const auto &str : musicString) {
-        this->music[str.first] = al_create_sample_instance(al_load_sample(Map::getFilePath(str.second, this).c_str()));
+        this->music[str.first] = al_create_sample_instance(Engine::loadSample(Map::getFilePath(str.second, this).c_str()));
     }
 }
 
@@ -231,12 +233,12 @@ Map* Map::loadMapFile(std::string filename) {
         // Get end time
         long long int end = Util::getMilliTime();
         // Print delta
-        Util::log("Loaded Map " + loaded.id + " (" + std::to_string(end-start) + " ms)");
+        Log::info("Loaded Map " + loaded.id + " (" + std::to_string(end-start) + " ms)");
         // Return loaded map
         return m;
     }
     // If it didn't open, send error and return null
-    Util::log("Error loading map " + filename + " (File Not Found)", ERROR);
+    Log::error("Error loading map " + filename + " (File Not Found)");
     return nullptr;
 }
 
@@ -285,29 +287,29 @@ std::vector<std::string> Map::enumerateMaps() {
 }
 
 std::vector<Sprite *> Map::getSprites() {
-    return rooms[currentRoom]->sprites;
+    return current_room->sprites;
 }
 
 Sprite* Map::getSpriteById(std::string id) {
-    return rooms[currentRoom]->getSpriteById(std::move(id));
+    return current_room->getSpriteById(std::move(id));
 }
 
 Sprite* Map::checkCollision(Sprite *sprite) {
-    return rooms[currentRoom]->checkCollision(sprite);
+    return current_room->checkCollision(sprite);
 }
 
 void Map::updateViewport(Sprite *spr, bool override) {
-    rooms[currentRoom]->updateViewport(spr, override);
+    current_room->updateViewport(spr, override);
 }
 
 void Map::draw() {
-    rooms[currentRoom]->draw();
+    current_room->draw();
 
     // For the texts, draw them
     // TODO: Make this event controlled. Maybe something similar to music module, but scrolling text and playing a sound
     for (const auto &textMap : texts) {
         auto text = textMap.second;
-        al_draw_text(Main::fonts[text->font], al_map_rgb(text->r, text->g, text->b), text->x, text->y, 0,
+        al_draw_text(Engine::fonts[text->font], al_map_rgb(text->r, text->g, text->b), text->x, text->y, 0,
                 text->text.c_str());
     }
 }

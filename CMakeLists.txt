@@ -4,9 +4,9 @@ project(fcwrpg)
 set(CMAKE_CXX_STANDARD 14)
 #set(CMAKE_VERBOSE_MAKEFILE  ON)
 
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libs/cereal)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libs/cereal ${CMAKE_SOURCE_DIR}/libs/duktape)
 IF(${WIN32})
-    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libs/allegro_win/include ${CMAKE_SOURCE_DIR}/libs/cereal)
+    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libs/allegro_win/include ${CMAKE_SOURCE_DIR}/libs/cereal ${CMAKE_SOURCE_DIR}/libs/duktape)
     LINK_DIRECTORIES(${CMAKE_SOURCE_DIR}/libs/allegro_win/lib)
 ENDIF(${WIN32})
 
@@ -14,16 +14,17 @@ set(SOURCE_FILES
         Main.cpp Main.h
         Sprite.cpp Sprite.h
         Map.cpp Map.h
-        Tile.cpp Tile.h
         BoundingBox.cpp BoundingBox.h
         Util.cpp Util.h
         Animation.cpp Animation.h
         Music.cpp Music.h
         Event.cpp Event.h
         Object.cpp Object.h
-        Keyboard.cpp Keyboard.h)
+        Keyboard.cpp Keyboard.h Engine.cpp Engine.h Log.cpp Log.h)
 
 add_executable(fcwrpg ${SOURCE_FILES})
+add_library(duktape STATIC ${CMAKE_SOURCE_DIR}/libs/duktape/duktape.c)
+target_link_libraries(duktape m)# dl rt)
 
 IF(${WIN32})
     add_dependencies(fcwrpg copy_win_deps)
@@ -35,6 +36,7 @@ IF(${WIN32})
     TARGET_LINK_LIBRARIES(fcwrpg
             allegro_monolith
             stdc++fs
+            duktape
     )
 ELSE(${WIN32})
     TARGET_LINK_LIBRARIES(fcwrpg
@@ -52,11 +54,12 @@ ELSE(${WIN32})
             allegro_ttf
             allegro_video
             stdc++fs
+            duktape
     )
 ENDIF(${WIN32})
 
 IF(${WIN32})
-    find_file(pthread libwinpthread-1.dll)
+    #find_file(pthread libwinpthread-1.dll)
     find_file(libgcc libgcc_s_dw2-1.dll)
     find_file(libstdc libstdc++-6.dll)
 ENDIF(${WIN32})
