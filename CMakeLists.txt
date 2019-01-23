@@ -55,6 +55,7 @@ ELSE(${WIN32})
             allegro_video
             stdc++fs
             duktape
+            pthread
     )
 ENDIF(${WIN32})
 

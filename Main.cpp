@@ -58,7 +58,7 @@ void Main::testing() {
     // Set the event handler TODO: Replace with events from map file, maybe pass events from game to map
     Engine::current_map->setEventHandlerFunction(mapEventHandler);
 
-    //Event::test();
+    Event::test();
 
     // Load in some test music
     ALLEGRO_SAMPLE_INSTANCE *music = Engine::current_map->music.at("mus_cave");

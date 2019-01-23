@@ -1,5 +1,5 @@
 #include "Event.h"
-//#include "duktape.h"
+#include "duktape.h"
 #include "Main.h"
 #include "Engine.h"
 #include <cstdio>
@@ -46,6 +46,11 @@ void Event::test() {
 
 #include <duktape-cpp/DuktapeCpp.h>
 
+static duk_ret_t native_print(duk_context *ctx) {
+    printf("%s\n", duk_to_string(ctx, 0));
+    return 0;
+}
+
 class GameContext {
 public:
     GameContext() = default;
@@ -54,13 +59,18 @@ public:
 
     template <class Inspector>
     static void inspect(Inspector &i) {
+        i.construct(&std::make_shared<GameContext>);
         i.property("current_map", &GameContext::currentMap);
     }
-
 };
+DUK_CPP_DEF_CLASS_NAME(GameContext);
 
 void Event::test() {
     duk::Context ctx;
+
+    duk_push_c_function(ctx, native_print, 1);
+    duk_put_global_string(ctx, "print");
+
     ctx.registerClass<GameContext>();
-    ctx.evalStringNoRes("var ctx = new GameContext();");
+    ctx.evalStringNoRes("print(new GameContext().current_map);");
 }
