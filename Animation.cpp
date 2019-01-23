@@ -1,6 +1,7 @@
 #include <utility>
 
 #include "Animation.h"
+#include "Engine.h"
 
 // Constructor
 Animation::Animation(std::string type, std::vector<std::string> frames, int speed) {
@@ -17,7 +18,7 @@ void Animation::loadFrames() {
     // For each frame
     for (const auto &frame : frames) {
         // Load it into the loadedFrames vector
-        loadedFrames.push_back(al_load_bitmap(frame.c_str()));
+        loadedFrames.push_back(Engine::loadImage(frame.c_str()));
     }
 }
 

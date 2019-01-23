@@ -14,18 +14,17 @@ set(SOURCE_FILES
         Main.cpp Main.h
         Sprite.cpp Sprite.h
         Map.cpp Map.h
-        Tile.cpp Tile.h
         BoundingBox.cpp BoundingBox.h
         Util.cpp Util.h
         Animation.cpp Animation.h
         Music.cpp Music.h
         Event.cpp Event.h
         Object.cpp Object.h
-        Keyboard.cpp Keyboard.h)
+        Keyboard.cpp Keyboard.h Engine.cpp Engine.h Log.cpp Log.h)
 
 add_executable(fcwrpg ${SOURCE_FILES})
 add_library(duktape STATIC ${CMAKE_SOURCE_DIR}/libs/duktape/duktape.c)
-target_link_libraries(duktape m dl rt)
+target_link_libraries(duktape m)# dl rt)
 
 IF(${WIN32})
     add_dependencies(fcwrpg copy_win_deps)
@@ -60,7 +59,7 @@ ELSE(${WIN32})
 ENDIF(${WIN32})
 
 IF(${WIN32})
-    find_file(pthread libwinpthread-1.dll)
+    #find_file(pthread libwinpthread-1.dll)
     find_file(libgcc libgcc_s_dw2-1.dll)
     find_file(libstdc libstdc++-6.dll)
 ENDIF(${WIN32})

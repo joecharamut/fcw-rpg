@@ -1,9 +1,10 @@
 #include "Event.h"
-#include "duktape.h"
+//#include "duktape.h"
 #include "Main.h"
+#include "Engine.h"
 #include <cstdio>
 
-// Duktape Functions
+/*// Duktape Functions
 static duk_ret_t native_print(duk_context *ctx) {
     printf("%s\n", duk_to_string(ctx, 0));
     return 0;
@@ -14,7 +15,7 @@ static duk_ret_t getGameContext(duk_context *ctx) {
 
     duk_idx_t musicArray = duk_push_array(ctx);
     int i = 0;
-    for (const auto &m : Main::current_map->music) {
+    for (const auto &m : Engine::current_map->music) {
         duk_push_string(ctx, m.first.c_str());
         duk_put_prop_index(ctx, musicArray, i++);
     }
@@ -41,4 +42,25 @@ void Event::test() {
     duk_eval_string_noresult(ctx, duk_to_string(ctx, -1));
 
     duk_destroy_heap(ctx);
+}*/
+
+#include <duktape-cpp/DuktapeCpp.h>
+
+class GameContext {
+public:
+    GameContext() = default;
+
+    std::string currentMap() const { return "testing"; }
+
+    template <class Inspector>
+    static void inspect(Inspector &i) {
+        i.property("current_map", &GameContext::currentMap);
+    }
+
+};
+
+void Event::test() {
+    duk::Context ctx;
+    ctx.registerClass<GameContext>();
+    ctx.evalStringNoRes("var ctx = new GameContext();");
 }

@@ -13,7 +13,6 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_audio.h>
 
-#include "Tile.h"
 #include "Event.h"
 class Event;
 class Map;
@@ -130,7 +129,7 @@ public:
     std::map<std::string, Text *> texts;
     std::map<std::string, ALLEGRO_SAMPLE_INSTANCE *> soundEffects;
     std::map<std::string, ALLEGRO_SAMPLE_INSTANCE *> music;
-    std::string currentRoom;
+    Room *current_room;
 
     void (*handlerFunction)(ALLEGRO_EVENT event);
 

@@ -1,6 +1,7 @@
 
 #include "Util.h"
 #include "Music.h"
+#include "Log.h"
 
 ALLEGRO_MIXER *Music::musicMixer;
 ALLEGRO_MIXER *Music::sfxMixer;
@@ -10,7 +11,7 @@ ALLEGRO_SAMPLE_INSTANCE *Music::playing;
 int Music::init() {
     // Reserve audio samples
     if (!al_reserve_samples(4)) {
-        Util::log("Error reserving samples", "Audio", ERROR);
+        Log::error("Error reserving samples");
         return 0;
     }
     // Create mixers
