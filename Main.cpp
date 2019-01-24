@@ -17,11 +17,9 @@
 #include "Log.h"
 #include "Engine.h"
 
-Sprite *hat;
-
 void mapEventHandler(ALLEGRO_EVENT event) {
     if (event.type == ALLEGRO_EVENT_TIMER) {
-        Sprite *hat = Engine::current_map->getSpriteById("s_hat");
+        auto hat = Engine::current_map->getSpriteById("s_hat");
         if (hat != nullptr) {
             float hat_x = hat->x;
             float hat_y = hat->y;
@@ -58,17 +56,19 @@ void Main::testing() {
     // Set the event handler TODO: Replace with events from map file, maybe pass events from game to map
     Engine::current_map->setEventHandlerFunction(mapEventHandler);
 
-    Event::test();
-
     // Load in some test music
     ALLEGRO_SAMPLE_INSTANCE *music = Engine::current_map->music.at("mus_cave");
     al_set_sample_instance_playmode(music, ALLEGRO_PLAYMODE_LOOP);
     Music::playMusic(music);
 
     // Set the hat position and click action
-    hat = Engine::current_map->getSpriteById("s_hat");
+    auto hat = Engine::current_map->getSpriteById("s_hat");
     hat->setX(Engine::SCREEN_W/4.0f -(hat->width/2.0f));
     hat->setY(Engine::SCREEN_H/4.0f -(hat->height/2.0f));
+
+    Engine::player = hat;
+
+    Event::test();
 }
 
 int main(int argc, char *argv[]) {

@@ -95,7 +95,6 @@ int Engine::init() {
     oldTime = al_get_time();
     delayTime = al_get_time();
 
-
     return 1;
 }
 

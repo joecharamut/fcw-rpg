@@ -28,12 +28,12 @@ public:
     float dX = 0;
     float dY = 0;
 
-    Sprite(float x, float y, std::string id, std::vector<Animation> frames);
-    Sprite(float x, float y, std::string id, Animation image) : Sprite(x, y, id, (std::vector<Animation>) {image}) {};
-    Sprite(float x, float y, std::vector<Animation> frames) : Sprite(x, y, "", frames) {};
-    Sprite(float x, float y, Animation image) : Sprite(x, y, "", image) {};
-    explicit Sprite(Sprite *spr) : Sprite(spr->x, spr->y, spr->id, spr->frames) { this->collision = spr->collision; };
-    Sprite() = default;;
+    Sprite() = default;
+    Sprite(float x, float y, std::string id, std::vector<Animation> frames, COLLISION_TYPE collision);
+    //Sprite(float x, float y, std::string id, Animation image) : Sprite(x, y, id, (std::vector<Animation>) {image}) {};
+    //Sprite(float x, float y, std::vector<Animation> frames) : Sprite(x, y, "", frames) {};
+    //Sprite(float x, float y, Animation image) : Sprite(x, y, "", image) {};
+    explicit Sprite(Sprite *spr) : Sprite(spr->x, spr->y, spr->id, spr->frames, spr->collision) {};//{ this->collision = spr->collision; };
 
     virtual void draw();
     virtual void setX(float newX);

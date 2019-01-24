@@ -90,7 +90,7 @@
           {
             "type": "STILL",
             "frames": [
-              "resources/rainbow/frame-0.png"
+              "rainbow/frame-0.png"
             ],
             "speed": 1
           }

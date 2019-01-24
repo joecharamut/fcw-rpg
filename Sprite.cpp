@@ -4,12 +4,15 @@
 #include <cstdarg>
 
 // Constructor
-Sprite::Sprite(float x, float y, std::string id, std::vector<Animation> frames) {
+Sprite::Sprite(float x, float y, std::string id, std::vector<Animation> frames, COLLISION_TYPE collision) {
     // Set values
     this->x = x;
     this->y = y;
     this->frames = std::move(frames);
-    this->frames[0].loadFrames();
+    for (auto &frame : this->frames) {
+        frame.loadFrames();
+    }
+    this->collision = collision;
     this->width = al_get_bitmap_width(this->frames[0].loadedFrames[0]);
     this->height = al_get_bitmap_height(this->frames[0].loadedFrames[0]);
     this->id = std::move(id);
