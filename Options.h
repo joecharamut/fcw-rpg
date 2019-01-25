@@ -7,10 +7,13 @@
 namespace Options {
 
     class Runtime {
-
+    public:
+        static bool debug;
     };
 
     class Config {
+    public:
+
 
     };
 }

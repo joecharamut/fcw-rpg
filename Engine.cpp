@@ -180,26 +180,22 @@ void Engine::renderThread() {
     }
 }
 
-template <typename T>
-bool vectorContains(std::vector<T> vector, T object) {
-    for (const auto &item : vector) {
-        if (item == object) {
-            return true;
-        }
-    }
-    return false;
-}
-
-std::vector<std::string> validCommands = {"help"};
+std::vector<std::string> validCommands = {
+        "help",
+        "eval"
+};
 std::map<std::string, std::string> commandHelp = {
-        {"help", "Display help text and list commands."}
+        {"help", "Display help text and list commands."},
+        {"eval", "Eval an event string."}
 };
 
 void processCommandString(std::string command) {
     auto commandPart = Util::splitString(command, " ");
     auto cmd = commandPart[0];
 
-    if (!vectorContains(validCommands, cmd)) {
+    //Log::debug("len: " + std::to_string(commandPart.size()));
+
+    if (!Util::vectorContains(validCommands, cmd)) {
         printf("Invalid command \"%s\"\n", cmd.c_str());
         return;
     }
@@ -212,11 +208,18 @@ void processCommandString(std::string command) {
             }
             printf("Type help <command> for additional command help.\n\n");
         } else {
-            if (!vectorContains(validCommands, commandPart[1])) {
+            if (!Util::vectorContains(validCommands, commandPart[1])) {
                 printf("\"%s\" is not a valid command.\n\n", commandPart[1].c_str());
             } else {
                 printf("%s: %s\n\n", commandPart[1].c_str(), commandHelp[commandPart[1]].c_str());
             }
+        }
+    } else if (cmd == "eval") {
+        if (commandPart.size() < 2) {
+            printf("Usage: eval <string>\n\n");
+        } else {
+            printf("c: %s\n", commandPart[1].c_str());
+            Event::eval(commandPart[1]);
         }
     }
 }

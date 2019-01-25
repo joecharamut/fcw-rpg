@@ -71,7 +71,34 @@ void Main::testing() {
     Event::test();
 }
 
+const std::vector<std::string> validArgs = {
+        "--help",
+        "--debug"
+};
+
+const std::vector<std::string> argHelpText = {
+        "This help text",
+        "Enable debug log output"
+};
+
+void parseArgs(int argc, char *argv[]) {
+    std::vector<std::string> args;
+    args.reserve(argc);
+    for (int i = 1; i < argc; i++) {
+        args.emplace_back(argv[i]);
+    }
+
+    for (auto arg : args) {
+        Log::debug("Arg: " + arg);
+        if (!Util::vectorContains(validArgs, arg)) {
+            Log::warn("Invalid argument \"" + arg + "\"");
+        }
+    }
+}
+
 int main(int argc, char *argv[]) {
-    // Immediately hand off execution to the engine
+    parseArgs(argc, argv);
+
+    // Hand off execution to the engine
     Engine::run();
 }

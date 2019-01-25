@@ -8,6 +8,7 @@
 #include <map>
 #include <allegro5/keycodes.h>
 #include "Keyboard.h"
+#include <duktape-cpp/DuktapeCpp.h>
 
 #include "Map.h"
 class Map;
@@ -18,6 +19,7 @@ public:
     int delay = 0;
 
     static void test();
+    static void eval(std::string str);
 };
 
 

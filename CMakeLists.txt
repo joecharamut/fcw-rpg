@@ -20,7 +20,10 @@ set(SOURCE_FILES
         Music.cpp Music.h
         Event.cpp Event.h
         Object.cpp Object.h
-        Keyboard.cpp Keyboard.h Engine.cpp Engine.h Log.cpp Log.h Options.cpp Options.h)
+        Keyboard.cpp Keyboard.h
+        Engine.cpp Engine.h
+        Log.cpp Log.h
+        Options.cpp Options.h)
 
 add_executable(fcwrpg ${SOURCE_FILES})
 add_library(duktape STATIC ${CMAKE_SOURCE_DIR}/libs/duktape/duktape.c)
