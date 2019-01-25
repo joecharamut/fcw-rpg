@@ -56,8 +56,8 @@ private:
     Sprite *sprite;
 
 public:
-    GameSprite(std::string spriteId) {
-        this->sprite = Engine::current_map->getSpriteById(spriteId);
+    GameSprite(Sprite *sprite) {
+        this->sprite = sprite;
     }
 
     std::string id() const {
@@ -66,7 +66,7 @@ public:
 
     template <class Inspector>
     static void inspect(Inspector &i) {
-        i.construct(&std::make_shared<GameSprite, std::string>);
+        i.construct(&std::make_shared<GameSprite, Sprite *>);
         i.property("id", &GameSprite::id);
     }
 };
@@ -91,7 +91,7 @@ public:
     }
 
     GameSprite player() const {
-        return GameSprite(Engine::player->id);
+        return GameSprite(Engine::player);
     }
 
     template <class Inspector>
@@ -114,5 +114,6 @@ void Event::test() {
     duk_put_global_string(ctx, "print");
 
     ctx.registerClass<GameContext>();
+    ctx.registerClass<GameSprite>();
     ctx.evalStringNoRes("print(new GameContext().player.id);");
 }
