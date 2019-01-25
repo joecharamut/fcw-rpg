@@ -218,8 +218,11 @@ void processCommandString(std::string command) {
         if (commandPart.size() < 2) {
             printf("Usage: eval <string>\n\n");
         } else {
-            printf("c: %s\n", commandPart[1].c_str());
-            Event::eval(commandPart[1]);
+            std::string evalString = "";
+            for (int i = 1; i < commandPart.size(); i++) {
+                evalString += commandPart[i] + " ";
+            }
+            Event::eval(evalString);
         }
     }
 }
