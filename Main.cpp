@@ -59,7 +59,7 @@ void Main::testing() {
     // Load in some test music
     ALLEGRO_SAMPLE_INSTANCE *music = Engine::current_map->music.at("mus_cave");
     al_set_sample_instance_playmode(music, ALLEGRO_PLAYMODE_LOOP);
-    Music::playMusic(music);
+    //Music::playMusic(music);
 
     // Set the hat position and click action
     auto hat = Engine::current_map->getSpriteById("s_hat");
@@ -67,8 +67,6 @@ void Main::testing() {
     hat->setY(Engine::SCREEN_H/4.0f -(hat->height/2.0f));
 
     Engine::player = hat;
-
-    Event::test();
 }
 
 const std::vector<std::string> validArgs = {

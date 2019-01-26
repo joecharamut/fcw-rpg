@@ -18,8 +18,10 @@ public:
     int timer = 0;
     int delay = 0;
 
-    static void test();
     static void eval(std::string str);
+
+private:
+    static duk::Context initContext();
 };
 
 

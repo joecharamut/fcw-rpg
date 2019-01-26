@@ -12,27 +12,56 @@ static duk_ret_t native_print(duk_context *ctx) {
     return 0;
 }
 
-class GameSprite {
-    #define sprite(x) Engine::current_map->getSpriteById(x)
+struct GameSprite {
+    #define getSprite(x) Engine::current_map->getSpriteById(x)
 
-private:
-    std::string spriteId;
-
-public:
-    GameSprite(const char *spriteId) {
-        this->spriteId = spriteId;
+    GameSprite() = default;
+    GameSprite(std::string id) {
+        _id = id;
+        auto spr = getSprite(_id);
+        x = spr->getX();
+        y = spr->getY();
     }
 
-    std::string id() const {
-        return sprite(spriteId)->id;
-    }
+    std::string _id;
+    float x;
+    float y;
 
     template <class Inspector>
     static void inspect(Inspector &i) {
-        i.construct(&std::make_shared<GameSprite, const char *>);
-        i.property("id", &GameSprite::id);
+        i.construct(&std::make_shared<GameSprite, std::string>);
     }
 };
+
+namespace duk {
+    template <>
+    struct Type<GameSprite> {
+        static void push(duk::Context &ctx, GameSprite const &val) {
+            duk_push_object(ctx);
+
+            duk_push_string(ctx, val._id.c_str());
+            duk_put_prop_string(ctx, -2, "id");
+
+            duk_push_number(ctx, val.x);
+            duk_put_prop_string(ctx, -2, "x");
+
+            duk_push_number(ctx, val.y);
+            duk_put_prop_string(ctx, -2, "y");
+        }
+
+        static void get(duk::Context &ctx, GameSprite &val, int index) {
+            duk_get_prop_string(ctx, index, "id");
+            std::string id = duk_get_string(ctx, -1);
+            duk_pop(ctx);
+
+            val = GameSprite(id);
+        }
+
+        static constexpr bool isPrimitive() { return true; }
+    };
+}
+
+DUK_CPP_DEF_CLASS_NAME(GameSprite);
 
 class GameContext {
 public:
@@ -67,10 +96,9 @@ public:
         i.property("player", &GameContext::player);
     }
 };
-DUK_CPP_DEF_CLASS_NAME(GameSprite);
 DUK_CPP_DEF_CLASS_NAME(GameContext);
 
-duk::Context initContext() {
+duk::Context Event::initContext() {
     duk::Context context;
 
     duk_push_c_function(context, native_print, 1);
@@ -79,11 +107,6 @@ duk::Context initContext() {
     context.registerClass<GameContext>();
     context.registerClass<GameSprite>();
     return context;
-}
-
-void Event::test() {
-    duk::Context context = initContext();
-    //ctx.evalStringNoRes("print(new GameContext().player.id);");
 }
 
 void Event::eval(std::string str) {

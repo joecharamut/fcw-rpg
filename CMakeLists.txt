@@ -4,11 +4,12 @@ project(fcwrpg)
 set(CMAKE_CXX_STANDARD 14)
 #set(CMAKE_VERBOSE_MAKEFILE  ON)
 
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libs/cereal ${CMAKE_SOURCE_DIR}/libs/duktape)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
+LINK_DIRECTORIES(${CMAKE_SOURCE_DIR}/libs/allegro_win/lib)
+
 IF(${WIN32})
-    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libs/allegro_win/include ${CMAKE_SOURCE_DIR}/libs/cereal ${CMAKE_SOURCE_DIR}/libs/duktape)
-    LINK_DIRECTORIES(${CMAKE_SOURCE_DIR}/libs/allegro_win/lib)
-ENDIF(${WIN32})
+    #INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libs/allegro_win/include ${CMAKE_SOURCE_DIR}/libs/cereal ${CMAKE_SOURCE_DIR}/libs/duktape)
+ENDIF()
 
 set(SOURCE_FILES
         Main.cpp Main.h
@@ -31,9 +32,9 @@ target_link_libraries(duktape m)# dl rt)
 
 IF(${WIN32})
     add_dependencies(fcwrpg copy_win_deps)
-ELSE(${WIN32})
+ELSE()
     add_dependencies(fcwrpg copy_linux_deps)
-ENDIF(${WIN32})
+ENDIF()
 
 IF(${WIN32})
     TARGET_LINK_LIBRARIES(fcwrpg
@@ -41,39 +42,27 @@ IF(${WIN32})
             stdc++fs
             duktape
     )
-ELSE(${WIN32})
+ELSE()
     TARGET_LINK_LIBRARIES(fcwrpg
-            allegro
-            allegro_acodec
-            allegro_audio
-            allegro_color
-            allegro_dialog
-            allegro_font
-            allegro_image
-            allegro_main
-            allegro_memfile
-            allegro_physfs
-            allegro_primitives
-            allegro_ttf
-            allegro_video
+            allegro_monolith
             stdc++fs
             duktape
             pthread
     )
-ENDIF(${WIN32})
+ENDIF()
 
 IF(${WIN32})
     #find_file(pthread libwinpthread-1.dll)
     find_file(libgcc libgcc_s_dw2-1.dll)
     find_file(libstdc libstdc++-6.dll)
-ENDIF(${WIN32})
+ENDIF()
 
 add_custom_target(copy_win_deps)
 add_custom_command(
         TARGET copy_win_deps
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources ./resources
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/libs/allegro_win/bin/allegro_monolith-5.2.dll ./
-        COMMAND ${CMAKE_COMMAND} -E copy ${pthread} ${libgcc} ${libstdc} ./
+        COMMAND ${CMAKE_COMMAND} -E copy ${libgcc} ${libstdc} ./
 )
 
 add_custom_target(copy_linux_deps)
