@@ -18,10 +18,12 @@ struct GameSprite {
     GameSprite() = default;
     GameSprite(std::string id) {
         _id = id;
-        auto spr = getSprite(_id);
+        spr = getSprite(_id);
         x = spr->getX();
         y = spr->getY();
     }
+
+    Sprite *spr;
 
     std::string _id;
     float x;

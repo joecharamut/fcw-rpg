@@ -5,10 +5,10 @@ set(CMAKE_CXX_STANDARD 14)
 #set(CMAKE_VERBOSE_MAKEFILE  ON)
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
-LINK_DIRECTORIES(${CMAKE_SOURCE_DIR}/libs/allegro_win/lib)
 
 IF(${WIN32})
-    #INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libs/allegro_win/include ${CMAKE_SOURCE_DIR}/libs/cereal ${CMAKE_SOURCE_DIR}/libs/duktape)
+    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libs/allegro_win/include ${CMAKE_SOURCE_DIR}/include)
+    LINK_DIRECTORIES(${CMAKE_SOURCE_DIR}/libs/allegro_win/lib)
 ENDIF()
 
 set(SOURCE_FILES
@@ -44,25 +44,35 @@ IF(${WIN32})
     )
 ELSE()
     TARGET_LINK_LIBRARIES(fcwrpg
-            allegro_monolith
+            allegro
+            allegro_acodec
+            allegro_audio
+            allegro_color
+            allegro_dialog
+            allegro_font
+            allegro_image
+            allegro_main
+            allegro_memfile
+            allegro_physfs
+            allegro_primitives
+            allegro_ttf
+            allegro_video
             stdc++fs
             duktape
             pthread
     )
 ENDIF()
 
-IF(${WIN32})
-    #find_file(pthread libwinpthread-1.dll)
-    find_file(libgcc libgcc_s_dw2-1.dll)
-    find_file(libstdc libstdc++-6.dll)
-ENDIF()
+SET(libgcc ${CMAKE_SOURCE_DIR}/libs/libgcc_s_dw2-1.dll)
+SET(libstdc++ ${CMAKE_SOURCE_DIR}/libs/libstdc++-6.dll)
+SET(pthread ${CMAKE_SOURCE_DIR}/libs/libwinpthread-1.dll)
 
 add_custom_target(copy_win_deps)
 add_custom_command(
         TARGET copy_win_deps
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources ./resources
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/libs/allegro_win/bin/allegro_monolith-5.2.dll ./
-        COMMAND ${CMAKE_COMMAND} -E copy ${libgcc} ${libstdc} ./
+        COMMAND ${CMAKE_COMMAND} -E copy ${libgcc} ${libstdc++} ${pthread} ./
 )
 
 add_custom_target(copy_linux_deps)
@@ -80,7 +90,6 @@ add_custom_command(
         fcwrpg.exe
         resources
         allegro_monolith-5.2.dll
-        libwinpthread-1.dll
         libgcc_s_dw2-1.dll
         libstdc++-6.dll
 )
