@@ -151,7 +151,7 @@ void Engine::update() {
     Music::update();
 }
 
-void Engine::renderThread() {
+void Engine::renderThreadFunction() {
     // Get current system time
     long long int start = Util::getMilliTime();
     Log::info("Initializing Engine");
@@ -227,7 +227,7 @@ void processCommandString(std::string command) {
     }
 }
 
-void Engine::commandThread() {
+void Engine::commandThreadFunction() {
     while (!done) {
         std::string input;
         std::getline(std::cin, input);
@@ -237,7 +237,7 @@ void Engine::commandThread() {
     }
 }
 
-void Engine::eventThread() {
+void Engine::eventThreadFunction() {
     while (!done) {
         if (current_map) {
             for (auto event : current_map->current_room->events) {
@@ -247,12 +247,16 @@ void Engine::eventThread() {
     }
 }
 
-void Engine::run() {
-    std::thread renderThread(Engine::renderThread);
-    std::thread commandThread(Engine::commandThread);
-    std::thread eventThread(Engine::eventThread);
+std::thread Engine::renderThread;
+std::thread Engine::consoleThread;
+std::thread Engine::eventThread;
 
-    commandThread.detach();
+void Engine::run() {
+    renderThread = std::thread(Engine::renderThreadFunction);
+    consoleThread = std::thread(Engine::commandThreadFunction);
+    eventThread = std::thread(Engine::eventThreadFunction);
+
+    consoleThread.detach();
     eventThread.detach();
     renderThread.join();
 }

@@ -16,6 +16,7 @@
 #include "Keyboard.h"
 #include "Log.h"
 #include "Engine.h"
+#include "Thread.h"
 
 void mapEventHandler(ALLEGRO_EVENT event) {
     if (event.type == ALLEGRO_EVENT_TIMER) {
@@ -94,8 +95,21 @@ void parseArgs(int argc, char *argv[]) {
     }
 }
 
+static void test() {
+    printf("test\n");
+}
+
+static void handle(ThreadMessage t) {
+    printf("%s", t.message.c_str());
+}
+
 int main(int argc, char *argv[]) {
     parseArgs(argc, argv);
+
+    Thread *thread = new Thread(test, handle);
+    thread->postMessage(ThreadMessage("testMessage\n"));
+    thread->join();
+    return 0;
 
     // Hand off execution to the engine
     Engine::run();

@@ -9,6 +9,7 @@
 #include <string>
 #include <allegro5/allegro_audio.h>
 #include <atomic>
+#include <thread>
 
 #include "Map.h"
 class Map;
@@ -37,12 +38,16 @@ private:
     static ALLEGRO_DISPLAY *display;
     static double oldTime, newTime, delayTime, fps;
 
+    static std::thread renderThread;
+    static std::thread consoleThread;
+    static std::thread eventThread;
+
     static void loadFonts();
 
     static void update();
-    static void renderThread();
-    static void commandThread();
-    static void eventThread();
+    static void renderThreadFunction();
+    static void commandThreadFunction();
+    static void eventThreadFunction();
 
     class FileException : public std::exception {
     private:

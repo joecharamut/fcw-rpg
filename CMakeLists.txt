@@ -24,7 +24,7 @@ set(SOURCE_FILES
         Keyboard.cpp Keyboard.h
         Engine.cpp Engine.h
         Log.cpp Log.h
-        Options.cpp Options.h)
+        Options.cpp Options.h Thread.cpp Thread.h)
 
 add_executable(fcwrpg ${SOURCE_FILES})
 add_library(duktape STATIC ${CMAKE_SOURCE_DIR}/libs/duktape/duktape.c)
