@@ -1,5 +1,3 @@
-
-
 #ifndef FCWRPG_KEYBOARD_H
 #define FCWRPG_KEYBOARD_H
 

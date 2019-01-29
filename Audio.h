@@ -1,5 +1,3 @@
-
-
 #ifndef FCWRPG_MUSIC_H
 #define FCWRPG_MUSIC_H
 
@@ -16,7 +14,7 @@ enum State {
     STATE_FADEIN
 };
 
-class Music {
+class Audio {
 public:
     static ALLEGRO_MIXER *musicMixer;
     static ALLEGRO_MIXER *sfxMixer;

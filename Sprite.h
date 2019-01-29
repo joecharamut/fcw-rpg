@@ -1,12 +1,12 @@
+#ifndef FCWRPG_SPRITE_H
+#define FCWRPG_SPRITE_H
+
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
 #include <vector>
 #include <cereal/cereal.hpp>
 #include "BoundingBox.h"
 #include "Animation.h"
-
-#ifndef FCWRPG_SPRITE_H
-#define FCWRPG_SPRITE_H
 
 enum COLLISION_TYPE {
     NONE,

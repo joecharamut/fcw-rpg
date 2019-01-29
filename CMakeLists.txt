@@ -18,13 +18,13 @@ set(SOURCE_FILES
         BoundingBox.cpp BoundingBox.h
         Util.cpp Util.h
         Animation.cpp Animation.h
-        Music.cpp Music.h
+        Audio.cpp Audio.h
         Event.cpp Event.h
         Object.cpp Object.h
         Keyboard.cpp Keyboard.h
         Engine.cpp Engine.h
         Log.cpp Log.h
-        Options.cpp Options.h Thread.cpp Thread.h)
+        Options.cpp Options.h Room.cpp Room.h)
 
 add_executable(fcwrpg ${SOURCE_FILES})
 add_library(duktape STATIC ${CMAKE_SOURCE_DIR}/libs/duktape/duktape.c)

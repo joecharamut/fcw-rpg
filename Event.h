@@ -1,4 +1,3 @@
-
 #ifndef FCWRPG_EVENT_H
 #define FCWRPG_EVENT_H
 

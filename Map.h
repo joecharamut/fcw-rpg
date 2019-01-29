@@ -1,4 +1,3 @@
-
 #ifndef FCWRPG_MAP_H
 #define FCWRPG_MAP_H
 
@@ -13,10 +12,8 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_audio.h>
 
-#include "Sprite.h"
-#include "Event.h"
-class Event;
-class Map;
+#include "Room.h"
+
 class Room;
 
 struct Text {
@@ -50,29 +47,6 @@ struct Text {
     }
 };
 
-struct RoomJSON {
-    int version = 1;
-    std::string id;
-    std::vector<std::vector<std::vector<int>>> tilemap;
-    std::vector<std::string> tileset;
-    std::vector<Sprite> sprites;
-    std::vector<std::string> events;
-
-    RoomJSON() = default;
-
-    template <class Archive>
-    void serialize(Archive &archive) {
-        archive(
-                CEREAL_NVP(version),
-                CEREAL_NVP(id),
-                CEREAL_NVP(tilemap),
-                CEREAL_NVP(tileset),
-                CEREAL_NVP(sprites),
-                CEREAL_NVP(events)
-        );
-    }
-};
-
 struct MapJSON {
     int version = 1;
     std::string id;
@@ -98,28 +72,6 @@ struct MapJSON {
     }
 };
 
-class Room {
-public:
-    Map *parent;
-
-    std::string id;
-    std::vector<ALLEGRO_BITMAP *> backgrounds = {};
-    std::vector<Sprite *> sprites = {};
-    std::vector<Event *> events = {};
-    float viewportX = 0;
-    float viewportY = 0;
-
-    Room(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
-        std::vector<Sprite> sprites, std::vector<std::string> events, Map *parent);
-
-    std::vector<Animation *> resolveTileset(std::vector<std::string> in);
-    void resolveMap(std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap);
-    void updateViewport(Sprite *spr, bool override);
-    Sprite* getSpriteById(std::string id);
-    Sprite* checkCollision(Sprite *sprite);
-    void draw();
-};
-
 class Map {
 public:
     bool loaded = false;
@@ -141,7 +93,7 @@ public:
 
     void handleEvent(ALLEGRO_EVENT event);
     void setEventHandlerFunction(void (*handler)(ALLEGRO_EVENT event));
-
+    void setRoom(std::string roomId);
 
     // Pass to current room
     std::vector<Sprite *> getSprites();

@@ -6,7 +6,7 @@
 #include <thread>
 #include "Engine.h"
 #include "Log.h"
-#include "Music.h"
+#include "Audio.h"
 #include "Keyboard.h"
 #include "Util.h"
 #include "Main.h"
@@ -25,53 +25,53 @@ double Engine::delayTime;
 double Engine::fps;
 
 // Function to initialize the game engine
-int Engine::init() {
+bool Engine::init() {
     // Initialize Allegro
     if(al_init() == 0) {
         Log::error("Error initializing Allegro");
-        return 0;
+        return false;
     }
     // And all of the addons needed
     if(!al_init_font_addon()) {
         Log::error("Error initializing Allegro Font");
-        return 0;
+        return false;
     }
     if(!al_init_ttf_addon()) {
-        Log::error("Error initializing Allegro TTF Addon");
-        return 0;
+        Log::error("Error initializing Allegro TTF");
+        return false;
     }
     if(!al_init_image_addon()) {
         Log::error("Error initializing Allegro Image");
-        return 0;
+        return false;
     }
     if(!al_install_keyboard()) {
         Log::error("Error initializing Keyboard");
-        return 0;
+        return false;
     }
     if(!al_install_audio()) {
         Log::error("Error initializing Audio");
-        return 0;
+        return false;
     }
     if(!al_init_acodec_addon()) {
         Log::error("Error initializing Audio Codec");
-        return 0;
+        return false;
     }
 
     // Initialize my modules
-    if (!Music::init()) {
+    if (!Audio::init()) {
         Log::error("Error initializing Audio Module");
-        return 0;
+        return false;
     }
     if (!Keyboard::init()) {
         Log::error("Error initializing Keyboard Module");
-        return 0;
+        return false;
     }
 
     // Create the window
     display = al_create_display(SCREEN_W, SCREEN_H);
     if (!display) {
         Log::error("Error creating display");
-        return 0;
+        return false;
     }
     al_set_new_display_flags(ALLEGRO_WINDOWED);
     // Set icon and title
@@ -95,7 +95,7 @@ int Engine::init() {
     oldTime = al_get_time();
     delayTime = al_get_time();
 
-    return 1;
+    return true;
 }
 
 // Main game loop
@@ -141,14 +141,14 @@ void Engine::update() {
         // Reset newTime
         oldTime = newTime;
         // And display it
-        al_draw_textf(fonts["font16"], al_map_rgb(0xff, 0xff, 0xff), 0, 0, 0, "%.1f fps", (float) fps);
+        al_draw_textf(fonts["font16"], al_map_rgb(0xff, 0xff, 0xff), 0, 0, 0, "%.0f fps", (float) fps);
 
         // Flip the buffer to the display
         al_flip_display();
     }
 
     // Run music update routine - Used to fade audio
-    Music::update();
+    Audio::update();
 }
 
 void Engine::renderThreadFunction() {
@@ -182,7 +182,8 @@ void Engine::renderThreadFunction() {
 
 std::vector<std::string> validCommands = {
         "help",
-        "eval"
+        "eval",
+        "test"
 };
 std::map<std::string, std::string> commandHelp = {
         {"help", "Display help text and list commands."},
@@ -224,6 +225,12 @@ void processCommandString(std::string command) {
             }
             Event::eval(evalString);
         }
+    } else if (cmd == "test") {
+        std::string testStr =
+                "var ctx = new GameContext();\n"
+                "var player = ctx.player;\n"
+                "print(player.id);\n";
+        Event::eval(testStr);
     }
 }
 

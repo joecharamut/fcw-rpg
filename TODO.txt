@@ -8,7 +8,6 @@ TODO::Map Editor - Have Editor load/save all the rooms as a project and export a
 
 TODO::Event - Add event action to play sprite animation
 TODO::Event - Add more event triggers/actions
-TODO::Event - Scrap current event system, replace with JS using https://duktape.org/
 
 TODO::Map - See if load times are better if all maps are loaded at start rather than dynamically -
     Significant current load times, perf hit probable

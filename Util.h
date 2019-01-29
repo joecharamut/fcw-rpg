@@ -1,8 +1,5 @@
-
-
 #ifndef FCWRPG_UTIL_H
 #define FCWRPG_UTIL_H
-
 
 #include <string>
 #include <vector>

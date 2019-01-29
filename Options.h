@@ -1,5 +1,3 @@
-
-
 #ifndef FCWRPG_OPTIONS_H
 #define FCWRPG_OPTIONS_H
 

@@ -1,7 +1,7 @@
-#include <utility>
-
 #ifndef FCWRPG_ANIMATION_H
 #define FCWRPG_ANIMATION_H
+
+#include <utility>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
 #include <vector>

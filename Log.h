@@ -1,4 +1,3 @@
-
 #ifndef FCWRPG_LOG_H
 #define FCWRPG_LOG_H
 

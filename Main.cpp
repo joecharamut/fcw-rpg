@@ -10,13 +10,15 @@
 #include "Sprite.h"
 #include "Map.h"
 #include "Util.h"
-#include "Music.h"
+#include "Audio.h"
 #include "Object.h"
 #include "Main.h"
 #include "Keyboard.h"
 #include "Log.h"
 #include "Engine.h"
-#include "Thread.h"
+#include "Options.h"
+
+bool state = false;
 
 void mapEventHandler(ALLEGRO_EVENT event) {
     if (event.type == ALLEGRO_EVENT_TIMER) {
@@ -35,6 +37,14 @@ void mapEventHandler(ALLEGRO_EVENT event) {
             }
             if (Keyboard::getKeyState(ALLEGRO_KEY_RIGHT) || Keyboard::getKeyState(ALLEGRO_KEY_D)) {
                 hat_x += 4;
+            }
+            if (Keyboard::getKeyState(ALLEGRO_KEY_SPACE)) {
+                if (state) {
+                    Engine::current_map->setRoom("room_default");
+                } else {
+                    Engine::current_map->setRoom("room_2");
+                }
+                state = !state;
             }
 
             hat->setX(hat_x);
@@ -87,6 +97,19 @@ void parseArgs(int argc, char *argv[]) {
         args.emplace_back(argv[i]);
     }
 
+    if (Util::vectorContains(args, std::string("--debug"))) {
+        //Options::Runtime::debug = true;
+    }
+
+    if (Util::vectorContains(args, std::string("--help"))) {
+        std::string helpStr = "";
+        for (int i = 0; i < validArgs.size(); i++) {
+            helpStr += " " + validArgs[i] + "\n\t" + argHelpText[i] + "\n\n";
+        }
+        printf("Command Line Options:\n%s", helpStr.c_str());
+        exit(0);
+    }
+
     for (auto arg : args) {
         Log::debug("Arg: " + arg);
         if (!Util::vectorContains(validArgs, arg)) {
@@ -95,21 +118,8 @@ void parseArgs(int argc, char *argv[]) {
     }
 }
 
-static void test() {
-    printf("test\n");
-}
-
-static void handle(ThreadMessage t) {
-    printf("%s", t.message.c_str());
-}
-
 int main(int argc, char *argv[]) {
     parseArgs(argc, argv);
-
-    Thread *thread = new Thread(test, handle);
-    thread->postMessage(ThreadMessage("testMessage\n"));
-    thread->join();
-    return 0;
 
     // Hand off execution to the engine
     Engine::run();

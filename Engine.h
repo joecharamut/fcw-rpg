@@ -1,4 +1,3 @@
-
 #ifndef FCWRPG_ENGINE_H
 #define FCWRPG_ENGINE_H
 
@@ -24,7 +23,6 @@ public:
     static Map *current_map;
     static std::map<std::string, ALLEGRO_FONT *> fonts;
 
-    static int init();
     static void run();
 
     static ALLEGRO_BITMAP *loadImage(const char *file);
@@ -42,9 +40,9 @@ private:
     static std::thread consoleThread;
     static std::thread eventThread;
 
-    static void loadFonts();
-
+    static bool init();
     static void update();
+    static void loadFonts();
     static void renderThreadFunction();
     static void commandThreadFunction();
     static void eventThreadFunction();

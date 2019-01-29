@@ -4,7 +4,8 @@
     "id": "map_test",
     "defaultRoom": "room_default",
     "roomFiles": [
-      "rooms/room0.json"
+      "rooms/room0.json",
+      "rooms/room1.json"
     ],
     "texts": [
       {

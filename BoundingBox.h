@@ -1,7 +1,6 @@
 #ifndef FCWRPG_BOUNDINGBOX_H
 #define FCWRPG_BOUNDINGBOX_H
 
-
 #include <vector>
 
 class BoundingBox {

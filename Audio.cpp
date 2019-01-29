@@ -1,14 +1,14 @@
 
 #include "Util.h"
-#include "Music.h"
+#include "Audio.h"
 #include "Log.h"
 
-ALLEGRO_MIXER *Music::musicMixer;
-ALLEGRO_MIXER *Music::sfxMixer;
-ALLEGRO_MIXER *Music::masterMixer;
-ALLEGRO_SAMPLE_INSTANCE *Music::playing;
+ALLEGRO_MIXER *Audio::musicMixer;
+ALLEGRO_MIXER *Audio::sfxMixer;
+ALLEGRO_MIXER *Audio::masterMixer;
+ALLEGRO_SAMPLE_INSTANCE *Audio::playing;
 
-int Music::init() {
+int Audio::init() {
     // Reserve audio samples
     if (!al_reserve_samples(4)) {
         Log::error("Error reserving samples");
@@ -28,17 +28,17 @@ int Music::init() {
 }
 
 // Music switching flag
-bool Music::switching = false;
+bool Audio::switching = false;
 
 // Current state
-State Music::state = STATE_NONE;
+State Audio::state = STATE_NONE;
 // Music gain
-float Music::gain = 1.0;
+float Audio::gain = 1.0;
 
 // Next music
-ALLEGRO_SAMPLE_INSTANCE *Music::next;
+ALLEGRO_SAMPLE_INSTANCE *Audio::next;
 
-void Music::update() {
+void Audio::update() {
     // If we are switching
     if (switching) {
         // If the state is NONE and gain is 1.0, set state FADE_OUT
@@ -82,21 +82,21 @@ void Music::update() {
     }
 }
 
-void Music::playMusic(ALLEGRO_SAMPLE_INSTANCE *music) {
+void Audio::playMusic(ALLEGRO_SAMPLE_INSTANCE *music) {
     // Set next music
     next = music;
     // Trigger switch
     switching = true;
 }
 
-void Music::playSFX(ALLEGRO_SAMPLE_INSTANCE *sfx) {
+void Audio::playSFX(ALLEGRO_SAMPLE_INSTANCE *sfx) {
 
 }
 
-std::map<std::string, ALLEGRO_SAMPLE_INSTANCE *> Music::registeredMusic = {};
-std::map<std::string, ALLEGRO_SAMPLE_INSTANCE *> Music::registeredSFX = {};
+std::map<std::string, ALLEGRO_SAMPLE_INSTANCE *> Audio::registeredMusic = {};
+std::map<std::string, ALLEGRO_SAMPLE_INSTANCE *> Audio::registeredSFX = {};
 
-bool Music::registerMusic(ALLEGRO_SAMPLE_INSTANCE *reg, std::string id) {
+bool Audio::registerMusic(ALLEGRO_SAMPLE_INSTANCE *reg, std::string id) {
     if (registeredMusic.count(id)) return false;
     registeredMusic[id] = reg;
     return true;
