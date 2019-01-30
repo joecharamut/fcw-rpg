@@ -24,10 +24,12 @@ public:
     static std::map<std::string, ALLEGRO_FONT *> fonts;
 
     static void run();
+    static void setFullscreen(bool enable);
 
     static ALLEGRO_BITMAP *loadImage(const char *file);
     static ALLEGRO_SAMPLE *loadSample(const char *file);
     static ALLEGRO_FONT *loadFont(const char *file, int size);
+
 
 private:
     static bool redraw;
@@ -35,6 +37,11 @@ private:
     static ALLEGRO_EVENT_QUEUE *eventQueue;
     static ALLEGRO_DISPLAY *display;
     static double oldTime, newTime, delayTime, fps;
+
+    static int f_scale_w;
+    static int f_scale_h;
+    static int f_pos_w;
+    static int f_pos_h;
 
     static std::thread renderThread;
     static std::thread consoleThread;

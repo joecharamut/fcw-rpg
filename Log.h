@@ -3,10 +3,11 @@
 
 #include <string>
 #include <vector>
+#include "Options.h"
 
 class Log {
 public:
-    static void debug(const std::string &message) { log(message, DEBUG); };
+    static void debug(const std::string &message) { if (Options::Runtime::debug) log(message, DEBUG); };
     static void info (const std::string &message) { log(message, INFO); };
     static void warn (const std::string &message) { log(message, WARN); };
     static void error(const std::string &message) { log(message, ERROR); };

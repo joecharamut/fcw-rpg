@@ -39,12 +39,10 @@ void mapEventHandler(ALLEGRO_EVENT event) {
                 hat_x += 4;
             }
             if (Keyboard::getKeyState(ALLEGRO_KEY_SPACE)) {
-                if (state) {
-                    Engine::current_map->setRoom("room_default");
-                } else {
-                    Engine::current_map->setRoom("room_2");
+                if (!state) {
+                    Engine::setFullscreen(true);
+                    state = !state;
                 }
-                state = !state;
             }
 
             hat->setX(hat_x);
@@ -98,11 +96,11 @@ void parseArgs(int argc, char *argv[]) {
     }
 
     if (Util::vectorContains(args, std::string("--debug"))) {
-        //Options::Runtime::debug = true;
+        Options::Runtime::debug = true;
     }
 
     if (Util::vectorContains(args, std::string("--help"))) {
-        std::string helpStr = "";
+        std::string helpStr;
         for (int i = 0; i < validArgs.size(); i++) {
             helpStr += " " + validArgs[i] + "\n\t" + argHelpText[i] + "\n\n";
         }

@@ -24,60 +24,74 @@ double Engine::newTime;
 double Engine::delayTime;
 double Engine::fps;
 
+int Engine::f_scale_w;
+int Engine::f_scale_h;
+int Engine::f_pos_w;
+int Engine::f_pos_h;
+
 // Function to initialize the game engine
 bool Engine::init() {
     // Initialize Allegro
+    Log::debug("Initializing Allegro");
     if(al_init() == 0) {
         Log::error("Error initializing Allegro");
         return false;
     }
     // And all of the addons needed
+    Log::debug("Initializing Font");
     if(!al_init_font_addon()) {
         Log::error("Error initializing Allegro Font");
         return false;
     }
+    Log::debug("Initializing TTF");
     if(!al_init_ttf_addon()) {
         Log::error("Error initializing Allegro TTF");
         return false;
     }
+    Log::debug("Initializing Image");
     if(!al_init_image_addon()) {
         Log::error("Error initializing Allegro Image");
         return false;
     }
+    Log::debug("Initializing Keyboard");
     if(!al_install_keyboard()) {
         Log::error("Error initializing Keyboard");
         return false;
     }
+    Log::debug("Initializing Audio");
     if(!al_install_audio()) {
         Log::error("Error initializing Audio");
         return false;
     }
+    Log::debug("Initializing Audio Codec");
     if(!al_init_acodec_addon()) {
         Log::error("Error initializing Audio Codec");
         return false;
     }
 
     // Initialize my modules
+    Log::debug("Initializing Audio Module");
     if (!Audio::init()) {
         Log::error("Error initializing Audio Module");
         return false;
     }
+    Log::debug("Initializing Keyboard Module");
     if (!Keyboard::init()) {
         Log::error("Error initializing Keyboard Module");
         return false;
     }
 
     // Create the window
+    Log::debug("Creating Window");
+    al_set_new_display_flags(ALLEGRO_WINDOWED);
     display = al_create_display(SCREEN_W, SCREEN_H);
     if (!display) {
         Log::error("Error creating display");
         return false;
     }
-    al_set_new_display_flags(ALLEGRO_WINDOWED);
     // Set icon and title
     al_set_display_icon(display, Engine::loadImage("resources/icon.png"));
     al_set_window_title(display, "FCW the RPG");
-
 
     // Set 60 FPS Timer
     ALLEGRO_TIMER *timer = al_create_timer(1.0 / FPS);
@@ -125,12 +139,30 @@ void Engine::update() {
         redraw = false;
         // Clear screen to black
         al_clear_to_color(al_map_rgb(0x00, 0x00, 0x00));
+
         // If a map is loaded, let it draw its stuff
+        ALLEGRO_BITMAP *screen = al_create_bitmap(SCREEN_W, SCREEN_H);
+        al_set_target_bitmap(screen);
+        al_clear_to_color(al_map_rgb(0x00, 0x00, 0x00));
+
         if (current_map) {
             current_map->draw();
-            // TODO: Remove this
-            //current_map->updateViewport(hat, false);
+            // TODO: Remove this maybe
+            if (player) {
+                current_map->updateViewport(player, false);
+            }
         }
+
+        al_set_target_bitmap(al_get_backbuffer(display));
+
+        bool fullscreen = (bool)((al_get_display_flags(display) & ALLEGRO_FULLSCREEN_WINDOW) >> 9);
+        if (fullscreen) {
+            al_draw_scaled_bitmap(screen, 0, 0, SCREEN_W, SCREEN_H, f_pos_w, f_pos_h, f_scale_w, f_scale_h, 0);
+        } else {
+            al_draw_bitmap(screen, 0, 0, 0);
+        }
+
+        al_destroy_bitmap(screen);
 
         // Calculate fps
         newTime = al_get_time();
@@ -149,6 +181,23 @@ void Engine::update() {
 
     // Run music update routine - Used to fade audio
     Audio::update();
+}
+
+void Engine::setFullscreen(bool enable) {
+    if (enable) {
+        al_toggle_display_flag(display, ALLEGRO_FULLSCREEN_WINDOW, true);
+
+        int window_w = al_get_display_width(display);
+        int window_h = al_get_display_height(display);
+        float scale = ((float)window_h/(float)SCREEN_H);
+
+        f_scale_w = (int)(SCREEN_W*scale);
+        f_scale_h = (int)(SCREEN_H*scale);
+        f_pos_w = ((window_w/2) - (f_scale_w/2));
+        f_pos_h = ((window_h/2) - (f_scale_h/2));
+    } else {
+        al_toggle_display_flag(display, ALLEGRO_FULLSCREEN_WINDOW, false);
+    }
 }
 
 void Engine::renderThreadFunction() {
