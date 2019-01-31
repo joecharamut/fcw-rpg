@@ -18,7 +18,8 @@
 #include "Engine.h"
 #include "Options.h"
 
-bool state = false;
+bool fs_state = false;
+bool fs_flag = false;
 
 void mapEventHandler(ALLEGRO_EVENT event) {
     if (event.type == ALLEGRO_EVENT_TIMER) {
@@ -38,10 +39,16 @@ void mapEventHandler(ALLEGRO_EVENT event) {
             if (Keyboard::getKeyState(ALLEGRO_KEY_RIGHT) || Keyboard::getKeyState(ALLEGRO_KEY_D)) {
                 hat_x += 4;
             }
-            if (Keyboard::getKeyState(ALLEGRO_KEY_SPACE)) {
-                if (!state) {
-                    Engine::setFullscreen(true);
-                    state = !state;
+
+            if (Keyboard::getKeyState(ALLEGRO_KEY_ALT) && Keyboard::getKeyState(ALLEGRO_KEY_ENTER)) {
+                if (!fs_flag) {
+                    fs_state = !fs_state;
+                    Engine::setFullscreen(fs_state);
+                    fs_flag = true;
+                }
+            } else {
+                if (fs_flag) {
+                    fs_flag = false;
                 }
             }
 

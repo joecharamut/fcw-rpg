@@ -83,6 +83,7 @@ add_custom_command(
 
 add_custom_target(win_package)
 add_dependencies(win_package copy_win_deps)
+add_dependencies(win_package fcwrpg)
 file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/resources)
 add_custom_command(
         TARGET win_package
@@ -92,10 +93,12 @@ add_custom_command(
         allegro_monolith-5.2.dll
         libgcc_s_dw2-1.dll
         libstdc++-6.dll
+        libwinpthread-1.dll
 )
 
 add_custom_target(linux_package)
 add_dependencies(linux_package copy_linux_deps)
+add_dependencies(linux_package fcwrpg)
 file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/resources)
 add_custom_command(
         TARGET linux_package
