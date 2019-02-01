@@ -5,7 +5,6 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
-#include <chrono>
 
 #include "Sprite.h"
 #include "Map.h"

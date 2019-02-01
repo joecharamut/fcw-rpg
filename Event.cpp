@@ -6,6 +6,9 @@
 #include "Engine.h"
 #include <cstdio>
 #include <duktape-cpp/DuktapeCpp.h>
+#include <b64/decode.h>
+#include <iostream>
+#include <sstream>
 
 static duk_ret_t native_print(duk_context *ctx) {
     printf("%s\n", duk_to_string(ctx, 0));
@@ -99,6 +102,20 @@ public:
     }
 };
 DUK_CPP_DEF_CLASS_NAME(GameContext);
+
+Event::Event(std::string encodedEvent) {
+    base64::decoder D;
+    std::string outStr;
+    std::stringstream data(encodedEvent);
+    std::stringstream out(eventCode);
+    D.decode(data, out);
+    std::cout << eventCode << std::endl;
+}
+
+void Event::execute() {
+    duk::Context ctx = initContext();
+    ctx.evalStringNoRes(eventCode.c_str());
+}
 
 duk::Context Event::initContext() {
     duk::Context context;

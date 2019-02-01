@@ -140,29 +140,37 @@ void Engine::update() {
         // Clear screen to black
         al_clear_to_color(al_map_rgb(0x00, 0x00, 0x00));
 
-        // If a map is loaded, let it draw its stuff
-        ALLEGRO_BITMAP *screen = al_create_bitmap(SCREEN_W, SCREEN_H);
-        al_set_target_bitmap(screen);
+        // Create 512x512 buffer
+        ALLEGRO_BITMAP *buffer = al_create_bitmap(SCREEN_W, SCREEN_H);
+        // Set as draw target
+        al_set_target_bitmap(buffer);
+        // Clear to black
         al_clear_to_color(al_map_rgb(0x00, 0x00, 0x00));
 
+        // Draw map and related to buffer
         if (current_map) {
             current_map->draw();
-            // TODO: Remove this maybe
             if (player) {
+                // Update viewport
                 current_map->updateViewport(player, false);
             }
         }
 
+        // Reset target to display
         al_set_target_bitmap(al_get_backbuffer(display));
 
+        // Check if we want fullscreen mode
         bool fullscreen = (bool)((al_get_display_flags(display) & ALLEGRO_FULLSCREEN_WINDOW) >> 9);
         if (fullscreen) {
-            al_draw_scaled_bitmap(screen, 0, 0, SCREEN_W, SCREEN_H, f_pos_w, f_pos_h, f_scale_w, f_scale_h, 0);
+            // Scale and draw the buffer
+            al_draw_scaled_bitmap(buffer, 0, 0, SCREEN_W, SCREEN_H, f_pos_w, f_pos_h, f_scale_w, f_scale_h, 0);
         } else {
-            al_draw_bitmap(screen, 0, 0, 0);
+            // Just draw it
+            al_draw_bitmap(buffer, 0, 0, 0);
         }
 
-        al_destroy_bitmap(screen);
+        // Delete buffer
+        al_destroy_bitmap(buffer);
 
         // Calculate fps
         newTime = al_get_time();
@@ -175,7 +183,7 @@ void Engine::update() {
         // And display it
         al_draw_textf(fonts["font16"], al_map_rgb(0xff, 0xff, 0xff), 0, 0, 0, "%.0f fps", (float) fps);
 
-        // Flip the buffer to the display
+        // Flip the display buffer to the display
         al_flip_display();
     }
 
@@ -297,7 +305,7 @@ void Engine::eventThreadFunction() {
     while (!done) {
         if (current_map) {
             for (auto event : current_map->current_room->events) {
-
+                event->execute();
             }
         }
     }

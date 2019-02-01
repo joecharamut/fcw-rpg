@@ -27,8 +27,11 @@ set(SOURCE_FILES
         Options.cpp Options.h Room.cpp Room.h)
 
 add_executable(fcwrpg ${SOURCE_FILES})
+
 add_library(duktape STATIC ${CMAKE_SOURCE_DIR}/libs/duktape/duktape.c)
-target_link_libraries(duktape m)# dl rt)
+target_link_libraries(duktape m)
+
+add_library(libb64 STATIC ${CMAKE_SOURCE_DIR}/libs/libb64/cencode.c ${CMAKE_SOURCE_DIR}/libs/libb64/cencode.c)
 
 IF(${WIN32})
     add_dependencies(fcwrpg copy_win_deps)
@@ -41,6 +44,7 @@ IF(${WIN32})
             allegro_monolith
             stdc++fs
             duktape
+            libb64
     )
 ELSE()
     TARGET_LINK_LIBRARIES(fcwrpg
@@ -60,6 +64,7 @@ ELSE()
             stdc++fs
             duktape
             pthread
+            libb64
     )
 ENDIF()
 

@@ -14,8 +14,10 @@ class Map;
 
 class Event {
 public:
-    int timer = 0;
-    int delay = 0;
+    std::string eventCode;
+
+    Event(std::string encodedEvent);
+    void execute();
 
     static void eval(std::string str);
 
