@@ -143,11 +143,12 @@ void Map::draw() {
 
     // For the texts, draw them
     // TODO: Make this event controlled. Maybe something similar to music module, but scrolling text and playing a sound
-    for (const auto &textMap : texts) {
+    // TODO: Fix this / replace with text boxes
+    /*for (const auto &textMap : texts) {
         auto text = textMap.second;
         al_draw_text(Engine::fonts[text->font], al_map_rgb(text->r, text->g, text->b), text->x, text->y, 0,
                 text->text.c_str());
-    }
+    }*/
 }
 
 void Map::handleEvent(ALLEGRO_EVENT event) {

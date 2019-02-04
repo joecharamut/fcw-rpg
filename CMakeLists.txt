@@ -7,8 +7,17 @@ set(CMAKE_CXX_STANDARD 14)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
 
 IF(${WIN32})
-    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/libs/allegro_win/include ${CMAKE_SOURCE_DIR}/include)
-    LINK_DIRECTORIES(${CMAKE_SOURCE_DIR}/libs/allegro_win/lib)
+    INCLUDE_DIRECTORIES(
+            #${CMAKE_SOURCE_DIR}/lib/allegro_win/include
+            ${CMAKE_SOURCE_DIR}/lib/windows/allegro/include
+            ${CMAKE_SOURCE_DIR}/lib/windows/allegro_deps/include
+            ${CMAKE_SOURCE_DIR}/include
+    )
+    LINK_DIRECTORIES(
+            #${CMAKE_SOURCE_DIR}/lib/allegro_win/lib
+            ${CMAKE_SOURCE_DIR}/lib/windows/allegro/lib
+            ${CMAKE_SOURCE_DIR}/lib/windows/allegro_deps/lib
+    )
 ENDIF()
 
 set(SOURCE_FILES
@@ -24,14 +33,14 @@ set(SOURCE_FILES
         Keyboard.cpp Keyboard.h
         Engine.cpp Engine.h
         Log.cpp Log.h
-        Options.cpp Options.h Room.cpp Room.h)
+        Options.cpp Options.h
+        Room.cpp Room.h
+)
 
 add_executable(fcwrpg ${SOURCE_FILES})
 
-add_library(duktape STATIC ${CMAKE_SOURCE_DIR}/libs/duktape/duktape.c)
+add_library(duktape STATIC ${CMAKE_SOURCE_DIR}/lib/duktape/duktape.c)
 target_link_libraries(duktape m)
-
-add_library(libb64 STATIC ${CMAKE_SOURCE_DIR}/libs/libb64/cencode.c ${CMAKE_SOURCE_DIR}/libs/libb64/cencode.c)
 
 IF(${WIN32})
     add_dependencies(fcwrpg copy_win_deps)
@@ -40,12 +49,44 @@ ELSE()
 ENDIF()
 
 IF(${WIN32})
+    #TARGET_LINK_LIBRARIES(fcwrpg allegro_monolith stdc++fs duktape)
     TARGET_LINK_LIBRARIES(fcwrpg
-            allegro_monolith
+            allegro_monolith-static
+
+            jpeg
+            dumb
+            FLAC
+            freetype
+            vorbisfile
+            vorbis
+            ogg
+            physfs
+            png16
+            zlib
+            opusfile
+            opus
+
+            dsound
+            gdiplus
+            uuid
+            kernel32
+            winmm
+            psapi
+            opengl32
+            glu32
+            user32
+            comdlg32
+            gdi32
+            shell32
+            ole32
+            advapi32
+            ws2_32
+            shlwapi
+
             stdc++fs
             duktape
-            libb64
     )
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static -static-libstdc++ -static-libgcc")
 ELSE()
     TARGET_LINK_LIBRARIES(fcwrpg
             allegro
@@ -64,20 +105,19 @@ ELSE()
             stdc++fs
             duktape
             pthread
-            libb64
     )
 ENDIF()
 
-SET(libgcc ${CMAKE_SOURCE_DIR}/libs/libgcc_s_dw2-1.dll)
-SET(libstdc++ ${CMAKE_SOURCE_DIR}/libs/libstdc++-6.dll)
-SET(pthread ${CMAKE_SOURCE_DIR}/libs/libwinpthread-1.dll)
+#SET(libgcc ${CMAKE_SOURCE_DIR}/lib/libgcc_s_dw2-1.dll)
+#SET(libstdc++ ${CMAKE_SOURCE_DIR}/lib/libstdc++-6.dll)
+#SET(pthread ${CMAKE_SOURCE_DIR}/lib/libwinpthread-1.dll)
 
 add_custom_target(copy_win_deps)
 add_custom_command(
         TARGET copy_win_deps
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources ./resources
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/libs/allegro_win/bin/allegro_monolith-5.2.dll ./
-        COMMAND ${CMAKE_COMMAND} -E copy ${libgcc} ${libstdc++} ${pthread} ./
+        #COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/lib/allegro_win/bin/allegro_monolith-5.2.dll ./
+        #COMMAND ${CMAKE_COMMAND} -E copy ${libgcc} ${libstdc++} ${pthread} ./
 )
 
 add_custom_target(copy_linux_deps)
@@ -95,10 +135,10 @@ add_custom_command(
         COMMAND ${CMAKE_COMMAND} -E tar "cvf" "win_package.zip" --format=zip --
         fcwrpg.exe
         resources
-        allegro_monolith-5.2.dll
-        libgcc_s_dw2-1.dll
-        libstdc++-6.dll
-        libwinpthread-1.dll
+        #allegro_monolith-5.2.dll
+        #libgcc_s_dw2-1.dll
+        #libstdc++-6.dll
+        #libwinpthread-1.dll
 )
 
 add_custom_target(linux_package)

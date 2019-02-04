@@ -137,10 +137,8 @@ void Engine::update() {
     if (redraw && al_is_event_queue_empty(eventQueue)) {
         // Clear redraw flag
         redraw = false;
-        // Clear screen to black
-        al_clear_to_color(al_map_rgb(0x00, 0x00, 0x00));
 
-        // Create 512x512 buffer
+        // Create screen buffer
         ALLEGRO_BITMAP *buffer = al_create_bitmap(SCREEN_W, SCREEN_H);
         // Set as draw target
         al_set_target_bitmap(buffer);
@@ -152,12 +150,15 @@ void Engine::update() {
             current_map->draw();
             if (player) {
                 // Update viewport
-                current_map->updateViewport(player, false);
+                //current_map->updateViewport(player, false);
             }
         }
 
         // Reset target to display
         al_set_target_bitmap(al_get_backbuffer(display));
+
+        // Clear screen to black
+        al_clear_to_color(al_map_rgb(0x00, 0x00, 0x00));
 
         // Check if we want fullscreen mode
         bool fullscreen = (bool)((al_get_display_flags(display) & ALLEGRO_FULLSCREEN_WINDOW) >> 9);
@@ -174,10 +175,10 @@ void Engine::update() {
 
         // Calculate fps
         newTime = al_get_time();
-        if ((newTime-delayTime) > 0.15) {
+        //if ((newTime-delayTime) > 0.15) {
             fps = (1 / (newTime - oldTime));
             delayTime = newTime;
-        }
+        //}
         // Reset newTime
         oldTime = newTime;
         // And display it
@@ -205,35 +206,6 @@ void Engine::setFullscreen(bool enable) {
         f_pos_h = ((window_h/2) - (f_scale_h/2));
     } else {
         al_toggle_display_flag(display, ALLEGRO_FULLSCREEN_WINDOW, false);
-    }
-}
-
-void Engine::renderThreadFunction() {
-    // Get current system time
-    long long int start = Util::getMilliTime();
-    Log::info("Initializing Engine");
-
-    // Run initialization
-    if (!Engine::init()) {
-        // If failed, quit program
-        Log::error("Error in init!");
-        return;
-    }
-    // Get system time
-    long long int end = Util::getMilliTime();
-    // Print how long it took
-    Log::info("Done (" + std::to_string(end-start) + " ms)");
-
-    // Load Fonts
-    loadFonts();
-
-    // Testing code TODO: Remove
-    Main::testing();
-
-    Log::info("Starting game loop");
-
-    while (!done) {
-        update();
     }
 }
 
@@ -291,6 +263,12 @@ void processCommandString(std::string command) {
     }
 }
 
+void Engine::renderThreadFunction() {
+    while (!done) {
+        update();
+    }
+}
+
 void Engine::commandThreadFunction() {
     while (!done) {
         std::string input;
@@ -305,7 +283,7 @@ void Engine::eventThreadFunction() {
     while (!done) {
         if (current_map) {
             for (auto event : current_map->current_room->events) {
-                event->execute();
+                //event->execute();
             }
         }
     }
@@ -316,12 +294,33 @@ std::thread Engine::consoleThread;
 std::thread Engine::eventThread;
 
 void Engine::run() {
+    // Get current system time
+    long long int start = Util::getMilliTime();
+    Log::info("Initializing Engine");
+
+    // Run initialization
+    if (!Engine::init()) {
+        // If failed, quit program
+        Log::error("Error in init!");
+        return;
+    }
+    // Get system time
+    long long int end = Util::getMilliTime();
+    // Print how long it took
+    Log::info("Done (" + std::to_string(end-start) + " ms)");
+
+    // Load Fonts
+    loadFonts();
+
+    // Testing code TODO: Remove
+    Main::testing();
+
     renderThread = std::thread(Engine::renderThreadFunction);
     consoleThread = std::thread(Engine::commandThreadFunction);
-    eventThread = std::thread(Engine::eventThreadFunction);
+    //eventThread = std::thread(Engine::eventThreadFunction);
 
     consoleThread.detach();
-    eventThread.detach();
+    //eventThread.detach();
     renderThread.join();
 }
 

@@ -139,8 +139,7 @@
       }
     ],
     "events": [
-      "{s_hat.x LT 64},{s_hat.y LT 64}//{SET s_hat.x 128},{SET s_hat.y 128}",
-      "{key DOWN KEY_SPACE}//{PLAY MUSIC mus_fight}//20"
+      "dmFyIGN0eCA9IG5ldyBHYW1lQ29udGV4dCgpOwppZiAoY3R4LnBsYXllci54ID4gMjU2KSB7CiAgcHJpbnQoImFzZGYiKTsKfQ=="
     ]
   }
 }
