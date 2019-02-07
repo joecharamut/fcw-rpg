@@ -74,7 +74,7 @@ struct MapJSON {
 
 class Map {
 public:
-    bool loaded = false;
+    bool isPacked;
 
     std::string id;
     std::string defaultRoom;

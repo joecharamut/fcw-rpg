@@ -1,5 +1,3 @@
-
-
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_acodec.h>
@@ -117,7 +115,7 @@ void Engine::update() {
     // If there are more events, process one of them
     ALLEGRO_EVENT event;
     if (al_get_next_event(eventQueue, &event)) {
-        // If the 60fps timer ticks, set screen redraw
+        // If the fps timer ticks, set screen redraw
         if (event.type == ALLEGRO_EVENT_TIMER) redraw = true;
         // If user clicks close button, end the game
         if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) done = true;
@@ -150,7 +148,7 @@ void Engine::update() {
             current_map->draw();
             if (player) {
                 // Update viewport
-                //current_map->updateViewport(player, false);
+                current_map->updateViewport(player, false);
             }
         }
 
@@ -175,10 +173,10 @@ void Engine::update() {
 
         // Calculate fps
         newTime = al_get_time();
-        //if ((newTime-delayTime) > 0.15) {
+        if ((newTime-delayTime) > 0.15) {
             fps = (1 / (newTime - oldTime));
             delayTime = newTime;
-        //}
+        }
         // Reset newTime
         oldTime = newTime;
         // And display it
@@ -214,6 +212,7 @@ std::vector<std::string> validCommands = {
         "eval",
         "test"
 };
+
 std::map<std::string, std::string> commandHelp = {
         {"help", "Display help text and list commands."},
         {"eval", "Eval an event string."}
@@ -248,7 +247,7 @@ void processCommandString(std::string command) {
         if (commandPart.size() < 2) {
             printf("Usage: eval <string>\n\n");
         } else {
-            std::string evalString = "";
+            std::string evalString;
             for (int i = 1; i < commandPart.size(); i++) {
                 evalString += commandPart[i] + " ";
             }

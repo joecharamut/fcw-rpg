@@ -8,15 +8,18 @@ INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
 
 IF(${WIN32})
     INCLUDE_DIRECTORIES(
-            #${CMAKE_SOURCE_DIR}/lib/allegro_win/include
             ${CMAKE_SOURCE_DIR}/lib/windows/allegro/include
             ${CMAKE_SOURCE_DIR}/lib/windows/allegro_deps/include
             ${CMAKE_SOURCE_DIR}/include
     )
     LINK_DIRECTORIES(
-            #${CMAKE_SOURCE_DIR}/lib/allegro_win/lib
             ${CMAKE_SOURCE_DIR}/lib/windows/allegro/lib
             ${CMAKE_SOURCE_DIR}/lib/windows/allegro_deps/lib
+            ${CMAKE_SOURCE_DIR}/lib/libarchive
+    )
+ELSE()
+    LINK_DIRECTORIES(
+            ${CMAKE_SOURCE_DIR}/lib/libarchive
     )
 ENDIF()
 
@@ -49,7 +52,6 @@ ELSE()
 ENDIF()
 
 IF(${WIN32})
-    #TARGET_LINK_LIBRARIES(fcwrpg allegro_monolith stdc++fs duktape)
     TARGET_LINK_LIBRARIES(fcwrpg
             allegro_monolith-static
 
@@ -85,6 +87,7 @@ IF(${WIN32})
 
             stdc++fs
             duktape
+            archive
     )
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static -static-libstdc++ -static-libgcc")
 ELSE()
@@ -98,14 +101,16 @@ ELSE()
             allegro_image
             allegro_main
             allegro_memfile
-            allegro_physfs
             allegro_primitives
             allegro_ttf
             allegro_video
+
             stdc++fs
             duktape
             pthread
+            archive
     )
+    #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static -static-libstdc++ -static-libgcc")
 ENDIF()
 
 #SET(libgcc ${CMAKE_SOURCE_DIR}/lib/libgcc_s_dw2-1.dll)
