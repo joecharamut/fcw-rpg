@@ -32,7 +32,7 @@ struct GameSprite {
 
     template <class Inspector>
     static void inspect(Inspector &i) {
-        i.construct(&std::make_shared<GameSprite, std::string>);
+        //i.construct(&std::make_shared<GameSprite, std::string>);
     }
 };
 

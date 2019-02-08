@@ -5,6 +5,8 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
+#include <archive/archive.h>
+#include <archive/archive_entry.h>
 
 #include "Sprite.h"
 #include "Map.h"
@@ -122,7 +124,30 @@ void parseArgs(int argc, char *argv[]) {
     }
 }
 
+void test() {
+    struct archive *a;
+    struct archive_entry *entry;
+    int r;
+
+    a = archive_read_new();
+    archive_read_support_filter_all(a);
+    archive_read_support_format_zip(a);
+    r = archive_read_open_filename(a, "resources/maps/pack_test.map", 512);
+    if (r != ARCHIVE_OK) {
+        return;
+    }
+    while (archive_read_next_header(a, &entry) == ARCHIVE_OK) {
+        printf("%s\n", archive_entry_pathname(entry));
+        archive_read_data_skip(a);
+    }
+    r = archive_read_free(a);
+    if (r != ARCHIVE_OK) {
+        return;
+    }
+}
+
 int main(int argc, char *argv[]) {
+    test(); return 0;
     parseArgs(argc, argv);
 
     // Hand off execution to the engine

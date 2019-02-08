@@ -2,24 +2,25 @@ cmake_minimum_required(VERSION 3.12)
 project(fcwrpg)
 
 set(CMAKE_CXX_STANDARD 14)
-#set(CMAKE_VERBOSE_MAKEFILE  ON)
+set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
 
 IF(${WIN32})
     INCLUDE_DIRECTORIES(
+            ${CMAKE_SOURCE_DIR}/include
             ${CMAKE_SOURCE_DIR}/lib/windows/allegro/include
             ${CMAKE_SOURCE_DIR}/lib/windows/allegro_deps/include
-            ${CMAKE_SOURCE_DIR}/include
     )
     LINK_DIRECTORIES(
+            ${CMAKE_SOURCE_DIR}/lib/windows/libarchive
             ${CMAKE_SOURCE_DIR}/lib/windows/allegro/lib
             ${CMAKE_SOURCE_DIR}/lib/windows/allegro_deps/lib
-            ${CMAKE_SOURCE_DIR}/lib/libarchive
     )
 ELSE()
     LINK_DIRECTORIES(
-            ${CMAKE_SOURCE_DIR}/lib/libarchive
+            ${CMAKE_SOURCE_DIR}/lib/linux/libarchive
     )
 ENDIF()
 
@@ -89,7 +90,7 @@ IF(${WIN32})
             duktape
             archive
     )
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static -static-libstdc++ -static-libgcc")
+    #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static -static-libstdc++ -static-libgcc")
 ELSE()
     TARGET_LINK_LIBRARIES(fcwrpg
             allegro

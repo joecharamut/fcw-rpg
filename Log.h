@@ -7,17 +7,17 @@
 
 class Log {
 public:
-    static void debug(const std::string &message) { if (Options::Runtime::debug) log(message, DEBUG); };
-    static void info (const std::string &message) { log(message, INFO); };
-    static void warn (const std::string &message) { log(message, WARN); };
-    static void error(const std::string &message) { log(message, ERROR); };
+    static void debug(const std::string &message) { if (Options::Runtime::debug) Log::log(message, LOG_DEBUG); };
+    static void info (const std::string &message) { Log::log(message, LOG_INFO); };
+    static void warn (const std::string &message) { Log::log(message, LOG_WARN); };
+    static void error(const std::string &message) { Log::log(message, LOG_ERROR); };
 
 private:
     enum LogLevel {
-        INFO,
-        WARN,
-        ERROR,
-        DEBUG
+        LOG_INFO,
+        LOG_WARN,
+        LOG_ERROR,
+        LOG_DEBUG
     };
     static std::vector<std::string> levelStrings;
 
