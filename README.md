@@ -14,7 +14,8 @@ Requirements (Linux):
 =====
   * CMake
   * Working c++ compiler
-  * Allegro 5 (`liballegro5-dev` on Debian/Ubuntu)
+  * Allegro 5
+  * libarchive
 
 How to Build:
 =====

@@ -2,8 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(fcwrpg)
 
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_VERBOSE_MAKEFILE ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+#set(CMAKE_VERBOSE_MAKEFILE ON)
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
 
@@ -19,9 +18,9 @@ IF(${WIN32})
             ${CMAKE_SOURCE_DIR}/lib/windows/allegro_deps/lib
     )
 ELSE()
-    LINK_DIRECTORIES(
-            ${CMAKE_SOURCE_DIR}/lib/linux/libarchive
-    )
+    #LINK_DIRECTORIES(
+    #        ${CMAKE_SOURCE_DIR}/lib/linux/libarchive
+    #)
 ENDIF()
 
 set(SOURCE_FILES

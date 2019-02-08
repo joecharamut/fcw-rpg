@@ -137,7 +137,12 @@ void test() {
         return;
     }
     while (archive_read_next_header(a, &entry) == ARCHIVE_OK) {
-        printf("%s\n", archive_entry_pathname(entry));
+        la_int64_t len = archive_entry_size(entry);
+        printf("%s: %d\n", archive_entry_pathname(entry), (int)len);
+        char *mem = (char *)malloc(len);
+        archive_read_data(a, mem, len);
+        printf("%c%c%c%c\n", mem[0], mem[1], mem[2], mem[3]);
+        free(mem);
         archive_read_data_skip(a);
     }
     r = archive_read_free(a);
