@@ -88,9 +88,9 @@ IF(${WIN32})
 
             stdc++fs
             duktape
-            archive
+            archive_static
     )
-    #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static -static-libstdc++ -static-libgcc")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static -static-libstdc++ -static-libgcc")
 ELSE()
     TARGET_LINK_LIBRARIES(fcwrpg
             allegro
