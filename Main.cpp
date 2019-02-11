@@ -22,17 +22,28 @@
 bool fs_state = false;
 bool fs_flag = false;
 
+float old_time = 0;
+float new_time = 0;
+
 void mapEventHandler(ALLEGRO_EVENT event) {
     if (event.type == ALLEGRO_EVENT_TIMER) {
+        new_time = Util::getMilliTime();
         auto hat = Engine::current_map->getSpriteById("s_hat");
         if (hat != nullptr) {
             float hat_x = hat->x;
             float hat_y = hat->y;
+            Vec2D vel = hat->velocity;
             if (Keyboard::getKeyState(ALLEGRO_KEY_UP) || Keyboard::getKeyState(ALLEGRO_KEY_W)) {
-                hat_y -= 4;
+                //hat_y -= 4;
+                vel.y = -0.1;
+            } else {
+                vel.y = 0.0;
             }
             if (Keyboard::getKeyState(ALLEGRO_KEY_DOWN) || Keyboard::getKeyState(ALLEGRO_KEY_S)) {
-                hat_y += 4;
+                //hat_y += 4;
+                vel.y = 0.1;
+            } else {
+                vel.y = 0.0;
             }
             if (Keyboard::getKeyState(ALLEGRO_KEY_LEFT) || Keyboard::getKeyState(ALLEGRO_KEY_A)) {
                 hat_x -= 4;
@@ -55,6 +66,8 @@ void mapEventHandler(ALLEGRO_EVENT event) {
 
             hat->setX(hat_x);
             hat->setY(hat_y);
+            //printf("v: [%f, %f]\n", vel.x, vel.y);
+            hat->setVelocity(vel);
 
             Sprite *spr = Engine::current_map->checkCollision(hat);
             if (spr) {
@@ -62,6 +75,8 @@ void mapEventHandler(ALLEGRO_EVENT event) {
                 hat->setX(fix[0]);
                 hat->setY(fix[1]);
             }
+            hat->update(new_time - old_time);
+            old_time = new_time;
         }
     }
 }
@@ -130,20 +145,29 @@ void test() {
     int r;
 
     a = archive_read_new();
-    archive_read_support_filter_all(a);
     archive_read_support_format_zip(a);
-    r = archive_read_open_filename(a, "resources/maps/pack_test.map", 512);
+    r = archive_read_open_filename(a, "resources/maps/pack_test.map", 0);
     if (r != ARCHIVE_OK) {
         return;
     }
     while (archive_read_next_header(a, &entry) == ARCHIVE_OK) {
-        la_int64_t len = archive_entry_size(entry);
-        printf("%s: %d\n", archive_entry_pathname(entry), (int)len);
-        char *mem = (char *)malloc(len);
-        archive_read_data(a, mem, len);
-        printf("%c%c%c%c\n", mem[0], mem[1], mem[2], mem[3]);
-        free(mem);
-        archive_read_data_skip(a);
+        auto len = (size_t) archive_entry_size(entry);
+        if (len != 0) {
+            printf("%s: %d bytes\n", archive_entry_pathname(entry), (int) len);
+            auto *buf = malloc(len);
+            int ret = (int) archive_read_data(a, buf, len);
+            if (ret == ARCHIVE_WARN || ret == ARCHIVE_FATAL || ret == ARCHIVE_RETRY) {
+                printf("%s\n\n", archive_error_string(a));
+                return;
+            } else if (ret == 0) {
+                printf("EOF\n");
+                return;
+            }
+            printf("%02x %02x %02x %02x\n", ((unsigned char *) buf)[0], ((unsigned char *) buf)[1],
+                   ((unsigned char *) buf)[2], ((unsigned char *) buf)[3]);
+            //printf("%c %c %c %c\n", ((unsigned char *)buf)[0], ((unsigned char *)buf)[1], ((unsigned char *)buf)[2], ((unsigned char *)buf)[3]);
+            free(buf);
+        }
     }
     r = archive_read_free(a);
     if (r != ARCHIVE_OK) {
@@ -152,7 +176,11 @@ void test() {
 }
 
 int main(int argc, char *argv[]) {
-    test(); return 0;
+    float testf = -4.0;
+    double testd = -4.0;
+    printf("f: %f / d: %lf\n", testf, testd);
+
+    //test(); return 0;
     parseArgs(argc, argv);
 
     // Hand off execution to the engine

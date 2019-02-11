@@ -38,7 +38,7 @@ set(SOURCE_FILES
         Log.cpp Log.h
         Options.cpp Options.h
         Room.cpp Room.h
-)
+        Vec2D.cpp Vec2D.h)
 
 add_executable(fcwrpg ${SOURCE_FILES})
 
@@ -52,44 +52,54 @@ ELSE()
 ENDIF()
 
 IF(${WIN32})
-    TARGET_LINK_LIBRARIES(fcwrpg
-            allegro_monolith-static
+    IF (${CMAKE_BUILD_TYPE} EQUAL "Release")
+        TARGET_LINK_LIBRARIES(fcwrpg
+                allegro_monolith-static
 
-            jpeg
-            dumb
-            FLAC
-            freetype
-            vorbisfile
-            vorbis
-            ogg
-            physfs
-            png16
-            zlib
-            opusfile
-            opus
+                jpeg
+                dumb
+                FLAC
+                freetype
+                vorbisfile
+                vorbis
+                ogg
+                physfs
+                png16
+                zlib
+                opusfile
+                opus
 
-            dsound
-            gdiplus
-            uuid
-            kernel32
-            winmm
-            psapi
-            opengl32
-            glu32
-            user32
-            comdlg32
-            gdi32
-            shell32
-            ole32
-            advapi32
-            ws2_32
-            shlwapi
+                dsound
+                gdiplus
+                uuid
+                kernel32
+                winmm
+                psapi
+                opengl32
+                glu32
+                user32
+                comdlg32
+                gdi32
+                shell32
+                ole32
+                advapi32
+                ws2_32
+                shlwapi
 
-            stdc++fs
-            duktape
-            archive_static
-    )
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static -static-libstdc++ -static-libgcc")
+                stdc++fs
+                duktape
+                archive_static
+        )
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static -static-libstdc++ -static-libgcc")
+    ELSE()
+        TARGET_LINK_LIBRARIES(fcwrpg
+                allegro_monolith.dll
+
+                stdc++fs
+                duktape
+                archive.dll
+        )
+    ENDIF()
 ELSE()
     TARGET_LINK_LIBRARIES(fcwrpg
             allegro
@@ -118,12 +128,19 @@ ENDIF()
 #SET(pthread ${CMAKE_SOURCE_DIR}/lib/libwinpthread-1.dll)
 
 add_custom_target(copy_win_deps)
-add_custom_command(
-        TARGET copy_win_deps
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources ./resources
-        #COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/lib/allegro_win/bin/allegro_monolith-5.2.dll ./
-        #COMMAND ${CMAKE_COMMAND} -E copy ${libgcc} ${libstdc++} ${pthread} ./
-)
+IF(${CMAKE_BUILD_TYPE} EQUAL "Release")
+    add_custom_command(
+            TARGET copy_win_deps
+            COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources ./resources
+    )
+ELSE()
+    add_custom_command(
+            TARGET copy_win_deps
+            COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources ./resources
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/lib/windows/allegro/bin/allegro_monolith-5.2.dll ./
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/lib/windows/libarchive/libarchive.dll ./
+    )
+ENDIF()
 
 add_custom_target(copy_linux_deps)
 add_custom_command(
