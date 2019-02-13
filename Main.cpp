@@ -18,6 +18,7 @@
 #include "Log.h"
 #include "Engine.h"
 #include "Options.h"
+#include "ResourceManager.h"
 
 bool fs_state = false;
 bool fs_flag = false;
@@ -124,34 +125,49 @@ void parseArgs(int argc, char *argv[]) {
     }
 }
 
-void test() {
+void testArchive() {
     struct archive *a;
     struct archive_entry *entry;
     int r;
 
     a = archive_read_new();
     archive_read_support_format_zip(a);
-    r = archive_read_open_filename(a, "resources/maps/pack_test.map", 0);
+    r = archive_read_open_filename(a, "resources/pack_test.map", 0);
     if (r != ARCHIVE_OK) {
         return;
     }
     while (archive_read_next_header(a, &entry) == ARCHIVE_OK) {
         auto len = (size_t) archive_entry_size(entry);
         if (len != 0) {
-            printf("%s: %d bytes\n", archive_entry_pathname(entry), (int) len);
-            auto *buf = malloc(len);
-            int ret = (int) archive_read_data(a, buf, len);
-            if (ret == ARCHIVE_WARN || ret == ARCHIVE_FATAL || ret == ARCHIVE_RETRY) {
-                printf("%s\n\n", archive_error_string(a));
-                return;
-            } else if (ret == 0) {
-                printf("EOF\n");
-                return;
+            std::string path = std::string(archive_entry_pathname(entry));
+            if (path.length() > 14 && path.substr(path.length() - 14) == "resources.json") {
+                printf("%s: %d bytes\n", archive_entry_pathname(entry), (int) len);
+                byte *buf = (byte *) calloc(sizeof(byte), len);
+                int length = (int) archive_read_data(a, buf, len);
+                if (length == ARCHIVE_WARN || length == ARCHIVE_RETRY) {
+                    printf("%s\n\n", archive_error_string(a));
+                } else if (length == ARCHIVE_FATAL) {
+                    printf("%s\n\n", archive_error_string(a));
+                    return;
+                } else if (length == 0) {
+                    printf("EOF\n");
+                    return;
+                }
+
+                std::stringstream ss;
+                for (int i = 0; i < length; i++) {
+                    ss << buf[i];
+                }
+
+                cereal::JSONInputArchive inputArchive(ss);
+                ResourceJSON resourceJSON;
+                inputArchive(cereal::make_nvp("data", resourceJSON));
+                for (auto r : resourceJSON.resources) {
+                    printf("%s -> %s\n", r.first.c_str(), r.second.c_str());
+                }
+
+                free(buf);
             }
-            printf("%02x %02x %02x %02x\n", ((unsigned char *) buf)[0], ((unsigned char *) buf)[1],
-                   ((unsigned char *) buf)[2], ((unsigned char *) buf)[3]);
-            //printf("%c %c %c %c\n", ((unsigned char *)buf)[0], ((unsigned char *)buf)[1], ((unsigned char *)buf)[2], ((unsigned char *)buf)[3]);
-            free(buf);
         }
     }
     r = archive_read_free(a);
@@ -160,8 +176,43 @@ void test() {
     }
 }
 
+void test() {
+    FILE *fp = fopen("resources/maps/map_test/map.json", "r");
+    struct stat sbuf;
+    fstat(fileno(fp), &sbuf);
+    size_t size = (size_t) sbuf.st_size;
+    byte *data = (byte *) calloc(sizeof(byte), size);
+    fread(data, size, 1, fp);
+
+    printf("size: %d\n\n", (int) size);
+
+    {
+        ResourceManager::registerResource(
+                new Resource(
+                        ResourceLocation("test:testing"),
+                        ResourceType("JSON", ".json"),
+                        data, size
+                )
+        );
+    }
+    {
+        Resource *res = ResourceManager::getResource(ResourceLocation("test:testing"));
+        printf("found resource\nlocation: %s\ntype: %s\next: %s\nsize: %d\n\n",
+                res->location.location.c_str(), res->type.description.c_str(), res->type.extension.c_str(), res->size);
+        if (res) {
+            byte *buf = (byte *) calloc(sizeof(byte), res->size);
+            ALLEGRO_FILE *file = res->openAllegroFile();
+            size_t ret = al_fread(file, buf, res->size);
+            printf("size: %d\n", ret);
+            for (int i = 0; i < res->size; i++) {
+                printf("%c", buf[i]);
+            }
+        }
+    }
+}
+
 int main(int argc, char *argv[]) {
-    //test(); return 0;
+    testArchive(); return 0;
     parseArgs(argc, argv);
 
     // Hand off execution to the engine

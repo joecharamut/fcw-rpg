@@ -1,0 +1,10 @@
+{
+  "data": {
+    "resources": [
+      {
+        "key": "pack_test:room_0",
+        "value": "data/rooms/room0.json"
+      }
+    ]
+  }
+}

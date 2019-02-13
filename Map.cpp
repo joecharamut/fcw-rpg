@@ -10,6 +10,7 @@
 #include "Main.h"
 #include "Log.h"
 #include "Engine.h"
+#include "ResourceManager.h"
 
 static std::map<std::string, std::string> mapList = {};
 
@@ -28,6 +29,17 @@ Map::Map(std::string id, std::string defaultRoom, std::vector<std::string> roomF
         }
     }
     this->current_room = rooms[defaultRoom];
+
+    std::ifstream inStream(getFilePath("../resources.json", this), std::ios::binary);
+    if (!inStream.fail()) {
+        cereal::JSONInputArchive input(inStream);
+        ResourceJSON resourceJSON;
+        input(cereal::make_nvp("data", resourceJSON));
+        for (auto resource : resourceJSON.resources) {
+            auto *res = ResourceManager::loadFileToResource(getFilePath(resource.second, this), resource.first);
+            printf("loaded %s\n", res->location.location.c_str());
+        }
+    }
 
     // TODO: Have texts hidden until event trigger?
     for (const auto &text : textsString) {
@@ -107,7 +119,7 @@ std::vector<std::string> Map::enumerateMaps() {
             // Fix Windows being mega gay (Replace \ with /)
             std::replace(file.begin(), file.end(), '\\', '/');
             // If it ends in .json
-            if (file.substr(file.length() - 5) == ".json") {
+            if (file.substr(file.length() - 8) == "map.json") {
                 // Load it and store its id and path
                 std::ifstream is(file, std::ios::binary);
                 cereal::JSONInputArchive inputArchive(is);

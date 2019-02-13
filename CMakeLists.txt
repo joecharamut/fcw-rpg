@@ -38,7 +38,7 @@ set(SOURCE_FILES
         Log.cpp Log.h
         Options.cpp Options.h
         Room.cpp Room.h
-        Vec2D.cpp Vec2D.h)
+        Vec2D.cpp Vec2D.h ResourceManager.cpp ResourceManager.h)
 
 add_executable(fcwrpg ${SOURCE_FILES})
 
