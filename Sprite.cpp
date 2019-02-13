@@ -1,16 +1,11 @@
 #include <utility>
-
-#include <utility>
-
 #include "Sprite.h"
-#include <cstdarg>
 
 // Constructor
 Sprite::Sprite(float x, float y, std::string id, std::vector<Animation> frames, COLLISION_TYPE collision) {
     // Set values
     this->x = x;
     this->y = y;
-    this->velocity = {0, 0};
     this->frames = std::move(frames);
     for (auto &frame : this->frames) {
         frame.loadFrames();
@@ -69,43 +64,3 @@ void Sprite::updateBoundingBox() {
     // Create new one
     this->boundingBox = new BoundingBox(x-dX, y-dY, x-dX+width, y-dY+height);
 }
-
-void Sprite::setVelocity(Vec2D newVelocity) {
-    this->velocity = newVelocity;
-}
-
-void Sprite::update(float delta) {
-    printf(".");
-    if (lastX >= (2<<16)) {
-        lastX = x;
-    }
-    if (lastY >= -(2<<16)) {
-        lastY = y;
-    }
-    if (lastDelta >= (2<<16)) {
-        lastDelta = delta;
-    }
-    printf(".");
-    Vec2D nextPos = TCV(Vec2D(x, y), Vec2D(lastX, lastY), delta, lastDelta, velocity);
-    printf("updating: [%f -> %f, %f -> %f]\n", x, nextPos.x, y, nextPos.y);
-
-    lastX = x;
-    lastY = y;
-    lastDelta = delta;
-
-    this->setX(nextPos.x);
-    this->setY(nextPos.y);
-}
-
-Vec2D Sprite::TCV(Vec2D thisPos, Vec2D lastPos, float thisDelta, float lastDelta, Vec2D acceleration) {
-    Vec2D nextPos;
-    float nextX, nextY;
-
-    nextX = thisPos.x + (thisPos.x - lastPos.x) * (thisDelta / lastDelta) + (acceleration.x * thisDelta * thisDelta);
-    nextY = thisPos.y + (thisPos.y - lastPos.y) * (thisDelta / lastDelta) + (acceleration.y * thisDelta * thisDelta);
-
-    nextPos = Vec2D(nextX, nextY);
-
-    return nextPos;
-}
-

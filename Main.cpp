@@ -22,28 +22,17 @@
 bool fs_state = false;
 bool fs_flag = false;
 
-float old_time = 0;
-float new_time = 0;
-
 void mapEventHandler(ALLEGRO_EVENT event) {
     if (event.type == ALLEGRO_EVENT_TIMER) {
-        new_time = Util::getMilliTime();
         auto hat = Engine::current_map->getSpriteById("s_hat");
         if (hat != nullptr) {
             float hat_x = hat->x;
             float hat_y = hat->y;
-            Vec2D vel = hat->velocity;
             if (Keyboard::getKeyState(ALLEGRO_KEY_UP) || Keyboard::getKeyState(ALLEGRO_KEY_W)) {
-                //hat_y -= 4;
-                vel.y = -0.1;
-            } else {
-                vel.y = 0.0;
+                hat_y -= 4;
             }
             if (Keyboard::getKeyState(ALLEGRO_KEY_DOWN) || Keyboard::getKeyState(ALLEGRO_KEY_S)) {
-                //hat_y += 4;
-                vel.y = 0.1;
-            } else {
-                vel.y = 0.0;
+                hat_y += 4;
             }
             if (Keyboard::getKeyState(ALLEGRO_KEY_LEFT) || Keyboard::getKeyState(ALLEGRO_KEY_A)) {
                 hat_x -= 4;
@@ -66,8 +55,6 @@ void mapEventHandler(ALLEGRO_EVENT event) {
 
             hat->setX(hat_x);
             hat->setY(hat_y);
-            //printf("v: [%f, %f]\n", vel.x, vel.y);
-            hat->setVelocity(vel);
 
             Sprite *spr = Engine::current_map->checkCollision(hat);
             if (spr) {
@@ -75,8 +62,6 @@ void mapEventHandler(ALLEGRO_EVENT event) {
                 hat->setX(fix[0]);
                 hat->setY(fix[1]);
             }
-            hat->update(new_time - old_time);
-            old_time = new_time;
         }
     }
 }
@@ -176,10 +161,6 @@ void test() {
 }
 
 int main(int argc, char *argv[]) {
-    float testf = -4.0;
-    double testd = -4.0;
-    printf("f: %f / d: %lf\n", testf, testd);
-
     //test(); return 0;
     parseArgs(argc, argv);
 
