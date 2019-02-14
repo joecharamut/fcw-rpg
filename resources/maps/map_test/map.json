@@ -3,9 +3,9 @@
     "version": 1,
     "id": "map_test",
     "defaultRoom": "room_default",
-    "roomFiles": [
-      "rooms/room0.json",
-      "rooms/room1.json"
+    "rooms": [
+      "map_test:room_0",
+      "map_test:room_1"
     ],
     "texts": [
       {
@@ -24,17 +24,17 @@
     "soundEffects": [
       {
         "key": "snd_test",
-        "value": "cavey_stuff.ogg"
+        "value": "map_test:cavey_stuff"
       }
     ],
     "music": [
       {
         "key": "mus_cave",
-        "value": "cavey_stuff.ogg"
+        "value": "map_test:cavey_stuff"
       },
       {
         "key": "mus_fight",
-        "value": "fighty_fight_yeet.ogg"
+        "value": "map_test:fighty_fight_yeet"
       }
     ]
   }

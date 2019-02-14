@@ -51,7 +51,7 @@ struct MapJSON {
     int version = 1;
     std::string id;
     std::string defaultRoom;
-    std::vector<std::string> roomFiles;
+    std::vector<std::string> rooms;
     std::map<std::string, Text> textsString;
     std::map<std::string, std::string> soundEffectsString;
     std::map<std::string, std::string> musicString;
@@ -64,7 +64,7 @@ struct MapJSON {
                 CEREAL_NVP(version),
                 CEREAL_NVP(id),
                 CEREAL_NVP(defaultRoom),
-                CEREAL_NVP(roomFiles),
+                CEREAL_NVP(rooms),
                 cereal::make_nvp("texts", textsString),
                 cereal::make_nvp("soundEffects", soundEffectsString),
                 cereal::make_nvp("music", musicString)
@@ -74,8 +74,6 @@ struct MapJSON {
 
 class Map {
 public:
-    bool isPacked;
-
     std::string id;
     std::string defaultRoom;
     std::map<std::string, Room *> rooms;
@@ -86,10 +84,10 @@ public:
 
     void (*handlerFunction)(ALLEGRO_EVENT event);
 
-    static Map* loadMap(std::string id);
-    static Map* loadMapFile(std::string filename);
-    static std::vector<std::string> enumerateMaps();
-    static std::string getFilePath(std::string filename, Map *map);
+    //static Map* loadMap(std::string id);
+    //static Map* loadMapFile(std::string filename);
+    //static std::vector<std::string> enumerateMaps();
+    //static std::string getFilePath(std::string filename, Map *map);
 
     void handleEvent(ALLEGRO_EVENT event);
     void setEventHandlerFunction(void (*handler)(ALLEGRO_EVENT event));
@@ -102,7 +100,7 @@ public:
     void updateViewport(Sprite *spr, bool override);
     void draw();
 
-    Map(std::string id, std::string defaultRoom, std::vector<std::string> roomFiles,
+    Map(std::string id, std::string defaultRoom, std::vector<std::string> rooms,
             std::map<std::string, Text> textsString, std::map<std::string, std::string> soundEffectsString,
             std::map<std::string, std::string> musicString);
 };

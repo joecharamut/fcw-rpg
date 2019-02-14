@@ -19,6 +19,7 @@
 #include "Engine.h"
 #include "Options.h"
 #include "ResourceManager.h"
+#include "MapLoader.h"
 
 bool fs_state = false;
 bool fs_flag = false;
@@ -69,8 +70,9 @@ void mapEventHandler(ALLEGRO_EVENT event) {
 
 // Function for testing features and stuff
 void Main::testing() {
+    MapLoader::loadMaps();
     // Load the test map
-    Engine::current_map = Map::loadMap("map_test");
+    Engine::current_map = MapLoader::getMap("map_test");//Map::loadMap("map_test");
     // Set the event handler TODO: Replace with events from map file, maybe pass events from game to map
     Engine::current_map->setEventHandlerFunction(mapEventHandler);
 
@@ -126,54 +128,83 @@ void parseArgs(int argc, char *argv[]) {
 }
 
 void testArchive() {
-    struct archive *a;
+    struct archive *archive;
     struct archive_entry *entry;
     int r;
 
-    a = archive_read_new();
-    archive_read_support_format_zip(a);
-    r = archive_read_open_filename(a, "resources/pack_test.map", 0);
-    if (r != ARCHIVE_OK) {
-        return;
-    }
-    while (archive_read_next_header(a, &entry) == ARCHIVE_OK) {
-        auto len = (size_t) archive_entry_size(entry);
-        if (len != 0) {
+    archive = archive_read_new();
+    archive_read_support_format_zip(archive);
+    r = archive_read_open_filename(archive, "resources/pack_test.map", 0);
+
+    if (r != ARCHIVE_OK) return;
+
+    bool resourcesFileLoaded = false;
+    std::vector<std::string> resourceLocations;
+    std::vector<std::string> resourcePaths;
+
+    while (archive_read_next_header(archive, &entry) == ARCHIVE_OK) {
+        auto entry_length = (size_t) archive_entry_size(entry);
+        if (entry_length != 0) {
             std::string path = std::string(archive_entry_pathname(entry));
-            if (path.length() > 14 && path.substr(path.length() - 14) == "resources.json") {
-                printf("%s: %d bytes\n", archive_entry_pathname(entry), (int) len);
-                byte *buf = (byte *) calloc(sizeof(byte), len);
-                int length = (int) archive_read_data(a, buf, len);
-                if (length == ARCHIVE_WARN || length == ARCHIVE_RETRY) {
-                    printf("%s\n\n", archive_error_string(a));
+            if (!resourcesFileLoaded && path.find("resources.json") != std::string::npos) {
+                // Read file
+                byte *buf = (byte *) calloc(sizeof(byte), entry_length);
+                int length = (int) archive_read_data(archive, buf, entry_length);
+                // Check for errors
+                if (length == ARCHIVE_WARN) {
+                    printf("%s\n\n", archive_error_string(archive));
                 } else if (length == ARCHIVE_FATAL) {
-                    printf("%s\n\n", archive_error_string(a));
+                    printf("%s\n\n", archive_error_string(archive));
                     return;
                 } else if (length == 0) {
                     printf("EOF\n");
                     return;
                 }
-
+                // Convert buffer to a StringStream
                 std::stringstream ss;
                 for (int i = 0; i < length; i++) {
                     ss << buf[i];
                 }
-
+                // Decode stream JSON data
                 cereal::JSONInputArchive inputArchive(ss);
                 ResourceJSON resourceJSON;
                 inputArchive(cereal::make_nvp("data", resourceJSON));
-                for (auto r : resourceJSON.resources) {
-                    printf("%s -> %s\n", r.first.c_str(), r.second.c_str());
+
+                // Store requested resources
+                for (auto &res : resourceJSON.resources) {
+                    resourceLocations.push_back(res.location);
+                    resourcePaths.push_back(res.path);
                 }
 
+                resourcesFileLoaded = true;
+
+                archive_read_free(archive);
+
+                archive = archive_read_new();
+                archive_read_support_format_zip(archive);
+                r = archive_read_open_filename(archive, "resources/pack_test.map", 0);
+                if (r != ARCHIVE_OK) return;
+
                 free(buf);
+            } else if (resourcesFileLoaded) {
+                for (int i = 0; i < resourcePaths.size(); i++) {
+                    if (path.find(resourcePaths[i]) != std::string::npos) {
+                        std::string ext = "." + Util::splitString(resourcePaths[i], ".").back();
+                        byte *buf = (byte *) calloc(sizeof(byte), entry_length);
+                        int length = (int) archive_read_data(archive, buf, entry_length);
+                        ResourceManager::registerResource(new Resource(
+                                ResourceLocation(resourceLocations[i]),
+                                ResourceType(ext),
+                                buf, (size_t) length
+                        ));
+                    }
+                }
             }
         }
     }
-    r = archive_read_free(a);
-    if (r != ARCHIVE_OK) {
-        return;
-    }
+    archive_read_free(archive);
+    auto *res = ResourceManager::getResource("pack_test:room_0");
+    printf("%s: %d\n", res->location.location.c_str(), res->size);
 }
 
 void test() {
@@ -212,8 +243,11 @@ void test() {
 }
 
 int main(int argc, char *argv[]) {
-    testArchive(); return 0;
+    //MapLoader::loadMaps(); return 0;
+    //testArchive(); return 0;
     parseArgs(argc, argv);
+
+    ResourceManager::loadFileToResource("resources/icon.png", "sys:icon");
 
     // Hand off execution to the engine
     Engine::run();

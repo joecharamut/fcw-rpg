@@ -11,9 +11,9 @@ Room::Room(std::string id, std::vector<std::string> tileset, std::vector<std::ve
     this->id = std::move(id);
 
     // Copy in tileset, with path
-    for (auto &str : tileset) {
-        str = Map::getFilePath(str, parent);
-    }
+    //for (auto &str : tileset) {
+    //    str = Map::getFilePath(str, parent);
+    //}
 
     // Load the tilemap as actual images into memory
     resolveMap(std::move(tileset), std::move(tilemap));
@@ -22,7 +22,7 @@ Room::Room(std::string id, std::vector<std::string> tileset, std::vector<std::ve
     for (auto spr : sprites) {
         for (auto &animation : spr.frames) {
             for (auto &frame : animation.frames) {
-                frame = Map::getFilePath(frame, parent);
+                //frame = Map::getFilePath(frame, parent);
             }
         }
         this->sprites.push_back(new Sprite(&spr));

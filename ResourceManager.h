@@ -2,17 +2,32 @@
 #define FCWRPG_RESOURCEMANAGER_H
 
 #include <string>
+#include <vector>
 #include <map>
 #include <allegro5/file.h>
 
 #include <cereal/cereal.hpp>
-#include <cereal/types/map.hpp>
+#include <cereal/types/vector.hpp>
 
 typedef unsigned char byte;
 
+class ResourceEntry {
+public:
+    std::string location;
+    std::string path;
+
+    template <class Archive>
+    void serialize(Archive &archive) {
+        archive(
+                CEREAL_NVP(location),
+                CEREAL_NVP(path)
+        );
+    }
+};
+
 class ResourceJSON {
 public:
-    std::map<std::string, std::string> resources;
+    std::vector<ResourceEntry> resources;
 
     template <class Archive>
     void serialize(Archive &archive) {
@@ -66,6 +81,7 @@ public:
 
     ALLEGRO_FILE *openAllegroFile();
     FILE *openFile();
+    std::stringstream openStream();
 };
 
 

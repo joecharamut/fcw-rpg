@@ -58,9 +58,9 @@
       ]
     ],
     "tileset": [
-      "tile00.png",
-      "tile01.png",
-      "tile02.png"
+      "map_test:tile00",
+      "map_test:tile01",
+      "map_test:tile02"
     ],
     "sprites": [
       {
@@ -72,25 +72,25 @@
           {
             "type": "IDLE",
             "frames": [
-              "rainbow/frame-0.png",
-              "rainbow/frame-1.png",
-              "rainbow/frame-2.png",
-              "rainbow/frame-3.png",
-              "rainbow/frame-4.png",
-              "rainbow/frame-5.png",
-              "rainbow/frame-6.png",
-              "rainbow/frame-7.png",
-              "rainbow/frame-8.png",
-              "rainbow/frame-9.png",
-              "rainbow/frame-10.png",
-              "rainbow/frame-11.png"
+              "map_test:rainbow_0",
+              "map_test:rainbow_1",
+              "map_test:rainbow_2",
+              "map_test:rainbow_3",
+              "map_test:rainbow_4",
+              "map_test:rainbow_5",
+              "map_test:rainbow_6",
+              "map_test:rainbow_7",
+              "map_test:rainbow_8",
+              "map_test:rainbow_9",
+              "map_test:rainbow_10",
+              "map_test:rainbow_11"
             ],
             "speed": 4
           },
           {
             "type": "STILL",
             "frames": [
-              "rainbow/frame-0.png"
+              "map_test:rainbow_0"
             ],
             "speed": 1
           }
@@ -105,18 +105,18 @@
           {
             "type": "IDLE",
             "frames": [
-              "rainbow/frame-0.png",
-              "rainbow/frame-1.png",
-              "rainbow/frame-2.png",
-              "rainbow/frame-3.png",
-              "rainbow/frame-4.png",
-              "rainbow/frame-5.png",
-              "rainbow/frame-6.png",
-              "rainbow/frame-7.png",
-              "rainbow/frame-8.png",
-              "rainbow/frame-9.png",
-              "rainbow/frame-10.png",
-              "rainbow/frame-11.png"
+              "map_test:rainbow_0",
+              "map_test:rainbow_1",
+              "map_test:rainbow_2",
+              "map_test:rainbow_3",
+              "map_test:rainbow_4",
+              "map_test:rainbow_5",
+              "map_test:rainbow_6",
+              "map_test:rainbow_7",
+              "map_test:rainbow_8",
+              "map_test:rainbow_9",
+              "map_test:rainbow_10",
+              "map_test:rainbow_11"
             ],
             "speed": 4
           }
@@ -131,7 +131,7 @@
           {
             "type": "default",
             "frames": [
-              "hat.png"
+              "map_test:hat"
             ],
             "speed": 1
           }

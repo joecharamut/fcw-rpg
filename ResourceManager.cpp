@@ -3,6 +3,7 @@
 
 #include <allegro5/allegro_memfile.h>
 #include <sys/stat.h>
+#include <sstream>
 
 Resource::Resource(ResourceLocation location, ResourceType type, byte *data, size_t size) {
     this->location = location;
@@ -25,6 +26,14 @@ FILE *Resource::openFile() {
     file = fmemopen(data, size, "r");
 
     return file;
+}
+
+std::stringstream Resource::openStream() {
+    std::stringstream stream;
+    for (int i = 0; i < size; i++) {
+        stream << data[i];
+    }
+    return stream;
 }
 
 std::map<ResourceLocation, Resource *> ResourceManager::resources;
@@ -59,9 +68,9 @@ Resource *ResourceManager::loadFileToResource(std::string filePath, std::string 
 
     resource = new Resource(
             ResourceLocation(location),
-            ResourceType(Util::splitString(filePath, ".").back()),
+            ResourceType("." + Util::splitString(filePath, ".").back()),
             data, size
-        );
+    );
     registerResource(resource);
     return resource;
 }

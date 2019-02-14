@@ -9,6 +9,7 @@
 #include "Util.h"
 #include "Main.h"
 #include "Sprite.h"
+#include "ResourceManager.h"
 
 Sprite *Engine::player;
 Map *Engine::current_map;
@@ -88,7 +89,7 @@ bool Engine::init() {
         return false;
     }
     // Set icon and title
-    al_set_display_icon(display, Engine::loadImage("resources/icon.png"));
+    al_set_display_icon(display, Engine::loadImage("sys:icon"));
     al_set_window_title(display, "FCW the RPG");
 
     // Set 60 FPS Timer
@@ -334,7 +335,8 @@ void Engine::loadFonts() {
 
 ALLEGRO_BITMAP *Engine::loadImage(const char *file) {
     ALLEGRO_BITMAP *img = nullptr;
-    if ((img = al_load_bitmap(file)) != nullptr) {
+    Resource *res = ResourceManager::getResource(file);
+    if ((img = al_load_bitmap_f(res->openAllegroFile(), res->type.extension.c_str())) != nullptr) {
         return img;
     }
     throw FileException("Error loading image file \"" + std::string(file) + "\"");
@@ -342,7 +344,8 @@ ALLEGRO_BITMAP *Engine::loadImage(const char *file) {
 
 ALLEGRO_SAMPLE *Engine::loadSample(const char *file) {
     ALLEGRO_SAMPLE *sample = nullptr;
-    if ((sample = al_load_sample(file)) != nullptr) {
+    Resource *res = ResourceManager::getResource(file);
+    if ((sample = al_load_sample_f(res->openAllegroFile(), res->type.extension.c_str())) != nullptr) {
         return sample;
     }
     throw FileException("Error loading sound file \"" + std::string(file) + "\"");
