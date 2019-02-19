@@ -24,6 +24,8 @@ public:
     static std::map<std::string, ALLEGRO_FONT *> fonts;
 
     static void run();
+    static void exit(int code);
+
     static void setFullscreen(bool enable);
 
     static ALLEGRO_BITMAP *loadImage(const char *file);
@@ -34,6 +36,7 @@ public:
 private:
     static bool redraw;
     static std::atomic<bool> done;
+    static ALLEGRO_TIMER *timer;
     static ALLEGRO_EVENT_QUEUE *eventQueue;
     static ALLEGRO_DISPLAY *display;
     static double oldTime, newTime, delayTime, fps;
@@ -42,6 +45,19 @@ private:
     static int f_scale_h;
     static int f_pos_w;
     static int f_pos_h;
+
+    enum state_offset {
+            STATE_ALLEGRO_INIT,
+            STATE_ALLEGRO_FONT,
+            STATE_ALLEGRO_TTF,
+            STATE_ALLEGRO_IMAGE,
+            STATE_ALLEGRO_KEYBOARD,
+            STATE_ALLEGRO_AUDIO,
+            STATE_DISPLAY,
+            STATE_TIMER,
+            STATE_EVENT_QUEUE
+    };
+    static int state;
 
     static std::thread renderThread;
     static std::thread consoleThread;

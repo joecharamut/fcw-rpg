@@ -19,7 +19,6 @@ Map::Map(std::string id, std::string defaultRoom, std::vector<std::string> rooms
     this->defaultRoom = defaultRoom;
 
     for (const auto &roomStr : rooms) {
-        //std::ifstream inStream(getFilePath(roomStr, this), std::ios::binary);
         std::stringstream inStream = ResourceManager::getResource(roomStr)->openStream();
         if (!inStream.fail()) {
             cereal::JSONInputArchive input(inStream);
@@ -43,85 +42,6 @@ Map::Map(std::string id, std::string defaultRoom, std::vector<std::string> rooms
         this->music[str.first] = al_create_sample_instance(Engine::loadSample(str.second.c_str()));
     }
 }
-/*
-// Load map by id
-Map* Map::loadMap(std::string id) {
-    if (mapList.empty()) enumerateMaps();
-    return loadMapFile(mapList[id]);
-}
-
-// Load map by file
-Map* Map::loadMapFile(std::string filename) {
-    // Get system time to calculate load time
-    long long int start = Util::getMilliTime();
-    // Get the file as an input stream
-    std::ifstream is(filename, std::ios::binary);
-    // If the stream opened successfully
-    if (!is.fail()) {
-        // Load the file as JSON input
-        cereal::JSONInputArchive inputArchive(is);
-        // MapJSON object
-        MapJSON loaded;
-        // Load the data to the object
-        inputArchive(cereal::make_nvp("mapdata", loaded));
-        // Create the map with the loaded data
-        Map *m = new Map(loaded.id, loaded.defaultRoom, loaded.rooms, loaded.textsString,
-                loaded.soundEffectsString, loaded.musicString);
-        // Get end time
-        long long int end = Util::getMilliTime();
-        // Print delta
-        Log::info("Loaded Map " + loaded.id + " (" + std::to_string(end-start) + " ms)");
-        // Return loaded map
-        return m;
-    }
-    // If it didn't open, send error and return null
-    Log::error("Error loading map " + filename + " (File Not Found)");
-    return nullptr;
-}
-
-// Get the path for a map file
-std::string Map::getFilePath(std::string filename, Map *map) {
-    // Get the base path
-    std::string path = mapList[map->id];
-    std::vector<std::string> split = Util::splitString(path, "/");
-    // Remove map filename from path and add the new file
-    path = path.substr(0, path.length() - split.back().length()) + "data/" + filename;
-    return path;
-}
-
-// Load a list of all maps
-std::vector<std::string> Map::enumerateMaps() {
-    // Create the list
-    std::vector<std::string> maps = {};
-    // Define the base path
-    std::string path = "resources/maps";
-    // If the path doesn't exist, return empty list
-    if (!std::experimental::filesystem::exists(path)) {
-        return maps;
-    }
-    // For each folder in the maps directory,
-    for (const auto &p : std::experimental::filesystem::directory_iterator(path)) {
-        // and each file in that folder,
-        for (const auto &p2 : std::experimental::filesystem::directory_iterator(p.path().string())) {
-            // Get the filename/path
-            std::string file = p2.path().string();
-            // Fix Windows being mega gay (Replace \ with /)
-            std::replace(file.begin(), file.end(), '\\', '/');
-            // If it ends in .json
-            if (file.substr(file.length() - 8) == "map.json") {
-                // Load it and store its id and path
-                std::ifstream is(file, std::ios::binary);
-                cereal::JSONInputArchive inputArchive(is);
-                MapJSON loaded = {};
-                inputArchive(cereal::make_nvp("mapdata", loaded));
-                maps.push_back(loaded.id);
-                mapList[loaded.id] = file;
-            }
-        }
-    }
-    // Return the maps list
-    return maps;
-}*/
 
 std::vector<Sprite *> Map::getSprites() {
     return current_room->sprites;

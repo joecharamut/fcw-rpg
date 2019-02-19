@@ -81,13 +81,7 @@ public:
     std::map<std::string, ALLEGRO_SAMPLE_INSTANCE *> soundEffects;
     std::map<std::string, ALLEGRO_SAMPLE_INSTANCE *> music;
     Room *current_room;
-
     void (*handlerFunction)(ALLEGRO_EVENT event);
-
-    //static Map* loadMap(std::string id);
-    //static Map* loadMapFile(std::string filename);
-    //static std::vector<std::string> enumerateMaps();
-    //static std::string getFilePath(std::string filename, Map *map);
 
     void handleEvent(ALLEGRO_EVENT event);
     void setEventHandlerFunction(void (*handler)(ALLEGRO_EVENT event));

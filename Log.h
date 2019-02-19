@@ -7,10 +7,15 @@
 
 class Log {
 public:
-    static void debug(const std::string &message) { if (Options::Runtime::debug) Log::log(message, LOG_DEBUG); };
-    static void info (const std::string &message) { Log::log(message, LOG_INFO); };
-    static void warn (const std::string &message) { Log::log(message, LOG_WARN); };
-    static void error(const std::string &message) { Log::log(message, LOG_ERROR); };
+    static void debug(const std::string &message) { if (Options::Runtime::debug) Log::log(LOG_DEBUG, message); };
+    static void info (const std::string &message) { Log::log(LOG_INFO, message); };
+    static void warn (const std::string &message) { Log::log(LOG_WARN, message); };
+    static void error(const std::string &message) { Log::log(LOG_ERROR, message); };
+
+    static void debugf(const char *fmt, ...);
+    static void infof (const char *fmt, ...);
+    static void warnf (const char *fmt, ...);
+    static void errorf(const char *fmt, ...);
 
 private:
     enum LogLevel {
@@ -21,7 +26,8 @@ private:
     };
     static std::vector<std::string> levelStrings;
 
-    static void log(std::string message, LogLevel level);
+    static void log(LogLevel level, std::string message);
+    static void logf(LogLevel level, const char *fmt, va_list args);
 };
 
 #endif //FCWRPG_LOG_H

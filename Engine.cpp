@@ -15,6 +15,7 @@ Sprite *Engine::player;
 Map *Engine::current_map;
 std::map<std::string, ALLEGRO_FONT *> Engine::fonts;
 ALLEGRO_DISPLAY *Engine::display;
+ALLEGRO_TIMER *Engine::timer;
 ALLEGRO_EVENT_QUEUE *Engine::eventQueue;
 bool Engine::redraw;
 std::atomic<bool> Engine::done;
@@ -28,6 +29,8 @@ int Engine::f_scale_h;
 int Engine::f_pos_w;
 int Engine::f_pos_h;
 
+int Engine::state = 0;
+
 // Function to initialize the game engine
 bool Engine::init() {
     // Initialize Allegro
@@ -36,32 +39,44 @@ bool Engine::init() {
         Log::error("Error initializing Allegro");
         return false;
     }
+    state |= 1 << STATE_ALLEGRO_INIT;
+
     // And all of the addons needed
     Log::debug("Initializing Font");
     if(!al_init_font_addon()) {
         Log::error("Error initializing Allegro Font");
         return false;
     }
+    state |= 1 << STATE_ALLEGRO_FONT;
+
     Log::debug("Initializing TTF");
     if(!al_init_ttf_addon()) {
         Log::error("Error initializing Allegro TTF");
         return false;
     }
+    state |= 1 << STATE_ALLEGRO_TTF;
+
     Log::debug("Initializing Image");
     if(!al_init_image_addon()) {
         Log::error("Error initializing Allegro Image");
         return false;
     }
+    state |= 1 << STATE_ALLEGRO_IMAGE;
+
     Log::debug("Initializing Keyboard");
     if(!al_install_keyboard()) {
         Log::error("Error initializing Keyboard");
         return false;
     }
+    state |= 1 << STATE_ALLEGRO_KEYBOARD;
+
     Log::debug("Initializing Audio");
     if(!al_install_audio()) {
         Log::error("Error initializing Audio");
         return false;
     }
+    state |= 1 << STATE_ALLEGRO_AUDIO;
+
     Log::debug("Initializing Audio Codec");
     if(!al_init_acodec_addon()) {
         Log::error("Error initializing Audio Codec");
@@ -88,16 +103,27 @@ bool Engine::init() {
         Log::error("Error creating display");
         return false;
     }
+    state |= 1 << STATE_DISPLAY;
     // Set icon and title
     al_set_display_icon(display, Engine::loadImage("sys:icon"));
     al_set_window_title(display, "FCW the RPG");
 
     // Set 60 FPS Timer
-    ALLEGRO_TIMER *timer = al_create_timer(1.0 / FPS);
+    timer = al_create_timer(1.0 / FPS);
+    if (!timer) {
+        Log::error("Error initializing Timer");
+        return false;
+    }
+    state |= 1 << STATE_TIMER;
     al_start_timer(timer);
 
     // Create event queue
     eventQueue = al_create_event_queue();
+    if (!eventQueue) {
+        Log::error("Error initializing Event Queue");
+        return false;
+    }
+    state |= 1 << STATE_EVENT_QUEUE;
     // Register events
     al_register_event_source(eventQueue, al_get_keyboard_event_source());
     al_register_event_source(eventQueue, al_get_timer_event_source(timer));
@@ -160,8 +186,7 @@ void Engine::update() {
         al_clear_to_color(al_map_rgb(0x00, 0x00, 0x00));
 
         // Check if we want fullscreen mode
-        bool fullscreen = (bool)((al_get_display_flags(display) & ALLEGRO_FULLSCREEN_WINDOW) >> 9);
-        if (fullscreen) {
+        if (al_get_display_flags(display) & ALLEGRO_FULLSCREEN_WINDOW) {
             // Scale and draw the buffer
             al_draw_scaled_bitmap(buffer, 0, 0, SCREEN_W, SCREEN_H, f_pos_w, f_pos_h, f_scale_w, f_scale_h, 0);
         } else {
@@ -302,8 +327,10 @@ void Engine::run() {
     if (!Engine::init()) {
         // If failed, quit program
         Log::error("Error in init!");
-        return;
+        Engine::exit(1);
     }
+
+    printf("%x", state);
     // Get system time
     long long int end = Util::getMilliTime();
     // Print how long it took
@@ -324,19 +351,52 @@ void Engine::run() {
     renderThread.join();
 }
 
+void Engine::exit(int code) {
+    if (state & 1 << STATE_EVENT_QUEUE) {
+        al_destroy_event_queue(eventQueue);
+    }
+    if (state & 1 << STATE_TIMER) {
+        al_destroy_timer(timer);
+    }
+    if (state & 1 << STATE_DISPLAY) {
+        al_destroy_display(display);
+    }
+    if (state & 1 << STATE_ALLEGRO_AUDIO) {
+        al_uninstall_audio();
+    }
+    if (state & 1 << STATE_ALLEGRO_KEYBOARD) {
+        al_uninstall_keyboard();
+    }
+    if (state & 1 << STATE_ALLEGRO_IMAGE) {
+        al_shutdown_image_addon();
+    }
+    if (state & 1 << STATE_ALLEGRO_TTF) {
+        al_shutdown_ttf_addon();
+    }
+    if (state & 1 << STATE_ALLEGRO_FONT) {
+        al_shutdown_font_addon();
+    }
+    if (state & 1 << STATE_ALLEGRO_INIT) {
+        al_uninstall_system();
+    }
+
+    exit(code);
+}
+
 void Engine::loadFonts() {
     Log::info("Loading fonts");
     // Load in all the fonts and make them available as a map
-    fonts["font8"]  = Engine::loadFont("resources/font/DOSVGA.ttf",  8);
-    fonts["font16"] = Engine::loadFont("resources/font/DOSVGA.ttf", 16);
-    fonts["font24"] = Engine::loadFont("resources/font/DOSVGA.ttf", 24);
-    fonts["font32"] = Engine::loadFont("resources/font/DOSVGA.ttf", 32);
+    fonts["font8"]  = Engine::loadFont("sys:font_8bit",  8);
+    fonts["font16"] = Engine::loadFont("sys:font_8bit", 16);
+    fonts["font24"] = Engine::loadFont("sys:font_8bit", 24);
+    fonts["font32"] = Engine::loadFont("sys:font_8bit", 32);
 }
 
 ALLEGRO_BITMAP *Engine::loadImage(const char *file) {
     ALLEGRO_BITMAP *img = nullptr;
     Resource *res = ResourceManager::getResource(file);
-    if ((img = al_load_bitmap_f(res->openAllegroFile(), res->type.extension.c_str())) != nullptr) {
+    img = al_load_bitmap_f(res->openAllegroFile(), res->type.extension.c_str());
+    if (img != nullptr) {
         return img;
     }
     throw FileException("Error loading image file \"" + std::string(file) + "\"");
@@ -353,7 +413,8 @@ ALLEGRO_SAMPLE *Engine::loadSample(const char *file) {
 
 ALLEGRO_FONT *Engine::loadFont(const char *file, int size) {
     ALLEGRO_FONT *font = nullptr;
-    if ((font = al_load_ttf_font(file, size, 0)) != nullptr) {
+    Resource *res = ResourceManager::getResource(file);
+    if ((font = al_load_ttf_font_f(res->openAllegroFile(), res->type.path.c_str(), size, 0)) != nullptr) {
         return font;
     }
     throw FileException("Error loading font file \"" + std::string(file) + "\"");

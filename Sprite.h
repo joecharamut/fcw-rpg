@@ -7,7 +7,6 @@
 #include <cereal/cereal.hpp>
 #include "BoundingBox.h"
 #include "Animation.h"
-#include "Vec2D.h"
 
 enum COLLISION_TYPE {
     NONE,

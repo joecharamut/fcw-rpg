@@ -20,14 +20,6 @@ ALLEGRO_FILE *Resource::openAllegroFile() {
     return file;
 }
 
-FILE *Resource::openFile() {
-    FILE *file = nullptr;
-
-    file = fmemopen(data, size, "r");
-
-    return file;
-}
-
 std::stringstream Resource::openStream() {
     std::stringstream stream;
     for (int i = 0; i < size; i++) {
@@ -59,16 +51,16 @@ Resource *ResourceManager::getResource(std::string location) {
 Resource *ResourceManager::loadFileToResource(std::string filePath, std::string location) {
     Resource *resource;
 
-    FILE *file = fopen(filePath.c_str(), "r");
+    FILE *file = fopen(filePath.c_str(), "rb");
     struct stat stat_buf;
     fstat(fileno(file), &stat_buf);
     size_t size = (size_t) stat_buf.st_size;
     byte *data = (byte *) calloc(sizeof(byte), size);
-    fread(data, size, 1, file);
+    size_t read = fread(data, size, 1, file);
 
     resource = new Resource(
             ResourceLocation(location),
-            ResourceType("." + Util::splitString(filePath, ".").back()),
+            ResourceType(filePath, "." + Util::splitString(filePath, ".").back()),
             data, size
     );
     registerResource(resource);

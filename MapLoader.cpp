@@ -17,7 +17,8 @@ void MapLoader::loadMaps() {
     std::string mapPath = "resources/maps";
     // If the path doesn't exist, return empty list
     if (!std::experimental::filesystem::exists(mapPath)) {
-        return;
+        Log::error("Map path does not exist!");
+        exit(1);
     }
     // For each file in the maps directory,
     for (const auto &p : std::experimental::filesystem::directory_iterator(mapPath)) {
@@ -58,7 +59,7 @@ bool MapLoader::loadUnpackedMap(std::string basePath) {
         input(cereal::make_nvp("data", resourceJSON));
         for (auto &resource : resourceJSON.resources) {
             auto *res = ResourceManager::loadFileToResource(basePath + resource.path, resource.location);
-            printf("Loaded Resource %s (%d)\n", res->location.location.c_str(), (int) res->size);
+            Log::debugf("Loaded Resource %s (%d bytes)", res->location.location.c_str(), (int) res->size);
         }
     }
 
@@ -71,7 +72,7 @@ bool MapLoader::loadUnpackedMap(std::string basePath) {
                 json.soundEffectsString, json.musicString);
         mapList[json.id] = m;
         long long int end = Util::getMilliTime();
-        Log::info("Loaded Map " + json.id + " (" + std::to_string(end-start) + " ms)");
+        Log::debugf("Loaded Map %s (%d ms)", json.id.c_str(), end-start);
         return true;
     }
     return false;
@@ -84,10 +85,18 @@ bool MapLoader::loadPackedMap(std::string file) {
     struct archive_entry *entry;
     int ret;
 
+    FILE *filePtr = fopen(file.c_str(), "rb");
+    struct stat stat_buf;
+    fstat(fileno(filePtr), &stat_buf);
+    size_t size = (size_t) stat_buf.st_size;
+    byte *data = (byte *) calloc(sizeof(byte), size);
+    fread(data, size, 1, filePtr);
+
     archive = archive_read_new();
     archive_read_support_format_zip(archive);
 
-    ret = archive_read_open_filename(archive, file.c_str(), 0);
+    //ret = archive_read_open_filename(archive, file.c_str(), 0);
+    ret = archive_read_open_memory(archive, data, size);
     if (ret != ARCHIVE_OK) return false;
 
     bool resourcesLoaded = false;
@@ -108,8 +117,9 @@ bool MapLoader::loadPackedMap(std::string file) {
                 int length = (int) archive_read_data(archive, buf, entry_size);
 
                 // Check for errors
-                if (length == ARCHIVE_FATAL) {
-                    return false; // Fatal Error
+                if (length < 0) {
+                    printf("%s", archive_error_string(archive));
+                    return false; // Error
                 } else if (length == 0) {
                     return false; // Unexpected EOF
                 }
@@ -141,7 +151,8 @@ bool MapLoader::loadPackedMap(std::string file) {
                 // Reload it
                 archive = archive_read_new();
                 archive_read_support_format_zip(archive);
-                ret = archive_read_open_filename(archive, "resources/pack_test.map", 0);
+                //ret = archive_read_open_filename(archive, "resources/pack_test.map", 0);
+                ret = archive_read_open_memory(archive, data, size);
                 if (ret != ARCHIVE_OK) return false;
 
                 // Free the resources json buffer
@@ -164,7 +175,7 @@ bool MapLoader::loadPackedMap(std::string file) {
                                 ResourceType(ext),
                                 buf, (size_t) length
                         ));
-                        printf("Loaded Resource %s (%d)\n", resourceLocations[i].c_str(), (int) length);
+                        Log::debugf("Loaded Packed Resource %s (%d bytes)", resourceLocations[i].c_str(), (int) length);
                     }
                 }
             }
@@ -177,7 +188,6 @@ bool MapLoader::loadPackedMap(std::string file) {
     if (!mapFile) return false;
 
     std::stringstream mapStream = mapFile->openStream();
-    std::cout << mapStream.str() << std::endl;
 
     cereal::JSONInputArchive inputArchive(mapStream);
     MapJSON json;
@@ -187,7 +197,7 @@ bool MapLoader::loadPackedMap(std::string file) {
             json.soundEffectsString, json.musicString);
     mapList[json.id] = m;
     long long int end = Util::getMilliTime();
-    Log::info("Loaded Map " + json.id + " (" + std::to_string(end-start) + " ms)");
+    Log::debugf("Loaded Map %s (%d ms)", json.id.c_str(), end-start);
 
     return true;
 }

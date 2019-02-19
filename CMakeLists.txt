@@ -1,8 +1,14 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.10)
 project(fcwrpg)
 
 set(CMAKE_CXX_STANDARD 14)
 #set(CMAKE_VERBOSE_MAKEFILE ON)
+
+add_custom_target(echo)
+add_custom_command(
+        TARGET echo
+        COMMAND ${CMAKE_COMMAND} -E echo ${CMAKE_BUILD_TYPE}
+)
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
 
@@ -38,9 +44,10 @@ set(SOURCE_FILES
         Log.cpp Log.h
         Options.cpp Options.h
         Room.cpp Room.h
-        Vec2D.cpp Vec2D.h ResourceManager.cpp ResourceManager.h MapLoader.cpp MapLoader.h)
+        ResourceManager.cpp ResourceManager.h MapLoader.cpp MapLoader.h)
 
 add_executable(fcwrpg ${SOURCE_FILES})
+add_dependencies(fcwrpg echo)
 
 add_library(duktape STATIC ${CMAKE_SOURCE_DIR}/lib/duktape/duktape.c)
 target_link_libraries(duktape m)
@@ -52,9 +59,9 @@ ELSE()
 ENDIF()
 
 IF(${WIN32})
-    IF (${CMAKE_BUILD_TYPE} EQUAL "Release")
+    IF (${CMAKE_BUILD_TYPE} MATCHES "Rel")
         TARGET_LINK_LIBRARIES(fcwrpg
-                allegro_monolith-static
+                allegro_monolith-debug-static
 
                 jpeg
                 dumb
@@ -128,7 +135,7 @@ ENDIF()
 #SET(pthread ${CMAKE_SOURCE_DIR}/lib/libwinpthread-1.dll)
 
 add_custom_target(copy_win_deps)
-IF(${CMAKE_BUILD_TYPE} EQUAL "Release")
+IF(${CMAKE_BUILD_TYPE} MATCHES "Rel")
     add_custom_command(
             TARGET copy_win_deps
             COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources ./resources

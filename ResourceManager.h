@@ -39,10 +39,10 @@ public:
 
 class ResourceType {
 public:
-    std::string description;
+    std::string path;
     std::string extension;
 
-    ResourceType(std::string description, std::string extension) : description(description), extension(extension) {};
+    ResourceType(std::string path, std::string extension) : path(path), extension(extension) {};
     ResourceType(std::string extension) : ResourceType("", extension) {};
     ResourceType() : ResourceType("", "") {};
 };
@@ -53,9 +53,6 @@ public:
 
     ResourceLocation() = default;
     ResourceLocation(std::string locationString) : location(locationString) {};
-
-    std::string getNamespace();
-    std::string getPath();
 
     bool operator <(const ResourceLocation &r2) const {
         return (location < r2.location);
