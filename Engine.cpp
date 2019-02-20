@@ -39,7 +39,7 @@ bool Engine::init() {
         Log::error("Error initializing Allegro");
         return false;
     }
-    state |= 1 << STATE_ALLEGRO_INIT;
+    state |= STATE_ALLEGRO_INIT;
 
     // And all of the addons needed
     Log::debug("Initializing Font");
@@ -47,35 +47,35 @@ bool Engine::init() {
         Log::error("Error initializing Allegro Font");
         return false;
     }
-    state |= 1 << STATE_ALLEGRO_FONT;
+    state |= STATE_ALLEGRO_FONT;
 
     Log::debug("Initializing TTF");
     if(!al_init_ttf_addon()) {
         Log::error("Error initializing Allegro TTF");
         return false;
     }
-    state |= 1 << STATE_ALLEGRO_TTF;
+    state |= STATE_ALLEGRO_TTF;
 
     Log::debug("Initializing Image");
     if(!al_init_image_addon()) {
         Log::error("Error initializing Allegro Image");
         return false;
     }
-    state |= 1 << STATE_ALLEGRO_IMAGE;
+    state |= STATE_ALLEGRO_IMAGE;
 
     Log::debug("Initializing Keyboard");
     if(!al_install_keyboard()) {
         Log::error("Error initializing Keyboard");
         return false;
     }
-    state |= 1 << STATE_ALLEGRO_KEYBOARD;
+    state |= STATE_ALLEGRO_KEYBOARD;
 
     Log::debug("Initializing Audio");
     if(!al_install_audio()) {
         Log::error("Error initializing Audio");
         return false;
     }
-    state |= 1 << STATE_ALLEGRO_AUDIO;
+    state |= STATE_ALLEGRO_AUDIO;
 
     Log::debug("Initializing Audio Codec");
     if(!al_init_acodec_addon()) {
@@ -103,7 +103,7 @@ bool Engine::init() {
         Log::error("Error creating display");
         return false;
     }
-    state |= 1 << STATE_DISPLAY;
+    state |= STATE_DISPLAY;
     // Set icon and title
     al_set_display_icon(display, Engine::loadImage("sys:icon"));
     al_set_window_title(display, "FCW the RPG");
@@ -114,7 +114,7 @@ bool Engine::init() {
         Log::error("Error initializing Timer");
         return false;
     }
-    state |= 1 << STATE_TIMER;
+    state |=  STATE_TIMER;
     al_start_timer(timer);
 
     // Create event queue
@@ -123,7 +123,7 @@ bool Engine::init() {
         Log::error("Error initializing Event Queue");
         return false;
     }
-    state |= 1 << STATE_EVENT_QUEUE;
+    state |= STATE_EVENT_QUEUE;
     // Register events
     al_register_event_source(eventQueue, al_get_keyboard_event_source());
     al_register_event_source(eventQueue, al_get_timer_event_source(timer));
@@ -352,31 +352,31 @@ void Engine::run() {
 }
 
 void Engine::exit(int code) {
-    if (state & 1 << STATE_EVENT_QUEUE) {
+    if (state & STATE_EVENT_QUEUE) {
         al_destroy_event_queue(eventQueue);
     }
-    if (state & 1 << STATE_TIMER) {
+    if (state & STATE_TIMER) {
         al_destroy_timer(timer);
     }
-    if (state & 1 << STATE_DISPLAY) {
+    if (state & STATE_DISPLAY) {
         al_destroy_display(display);
     }
-    if (state & 1 << STATE_ALLEGRO_AUDIO) {
+    if (state & STATE_ALLEGRO_AUDIO) {
         al_uninstall_audio();
     }
-    if (state & 1 << STATE_ALLEGRO_KEYBOARD) {
+    if (state & STATE_ALLEGRO_KEYBOARD) {
         al_uninstall_keyboard();
     }
-    if (state & 1 << STATE_ALLEGRO_IMAGE) {
+    if (state & STATE_ALLEGRO_IMAGE) {
         al_shutdown_image_addon();
     }
-    if (state & 1 << STATE_ALLEGRO_TTF) {
+    if (state & STATE_ALLEGRO_TTF) {
         al_shutdown_ttf_addon();
     }
-    if (state & 1 << STATE_ALLEGRO_FONT) {
+    if (state & STATE_ALLEGRO_FONT) {
         al_shutdown_font_addon();
     }
-    if (state & 1 << STATE_ALLEGRO_INIT) {
+    if (state & STATE_ALLEGRO_INIT) {
         al_uninstall_system();
     }
 

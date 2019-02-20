@@ -47,15 +47,15 @@ private:
     static int f_pos_h;
 
     enum state_offset {
-            STATE_ALLEGRO_INIT,
-            STATE_ALLEGRO_FONT,
-            STATE_ALLEGRO_TTF,
-            STATE_ALLEGRO_IMAGE,
-            STATE_ALLEGRO_KEYBOARD,
-            STATE_ALLEGRO_AUDIO,
-            STATE_DISPLAY,
-            STATE_TIMER,
-            STATE_EVENT_QUEUE
+            STATE_ALLEGRO_INIT      = 1 << 0,
+            STATE_ALLEGRO_FONT      = 1 << 1,
+            STATE_ALLEGRO_TTF       = 1 << 2,
+            STATE_ALLEGRO_IMAGE     = 1 << 3,
+            STATE_ALLEGRO_KEYBOARD  = 1 << 4,
+            STATE_ALLEGRO_AUDIO     = 1 << 5,
+            STATE_DISPLAY           = 1 << 6,
+            STATE_TIMER             = 1 << 7,
+            STATE_EVENT_QUEUE       = 1 << 8
     };
     static int state;
 

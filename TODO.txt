@@ -19,13 +19,16 @@ TODO::Map - Add cut scenes / pathing / pathfinding to a point
 
 TODO::Engine - Multithreading (Console thread, GFX thread, Event thread, etc)
 TODO::General - Console and debug log output
-e.g.
-[Main/DEBUG] blah
-[Main/INFO] blah
-
-> help,map,etc
+    e.g.
+    [Main/DEBUG] blah
+    [Main/INFO] blah
+    > help,map,etc
+    https://stackoverflow.com/questions/30258999/keep-stdin-line-at-top-or-bottom-of-terminal-screen
 
 TODO::General - Add comments / documentation (I mean its supposed to be collaborative right)
 
 TODO::General - Add object as generic, then add subtypes, IE. Container, NPC, Sign, that have special properties
 TODO::General - Goddammit https://uscilab.github.io/cereal/polymorphism.html
+
+TODO::Engine - Think About Unlocking Framerate
+    https://stackoverflow.com/questions/32709599/the-time-corrected-verlet-numerical-integration-formula?lq=1
