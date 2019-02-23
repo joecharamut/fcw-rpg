@@ -11,9 +11,11 @@ public:
     static std::map<std::string, Map *> mapList;
 
     static Map *getMap(std::string id);
-    static void loadMaps();
-    static bool loadUnpackedMap(std::string basePath);
-    static bool loadPackedMap(std::string file);
+    static bool loadMaps();
+private:
+    static bool processMap(std::string id);
+    static std::string processUnpackedResources(std::string basePath);
+    static std::string processPackedResources(std::string file);
 };
 
 

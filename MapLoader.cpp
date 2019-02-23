@@ -10,7 +10,7 @@
 std::map<std::string, Map *> MapLoader::mapList;
 
 // Load a list of all maps
-void MapLoader::loadMaps() {
+bool MapLoader::loadMaps() {
     // Create the list
     std::vector<std::string> maps = {};
     // Define the base path
@@ -27,43 +27,53 @@ void MapLoader::loadMaps() {
             for (const auto &p2 : std::experimental::filesystem::directory_iterator(p.path().string())) {
                 // Get the filename/path
                 std::string file = p2.path().string();
-                // Fix Windows being mega gay (Replace \ with /)
+                // Fix Windows path issue (Replace \ with /)
                 std::replace(file.begin(), file.end(), '\\', '/');
                 // If it ends in .json
                 if (file.find("map.json") != std::string::npos) {
                     // Assume unpacked map
-                    loadUnpackedMap(file.substr(0, file.size() - 8));
+                    std::string id;
+                    if ((id = processUnpackedResources(file.substr(0, file.size() - 8))).empty()) {
+                        return false;
+                    } else {
+                        maps.push_back(id);
+                    }
                 }
             }
-        } else if (Util::splitString(p.path().string(), ".").back() == "map") {
+        } else if (p.path().string().substr(p.path().string().length() - 4) == ".map") {
             // Assume .map packed file
 
             // Get the filename/path
             std::string file = p.path().string();
-            // Fix Windows being mega gay (Replace \ with /)
+            // Fix Windows path issue (Replace \ with /)
             std::replace(file.begin(), file.end(), '\\', '/');
             // Load
-            loadPackedMap(file);
+            std::string id;
+            if ((id = processPackedResources(file)).empty()) {
+                return false;
+            } else {
+                maps.push_back(id);
+            }
         }
     }
+
+    for (std::string map : maps) {
+        if (!processMap(map)) {
+            Log::errorf("Error loading map %s", map.c_str());
+            return false;
+        }
+    }
+
+    return true;
 }
 
-bool MapLoader::loadUnpackedMap(std::string basePath) {
-    // Get system time (For load time calculation)
+bool MapLoader::processMap(std::string id) {
     long long int start = Util::getMilliTime();
-    // File input stream
-    std::ifstream resourceStream(basePath + "resources.json", std::ios::binary);
-    if (!resourceStream.fail()) {
-        cereal::JSONInputArchive input(resourceStream);
-        ResourceJSON resourceJSON;
-        input(cereal::make_nvp("data", resourceJSON));
-        for (auto &resource : resourceJSON.resources) {
-            auto *res = ResourceManager::loadFileToResource(basePath + resource.path, resource.location);
-            Log::debugf("Loaded Resource %s (%d bytes)", res->location.location.c_str(), (int) res->size);
-        }
-    }
 
-    std::ifstream mapStream(basePath + "map.json", std::ios::binary);
+    Resource *mapFile = ResourceManager::getResource(id + ":_map");
+    if (!mapFile) return false;
+
+    std::stringstream mapStream = mapFile->openStream();
     if (!mapStream.fail()) {
         cereal::JSONInputArchive inputArchive(mapStream);
         MapJSON json;
@@ -78,12 +88,54 @@ bool MapLoader::loadUnpackedMap(std::string basePath) {
     return false;
 }
 
-bool MapLoader::loadPackedMap(std::string file) {
-    long long int start = Util::getMilliTime();
+std::string MapLoader::processUnpackedResources(std::string basePath) {
+    std::string mapId;
+    std::ifstream mapIdStream(basePath + "map.json", std::ios::binary);
+    if (!mapIdStream.fail()) {
+        cereal::JSONInputArchive inputArchive(mapIdStream);
+        MapJSON json;
+        inputArchive(cereal::make_nvp("mapdata", json));
+        mapId = json.id;
+        mapIdStream.close();
+    }
+    if (mapId.empty()) return "";
 
+    std::string dataPath = basePath + "data/";
+    for (const auto &p : std::experimental::filesystem::recursive_directory_iterator(dataPath)) {
+        if (!std::experimental::filesystem::is_directory(p)) {
+            std::string filename = p.path().string();
+            std::replace(filename.begin(), filename.end(), '\\', '/');
+            filename = Util::splitString(filename, "/").back();
+            std::string resourceName = mapId + ":" + Util::splitString(filename, ".").front();
+            auto *res = ResourceManager::loadFileToResource(p.path().string(), resourceName);
+            Log::debugf("Loaded Resource %s (%d bytes)", res->location.location.c_str(), (int) res->size);
+        }
+    }
+
+    for (const auto &p : std::experimental::filesystem::directory_iterator(basePath)) {
+        if (!std::experimental::filesystem::is_directory(p)) {
+            std::string filename = p.path().string();
+            std::replace(filename.begin(), filename.end(), '\\', '/');
+            filename = Util::splitString(filename, "/").back();
+
+            if (filename.substr(filename.length() - 5) != ".json") continue;
+
+            std::string resourceName = mapId + ":_" + Util::splitString(filename, ".").front();
+            auto *res = ResourceManager::loadFileToResource(p.path().string(), resourceName);
+            Log::debugf("Loaded Resource %s (%d bytes)", res->location.location.c_str(), (int) res->size);
+        }
+    }
+
+    return mapId;
+}
+
+std::string MapLoader::processPackedResources(std::string file) {
     struct archive *archive;
     struct archive_entry *entry;
     int ret;
+
+    std::string mapId;
+    bool mapIdLoaded = false;
 
     FILE *filePtr = fopen(file.c_str(), "rb");
     struct stat stat_buf;
@@ -97,86 +149,68 @@ bool MapLoader::loadPackedMap(std::string file) {
 
     //ret = archive_read_open_filename(archive, file.c_str(), 0);
     ret = archive_read_open_memory(archive, data, size);
-    if (ret != ARCHIVE_OK) return false;
-
-    bool resourcesLoaded = false;
-    std::vector<std::string> resourceLocations;
-    std::vector<std::string> resourcePaths;
-    std::string mapFileId;
+    if (ret != ARCHIVE_OK) return "";
 
     while (archive_read_next_header(archive, &entry) == ARCHIVE_OK) {
         auto entry_size = (size_t) archive_entry_size(entry);
+        std::string path = std::string(archive_entry_pathname(entry));
+        std::string filename = Util::splitString(path, "/").back();
 
-        // If not a directory
-        if (entry_size != 0) {
-            // Get the path
-            std::string path = std::string(archive_entry_pathname(entry));
-            if (!resourcesLoaded && path.find("resources.json") != std::string::npos) {
-                // If we still don't have the resources, and it's the resources file, read the file
+        if (!mapIdLoaded) {
+            if (path == "map.json") {
                 byte *buf = (byte *) calloc(sizeof(byte), entry_size);
                 int length = (int) archive_read_data(archive, buf, entry_size);
 
-                // Check for errors
-                if (length < 0) {
-                    printf("%s", archive_error_string(archive));
-                    return false; // Error
-                } else if (length == 0) {
-                    return false; // Unexpected EOF
-                }
-                // Convert buffer to a StringStream
-                std::stringstream ss;
+                std::stringstream stream;
                 for (int i = 0; i < length; i++) {
-                    ss << buf[i];
-                }
-                // Decode stream JSON data
-                cereal::JSONInputArchive inputArchive(ss);
-                ResourceJSON resourceJSON;
-                inputArchive(cereal::make_nvp("data", resourceJSON));
-
-                // Store requested resources
-                for (auto &res : resourceJSON.resources) {
-                    if (res.location.find(":mapfile") != std::string::npos) {
-                        mapFileId = res.location;
-                    }
-                    resourceLocations.push_back(res.location);
-                    resourcePaths.push_back(res.path);
+                    stream << buf[i];
                 }
 
-                // Set loaded
-                resourcesLoaded = true;
+                if (!stream.fail()) {
+                    cereal::JSONInputArchive inputArchive(stream);
+                    MapJSON json;
+                    inputArchive(cereal::make_nvp("mapdata", json));
+                    mapId = json.id;
+                }
+                if (mapId.empty()) {
+                    free(buf);
+                    archive_read_free(archive);
+                    return "";
+                }
+                mapIdLoaded = true;
 
-                // Free the archive
+                // Reload archive
                 archive_read_free(archive);
-
-                // Reload it
                 archive = archive_read_new();
                 archive_read_support_format_zip(archive);
-                //ret = archive_read_open_filename(archive, "resources/pack_test.map", 0);
                 ret = archive_read_open_memory(archive, data, size);
-                if (ret != ARCHIVE_OK) return false;
-
-                // Free the resources json buffer
-                free(buf);
-            } else if (resourcesLoaded) {
-                // If we are ready to load in the files, do it
-                // For each resource
-                for (int i = 0; i < resourcePaths.size(); i++) {
-                    // If this archive entry is the right one
-                    if (path.find(resourcePaths[i]) != std::string::npos) {
-                        // Grab the extension
-                        std::string ext = "." + Util::splitString(resourcePaths[i], ".").back();
-                        // Create the buffer
-                        byte *buf = (byte *) calloc(sizeof(byte), entry_size);
-                        // Extract the data into the buffer
-                        int length = (int) archive_read_data(archive, buf, entry_size);
-                        // Register the resource into the resource manager
-                        ResourceManager::registerResource(new Resource(
-                                ResourceLocation(resourceLocations[i]),
-                                ResourceType(ext),
-                                buf, (size_t) length
-                        ));
-                        Log::debugf("Loaded Packed Resource %s (%d bytes)", resourceLocations[i].c_str(), (int) length);
-                    }
+                if (ret != ARCHIVE_OK) return "";
+            }
+        } else {
+            // If not a directory
+            if (entry_size != 0) {
+                // Grab the extension
+                std::string ext = "." + Util::splitString(filename, ".").back();
+                // Create the buffer
+                byte *buf = (byte *) calloc(sizeof(byte), entry_size);
+                // Extract the data into the buffer
+                int length = (int) archive_read_data(archive, buf, entry_size);
+                // Register the resource into the resource manager
+                std::string resourceName;
+                if (path.find('/') == std::string::npos && path.substr(path.length() - 5) == ".json") {
+                    resourceName = mapId + ":_" + Util::splitString(filename, ".").front();
+                } else if (path.find("data/") != std::string::npos) {
+                    resourceName = mapId + ":" + Util::splitString(filename, ".").front();
+                }
+                if (!resourceName.empty()) {
+                    auto *res = ResourceManager::registerResource(new Resource(
+                            ResourceLocation(resourceName),
+                            ResourceType(ext),
+                            buf, (size_t) length
+                    ));
+                    Log::debugf("Loaded Packed Resource %s (%d bytes)", res->location.location.c_str(), length);
+                } else {
+                    free(buf);
                 }
             }
         }
@@ -184,22 +218,7 @@ bool MapLoader::loadPackedMap(std::string file) {
     // Free the archive
     archive_read_free(archive);
 
-    Resource *mapFile = ResourceManager::getResource(mapFileId);
-    if (!mapFile) return false;
-
-    std::stringstream mapStream = mapFile->openStream();
-
-    cereal::JSONInputArchive inputArchive(mapStream);
-    MapJSON json;
-    inputArchive(cereal::make_nvp("mapdata", json));
-
-    Map *m = new Map(json.id, json.defaultRoom, json.rooms, json.textsString,
-            json.soundEffectsString, json.musicString);
-    mapList[json.id] = m;
-    long long int end = Util::getMilliTime();
-    Log::debugf("Loaded Map %s (%d ms)", json.id.c_str(), end-start);
-
-    return true;
+    return mapId;
 }
 
 Map *MapLoader::getMap(std::string id) {

@@ -8,6 +8,7 @@ add_custom_target(echo)
 add_custom_command(
         TARGET echo
         COMMAND ${CMAKE_COMMAND} -E echo ${CMAKE_BUILD_TYPE}
+        COMMAND ${CMAKE_COMMAND} -E echo ${CMAKE_BINARY_DIR}
 )
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)

@@ -30,8 +30,9 @@ std::stringstream Resource::openStream() {
 
 std::map<ResourceLocation, Resource *> ResourceManager::resources;
 
-void ResourceManager::registerResource(Resource *resource) {
+Resource *ResourceManager::registerResource(Resource *resource) {
     resources[resource->location] = resource;
+    return resource;
 }
 
 Resource *ResourceManager::getResource(ResourceLocation location) {

@@ -86,7 +86,7 @@ class ResourceManager {
 public:
 
     static Resource *loadFileToResource(std::string filePath, std::string location);
-    static void registerResource(Resource *resource);
+    static Resource *registerResource(Resource *resource);
     static Resource *getResource(ResourceLocation location);
     static Resource *getResource(std::string location);
 

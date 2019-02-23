@@ -70,7 +70,6 @@ void mapEventHandler(ALLEGRO_EVENT event) {
 
 // Function for testing features and stuff
 void Main::testing() {
-    MapLoader::loadMaps();
     // Load the test map
     Engine::current_map = MapLoader::getMap("pack_test");//Map::loadMap("map_test");
     // Set the event handler TODO: Replace with events from map file, maybe pass events from game to map

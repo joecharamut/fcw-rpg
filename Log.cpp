@@ -8,7 +8,8 @@ std::vector<std::string> Log::levelStrings = {
 };
 
 void Log::log(LogLevel level, std::string message) {
-    std::cout << "[" << levelStrings[level] << "]: " << message << std::endl;
+    bool sout = (level == LOG_DEBUG || level == LOG_INFO);
+    (sout ? std::cout : std::cerr) << "[" << levelStrings[level] << "]: " << message << std::endl;
 }
 
 void Log::debugf(const char *fmt, ...) {

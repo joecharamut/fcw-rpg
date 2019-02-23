@@ -4,8 +4,8 @@
     "id": "map_test",
     "defaultRoom": "room_default",
     "rooms": [
-      "map_test:room_0",
-      "map_test:room_1"
+      "map_test:room0",
+      "map_test:room1"
     ],
     "texts": [
       {

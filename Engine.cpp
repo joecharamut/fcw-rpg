@@ -10,6 +10,7 @@
 #include "Main.h"
 #include "Sprite.h"
 #include "ResourceManager.h"
+#include "MapLoader.h"
 
 Sprite *Engine::player;
 Map *Engine::current_map;
@@ -133,6 +134,11 @@ bool Engine::init() {
     done = false;
     oldTime = al_get_time();
     delayTime = al_get_time();
+
+    if (!MapLoader::loadMaps()) {
+        Log::error("Error loading maps");
+        return false;
+    }
 
     return true;
 }
@@ -321,20 +327,19 @@ std::thread Engine::eventThread;
 void Engine::run() {
     // Get current system time
     long long int start = Util::getMilliTime();
-    Log::info("Initializing Engine");
+    Log::info("Initializing...");
 
     // Run initialization
     if (!Engine::init()) {
         // If failed, quit program
         Log::error("Error in init!");
-        Engine::exit(1);
+        Engine::Exit(1);
     }
 
-    printf("%x", state);
     // Get system time
     long long int end = Util::getMilliTime();
     // Print how long it took
-    Log::info("Done (" + std::to_string(end-start) + " ms)");
+    Log::info("Initialization completed in " + std::to_string(end-start) + " ms");
 
     // Load Fonts
     loadFonts();
@@ -351,7 +356,7 @@ void Engine::run() {
     renderThread.join();
 }
 
-void Engine::exit(int code) {
+void Engine::Exit(int code) {
     if (state & STATE_EVENT_QUEUE) {
         al_destroy_event_queue(eventQueue);
     }
@@ -384,7 +389,7 @@ void Engine::exit(int code) {
 }
 
 void Engine::loadFonts() {
-    Log::info("Loading fonts");
+    Log::debug("Loading fonts");
     // Load in all the fonts and make them available as a map
     fonts["font8"]  = Engine::loadFont("sys:font_8bit",  8);
     fonts["font16"] = Engine::loadFont("sys:font_8bit", 16);

@@ -24,7 +24,7 @@ public:
     static std::map<std::string, ALLEGRO_FONT *> fonts;
 
     static void run();
-    static void exit(int code);
+    static void Exit(int code);
 
     static void setFullscreen(bool enable);
 
