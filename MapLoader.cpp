@@ -7,9 +7,8 @@
 #include <archive/archive.h>
 #include <archive/archive_entry.h>
 
-std::map<std::string, Map *> MapLoader::mapList;
+std::map<std::string, Map *> MapLoader::mapList = {};
 
-// Load a list of all maps
 bool MapLoader::loadMaps() {
     // Create the list
     std::vector<std::string> maps = {};
@@ -57,7 +56,7 @@ bool MapLoader::loadMaps() {
         }
     }
 
-    for (std::string map : maps) {
+    for (const std::string &map : maps) {
         if (!processMap(map)) {
             Log::errorf("Error loading map %s", map.c_str());
             return false;
@@ -70,22 +69,49 @@ bool MapLoader::loadMaps() {
 bool MapLoader::processMap(std::string id) {
     long long int start = Util::getMilliTime();
 
+    Resource *spriteFile = ResourceManager::getResource(id + ":_sprites");
+    if (!spriteFile) return false;
+    std::stringstream spriteStream = spriteFile->openStream();
+    if (spriteStream.fail()) return false;
+    cereal::JSONInputArchive spriteInput(spriteStream);
+    std::vector<Sprite> spriteList = {};
+    spriteInput(cereal::make_nvp("sprites", spriteList));
+
+    for (const auto &sprite : spriteList) {
+        auto *spr = new Sprite(sprite);
+        ResourceManager::registerResource(new Resource( ResourceLocation(id + ":" + spr->id), ResourceType(), spr, 0 ));
+        Log::debugf("Loaded Sprite %s", spr->id.c_str());
+    }
+
+    for (Resource *res : ResourceManager::getResources(id + ":_room[0-9]+")) {
+        std::stringstream inStream = res->openStream();
+        std::string roomId;
+        if (inStream.fail()) return false;
+
+        cereal::JSONInputArchive input(inStream);
+        RoomJSON roomJSON;
+        input(cereal::make_nvp("mapdata", roomJSON));
+        roomId = roomJSON.id;
+        Room *room = new Room(roomJSON.id, roomJSON.tileset, roomJSON.tilemap, roomJSON.sprites, roomJSON.events);
+        ResourceManager::registerResource(new Resource( ResourceLocation(id + ":" + roomId), ResourceType(), room, 0));
+        Log::debugf("Loaded Room %s", roomId.c_str());
+    }
+
     Resource *mapFile = ResourceManager::getResource(id + ":_map");
     if (!mapFile) return false;
-
     std::stringstream mapStream = mapFile->openStream();
-    if (!mapStream.fail()) {
-        cereal::JSONInputArchive inputArchive(mapStream);
-        MapJSON json;
-        inputArchive(cereal::make_nvp("mapdata", json));
-        Map *m = new Map(json.id, json.defaultRoom, json.rooms, json.textsString,
-                json.soundEffectsString, json.musicString);
-        mapList[json.id] = m;
-        long long int end = Util::getMilliTime();
-        Log::debugf("Loaded Map %s (%d ms)", json.id.c_str(), end-start);
-        return true;
-    }
-    return false;
+    if (mapStream.fail()) return false;
+
+    cereal::JSONInputArchive inputArchive(mapStream);
+    MapJSON mapJSON;
+    inputArchive(cereal::make_nvp("mapdata", mapJSON));
+    Map *map = new Map(mapJSON.id, mapJSON.defaultRoom, mapJSON.rooms,
+                       mapJSON.textsString, mapJSON.soundEffectsString, mapJSON.musicString);
+    mapList[mapJSON.id] = map;
+
+    long long int end = Util::getMilliTime();
+    Log::debugf("Loaded Map %s (%d ms)", id.c_str(), end-start);
+    return true;
 }
 
 std::string MapLoader::processUnpackedResources(std::string basePath) {
@@ -138,9 +164,9 @@ std::string MapLoader::processPackedResources(std::string file) {
     bool mapIdLoaded = false;
 
     FILE *filePtr = fopen(file.c_str(), "rb");
-    struct stat stat_buf;
+    struct stat stat_buf {};
     fstat(fileno(filePtr), &stat_buf);
-    size_t size = (size_t) stat_buf.st_size;
+    auto size = (size_t) stat_buf.st_size;
     byte *data = (byte *) calloc(sizeof(byte), size);
     fread(data, size, 1, filePtr);
 
@@ -222,7 +248,7 @@ std::string MapLoader::processPackedResources(std::string file) {
 }
 
 Map *MapLoader::getMap(std::string id) {
-    if (mapList.count(id) > 0) {
+    if (mapList.count(id)) {
         return mapList.at(id);
     }
     return nullptr;

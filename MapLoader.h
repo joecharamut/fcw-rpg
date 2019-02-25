@@ -7,7 +7,6 @@
 
 class MapLoader {
 public:
-    static bool loaded;
     static std::map<std::string, Map *> mapList;
 
     static Map *getMap(std::string id);

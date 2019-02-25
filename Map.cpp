@@ -19,13 +19,9 @@ Map::Map(std::string id, std::string defaultRoom, std::vector<std::string> rooms
     this->defaultRoom = defaultRoom;
 
     for (const auto &roomStr : rooms) {
-        std::stringstream inStream = ResourceManager::getResource(roomStr)->openStream();
-        if (!inStream.fail()) {
-            cereal::JSONInputArchive input(inStream);
-            RoomJSON roomJSON;
-            input(cereal::make_nvp("mapdata", roomJSON));
-            this->rooms[roomJSON.id] = new Room(roomJSON.id, roomJSON.tileset, roomJSON.tilemap, roomJSON.sprites, roomJSON.events, this);
-        }
+        Resource *res = ResourceManager::getResource(roomStr);
+        Room *room = (Room *) res->data;
+        this->rooms[room->id] = room;
     }
     this->current_room = this->rooms[defaultRoom];
 

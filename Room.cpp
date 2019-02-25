@@ -1,31 +1,21 @@
 #include "Room.h"
 
 #include "Engine.h"
+#include "ResourceManager.h"
 
 // Constructor
 Room::Room(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
-           std::vector<Sprite> sprites, std::vector<std::string> events, Map *parent) {
-    this->parent = parent;
-
+           std::vector<std::string> sprites, std::vector<std::string> events) {
     // Copy in id
     this->id = std::move(id);
-
-    // Copy in tileset, with path
-    //for (auto &str : tileset) {
-    //    str = Map::getFilePath(str, parent);
-    //}
 
     // Load the tilemap as actual images into memory
     resolveMap(std::move(tileset), std::move(tilemap));
 
     // Load in the sprites
-    for (auto spr : sprites) {
-        for (auto &animation : spr.frames) {
-            for (auto &frame : animation.frames) {
-                //frame = Map::getFilePath(frame, parent);
-            }
-        }
-        this->sprites.push_back(new Sprite(&spr));
+    for (auto sprite : sprites) {
+        Sprite *spr = (Sprite *) ResourceManager::getResource(sprite)->data;
+        this->sprites.push_back(spr);
     }
 
     // Load in events
@@ -154,6 +144,7 @@ Sprite* Room::checkCollision(Sprite *sprite) {
         if (spr->collision == NONE) {
             continue;
         }
+        spr->updateBoundingBox();
         BoundingBox *check = spr->boundingBox;
         if (BoundingBox::intersect(check, box)) {
             return spr;

@@ -22,7 +22,7 @@ struct Text {
     std::string font;
     unsigned char r = 0, g = 0, b = 0;
 
-    Text() = default;;
+    Text() = default;
     Text(std::string text, float x, float y, std::string font, unsigned char r, unsigned char g, unsigned char b) {
         this->text = std::move(text);
         this->x = x;

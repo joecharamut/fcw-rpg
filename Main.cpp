@@ -30,6 +30,7 @@ void mapEventHandler(ALLEGRO_EVENT event) {
         if (hat != nullptr) {
             float hat_x = hat->x;
             float hat_y = hat->y;
+
             if (Keyboard::getKeyState(ALLEGRO_KEY_UP) || Keyboard::getKeyState(ALLEGRO_KEY_W)) {
                 hat_y -= 4;
             }
@@ -71,7 +72,7 @@ void mapEventHandler(ALLEGRO_EVENT event) {
 // Function for testing features and stuff
 void Main::testing() {
     // Load the test map
-    Engine::current_map = MapLoader::getMap("pack_test");//Map::loadMap("map_test");
+    Engine::current_map = MapLoader::getMap("map_test");
     // Set the event handler TODO: Replace with events from map file, maybe pass events from game to map
     Engine::current_map->setEventHandlerFunction(mapEventHandler);
 

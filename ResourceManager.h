@@ -11,32 +11,6 @@
 
 typedef unsigned char byte;
 
-class ResourceEntry {
-public:
-    std::string location;
-    std::string path;
-
-    template <class Archive>
-    void serialize(Archive &archive) {
-        archive(
-                CEREAL_NVP(location),
-                CEREAL_NVP(path)
-        );
-    }
-};
-
-class ResourceJSON {
-public:
-    std::vector<ResourceEntry> resources;
-
-    template <class Archive>
-    void serialize(Archive &archive) {
-        archive(
-                CEREAL_NVP(resources)
-        );
-    }
-};
-
 class ResourceType {
 public:
     std::string path;
@@ -70,14 +44,13 @@ class Resource {
 public:
     ResourceLocation location;
     ResourceType type;
-    byte *data;
+    void *data;
     size_t size;
 
-    Resource(ResourceLocation location, ResourceType type, byte *data, size_t size);
+    Resource(ResourceLocation location, ResourceType type, void *data, size_t size);
     ~Resource() { free(data); };
 
     ALLEGRO_FILE *openAllegroFile();
-    FILE *openFile();
     std::stringstream openStream();
 };
 
@@ -87,8 +60,11 @@ public:
 
     static Resource *loadFileToResource(std::string filePath, std::string location);
     static Resource *registerResource(Resource *resource);
+
     static Resource *getResource(ResourceLocation location);
     static Resource *getResource(std::string location);
+
+    static std::vector<Resource *> getResources(std::string pattern);
 
 private:
     static std::map<ResourceLocation, Resource *> resources;
