@@ -11,6 +11,9 @@
 #include <thread>
 
 #include "Map.h"
+#include "Registry.h"
+#include "ResourceFile.h"
+
 class Map;
 
 class Engine {
@@ -22,6 +25,8 @@ public:
     static Sprite *player;
     static Map *current_map;
     static std::map<std::string, ALLEGRO_FONT *> fonts;
+
+    static Registry<ResourceFile *> resourceFileRegistry;
 
     static void run();
     static void Exit(int code);

@@ -4,16 +4,25 @@
 #include <cstdarg>
 
 std::vector<std::string> Log::levelStrings = {
-        "INFO", "WARN", "ERROR", "DEBUG"
+        "INFO", "WARN", "ERROR", "DEBUG", "VERBOSE"
 };
 
 void Log::log(LogLevel level, std::string message) {
-    bool sout = (level == LOG_DEBUG || level == LOG_INFO);
-    (sout ? std::cout : std::cerr) << "[" << levelStrings[level] << "]: " << message << std::endl;
+    bool err = (level == LOG_WARN || level == LOG_ERROR);
+    (err ? std::cerr : std::cout) << "[" << levelStrings[level] << "]: " << message << std::endl;
+}
+
+void Log::verbosef(const char *fmt, ...) {
+    if (Options::Runtime::verbose) {
+        va_list args;
+        va_start(args, fmt);
+        logf(LOG_VERBOSE, fmt, args);
+        va_end(args);
+    }
 }
 
 void Log::debugf(const char *fmt, ...) {
-    if (Options::Runtime::debug) {
+    if (Options::Runtime::debug || Options::Runtime::verbose) {
         va_list args;
         va_start(args, fmt);
         logf(LOG_DEBUG, fmt, args);
@@ -43,9 +52,11 @@ void Log::errorf(const char *fmt, ...) {
 }
 
 void Log::logf(LogLevel level, const char *fmt, va_list args) {
-    size_t size = (size_t) vsnprintf(nullptr, 0, fmt, args) + 1;
+    va_list copy;
+    va_copy(copy, args);
+    size_t size = (size_t) vsnprintf(nullptr, 0, fmt, copy) + 1;
     char *buf = new char[size];
     vsnprintf(buf, size, fmt, args);
-
+    va_end(copy);
     log(level, std::string(buf, buf + size - 1));
 }

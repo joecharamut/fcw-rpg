@@ -13,12 +13,17 @@ typedef unsigned char byte;
 
 class ResourceType {
 public:
-    std::string path;
-    std::string extension;
+    enum Type {
+        TYPE_VOID,
+        TYPE_DATA
+    };
 
-    ResourceType(std::string path, std::string extension) : path(path), extension(extension) {};
-    ResourceType(std::string extension) : ResourceType("", extension) {};
-    ResourceType() : ResourceType("", "") {};
+    Type type;
+    std::string extension;
+    ResourceType(Type type, std::string extension) : type(type), extension(extension) {};
+    ResourceType(std::string extension) : ResourceType(TYPE_VOID, extension) {};
+
+    ResourceType() : ResourceType(TYPE_VOID, "") {};
 };
 
 class ResourceLocation {
@@ -30,13 +35,6 @@ public:
 
     bool operator <(const ResourceLocation &r2) const {
         return (location < r2.location);
-    }
-
-    template <class Archive>
-    void serialize(Archive &archive) {
-        archive(
-                CEREAL_NVP(location)
-        );
     }
 };
 

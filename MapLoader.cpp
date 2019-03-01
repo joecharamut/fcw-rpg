@@ -79,8 +79,9 @@ bool MapLoader::processMap(std::string id) {
 
     for (const auto &sprite : spriteList) {
         auto *spr = new Sprite(sprite);
+        spr->updateBoundingBox();
         ResourceManager::registerResource(new Resource( ResourceLocation(id + ":" + spr->id), ResourceType(), spr, 0 ));
-        Log::debugf("Loaded Sprite %s", spr->id.c_str());
+        Log::verbosef("Loaded Sprite %s:%s", id.c_str(), spr->id.c_str());
     }
 
     for (Resource *res : ResourceManager::getResources(id + ":_room[0-9]+")) {
@@ -94,7 +95,7 @@ bool MapLoader::processMap(std::string id) {
         roomId = roomJSON.id;
         Room *room = new Room(roomJSON.id, roomJSON.tileset, roomJSON.tilemap, roomJSON.sprites, roomJSON.events);
         ResourceManager::registerResource(new Resource( ResourceLocation(id + ":" + roomId), ResourceType(), room, 0));
-        Log::debugf("Loaded Room %s", roomId.c_str());
+        Log::verbosef("Loaded Room %s:%s", id.c_str(), roomId.c_str());
     }
 
     Resource *mapFile = ResourceManager::getResource(id + ":_map");
@@ -134,7 +135,7 @@ std::string MapLoader::processUnpackedResources(std::string basePath) {
             filename = Util::splitString(filename, "/").back();
             std::string resourceName = mapId + ":" + Util::splitString(filename, ".").front();
             auto *res = ResourceManager::loadFileToResource(p.path().string(), resourceName);
-            Log::debugf("Loaded Resource %s (%d bytes)", res->location.location.c_str(), (int) res->size);
+            Log::verbosef("Loaded Resource %s (%d bytes)", res->location.location.c_str(), (int) res->size);
         }
     }
 
@@ -148,7 +149,7 @@ std::string MapLoader::processUnpackedResources(std::string basePath) {
 
             std::string resourceName = mapId + ":_" + Util::splitString(filename, ".").front();
             auto *res = ResourceManager::loadFileToResource(p.path().string(), resourceName);
-            Log::debugf("Loaded Resource %s (%d bytes)", res->location.location.c_str(), (int) res->size);
+            Log::verbosef("Loaded Resource %s (%d bytes)", res->location.location.c_str(), (int) res->size);
         }
     }
 

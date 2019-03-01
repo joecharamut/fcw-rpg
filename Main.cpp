@@ -91,12 +91,14 @@ void Main::testing() {
 
 const std::vector<std::string> validArgs = {
         "--help",
-        "--debug"
+        "--debug",
+        "--verbose"
 };
 
 const std::vector<std::string> argHelpText = {
         "This help text",
-        "Enable debug log output"
+        "Enable debug log output",
+        "Enable verbose debug logging"
 };
 
 void parseArgs(int argc, char *argv[]) {
@@ -108,6 +110,9 @@ void parseArgs(int argc, char *argv[]) {
 
     if (Util::vectorContains(args, std::string("--debug"))) {
         Options::Runtime::debug = true;
+    }
+    if (Util::vectorContains(args, std::string("--verbose"))) {
+        Options::Runtime::verbose = true;
     }
 
     if (Util::vectorContains(args, std::string("--help"))) {

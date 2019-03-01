@@ -45,7 +45,7 @@ set(SOURCE_FILES
         Log.cpp Log.h
         Options.cpp Options.h
         Room.cpp Room.h
-        ResourceManager.cpp ResourceManager.h MapLoader.cpp MapLoader.h)
+        ResourceManager.cpp ResourceManager.h MapLoader.cpp MapLoader.h Registry.cpp Registry.h ResourceFile.cpp ResourceFile.h)
 
 add_executable(fcwrpg ${SOURCE_FILES})
 add_dependencies(fcwrpg echo)

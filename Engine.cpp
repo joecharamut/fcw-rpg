@@ -32,6 +32,8 @@ int Engine::f_pos_h;
 
 int Engine::state = 0;
 
+Registry<ResourceFile *> Engine::resourceFileRegistry;
+
 // Function to initialize the game engine
 bool Engine::init() {
     // Initialize Allegro
@@ -419,7 +421,7 @@ ALLEGRO_SAMPLE *Engine::loadSample(const char *file) {
 ALLEGRO_FONT *Engine::loadFont(const char *file, int size) {
     ALLEGRO_FONT *font = nullptr;
     Resource *res = ResourceManager::getResource(file);
-    if ((font = al_load_ttf_font_f(res->openAllegroFile(), res->type.path.c_str(), size, 0)) != nullptr) {
+    if ((font = al_load_ttf_font_f(res->openAllegroFile(), "", size, 0)) != nullptr) {
         return font;
     }
     throw FileException("Error loading font file \"" + std::string(file) + "\"");

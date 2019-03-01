@@ -31,7 +31,7 @@ public:
 
     Sprite() = default;
     Sprite(float x, float y, std::string id, std::vector<Animation> frames, COLLISION_TYPE collision);
-    explicit Sprite(Sprite *spr) : Sprite(spr->x, spr->y, spr->id, spr->frames, spr->collision) {};//{ this->collision = spr->collision; };
+    Sprite(const Sprite &spr) : Sprite(spr.x, spr.y, spr.id, spr.frames, spr.collision) {};
 
     virtual void draw();
     virtual void setX(float newX);

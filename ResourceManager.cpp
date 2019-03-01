@@ -37,7 +37,7 @@ Resource *ResourceManager::loadFileToResource(std::string filePath, std::string 
 
     resource = new Resource(
             ResourceLocation(location),
-            ResourceType(filePath, "." + Util::splitString(filePath, ".").back()),
+            ResourceType(ResourceType::TYPE_DATA, "." + Util::splitString(filePath, ".").back()),
             data, size
     );
     registerResource(resource);

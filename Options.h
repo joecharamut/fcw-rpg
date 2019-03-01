@@ -7,6 +7,7 @@ namespace Options {
     class Runtime {
     public:
         static bool debug;
+        static bool verbose;
     };
 
     class Config {
