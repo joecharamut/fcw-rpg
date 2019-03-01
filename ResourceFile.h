@@ -8,11 +8,14 @@
 typedef unsigned char byte;
 
 class ResourceFile {
+public:
     void *data;
     size_t size;
 
     ResourceFile(void *data, size_t size) : data(data), size(size) {};
     ~ResourceFile() { free(data); };
+
+    static ResourceFile *loadFileToResource(std::string filePath);
 
     ALLEGRO_FILE *openAllegroFile();
     std::stringstream openStream();

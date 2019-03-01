@@ -1,7 +1,6 @@
 #include "Room.h"
 
 #include "Engine.h"
-#include "ResourceManager.h"
 
 // Constructor
 Room::Room(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
@@ -14,7 +13,7 @@ Room::Room(std::string id, std::vector<std::string> tileset, std::vector<std::ve
 
     // Load in the sprites
     for (auto sprite : sprites) {
-        Sprite *spr = (Sprite *) ResourceManager::getResource(sprite)->data;
+        Sprite *spr = (Sprite *) Engine::resourceFileRegistry.get(sprite)->data;
         this->sprites.push_back(spr);
     }
 

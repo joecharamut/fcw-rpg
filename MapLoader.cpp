@@ -1,7 +1,7 @@
 #include "MapLoader.h"
 #include "Util.h"
 #include "Log.h"
-#include "ResourceManager.h"
+#include "Engine.h"
 
 #include <experimental/filesystem>
 #include <archive/archive.h>
@@ -69,7 +69,7 @@ bool MapLoader::loadMaps() {
 bool MapLoader::processMap(std::string id) {
     long long int start = Util::getMilliTime();
 
-    Resource *spriteFile = ResourceManager::getResource(id + ":_sprites");
+    ResourceFile *spriteFile = Engine::resourceFileRegistry.get(id + ":_sprites");
     if (!spriteFile) return false;
     std::stringstream spriteStream = spriteFile->openStream();
     if (spriteStream.fail()) return false;
@@ -80,11 +80,11 @@ bool MapLoader::processMap(std::string id) {
     for (const auto &sprite : spriteList) {
         auto *spr = new Sprite(sprite);
         spr->updateBoundingBox();
-        ResourceManager::registerResource(new Resource( ResourceLocation(id + ":" + spr->id), ResourceType(), spr, 0 ));
+        Engine::resourceFileRegistry.put(new ResourceFile(spr, sizeof(spr)), id + ":" + spr->id);
         Log::verbosef("Loaded Sprite %s:%s", id.c_str(), spr->id.c_str());
     }
 
-    for (Resource *res : ResourceManager::getResources(id + ":_room[0-9]+")) {
+    for (ResourceFile *res : Engine::resourceFileRegistry.search(id + ":_room[0-9]+")) {
         std::stringstream inStream = res->openStream();
         std::string roomId;
         if (inStream.fail()) return false;
@@ -94,11 +94,11 @@ bool MapLoader::processMap(std::string id) {
         input(cereal::make_nvp("mapdata", roomJSON));
         roomId = roomJSON.id;
         Room *room = new Room(roomJSON.id, roomJSON.tileset, roomJSON.tilemap, roomJSON.sprites, roomJSON.events);
-        ResourceManager::registerResource(new Resource( ResourceLocation(id + ":" + roomId), ResourceType(), room, 0));
+        Engine::resourceFileRegistry.put(new ResourceFile(room, 0), id + ":" + roomId);
         Log::verbosef("Loaded Room %s:%s", id.c_str(), roomId.c_str());
     }
 
-    Resource *mapFile = ResourceManager::getResource(id + ":_map");
+    ResourceFile *mapFile = Engine::resourceFileRegistry.get(id + ":_map");
     if (!mapFile) return false;
     std::stringstream mapStream = mapFile->openStream();
     if (mapStream.fail()) return false;
@@ -134,8 +134,9 @@ std::string MapLoader::processUnpackedResources(std::string basePath) {
             std::replace(filename.begin(), filename.end(), '\\', '/');
             filename = Util::splitString(filename, "/").back();
             std::string resourceName = mapId + ":" + Util::splitString(filename, ".").front();
-            auto *res = ResourceManager::loadFileToResource(p.path().string(), resourceName);
-            Log::verbosef("Loaded Resource %s (%d bytes)", res->location.location.c_str(), (int) res->size);
+            auto *res = ResourceFile::loadFileToResource(p.path().string());
+            Engine::resourceFileRegistry.put(res, resourceName);
+            Log::verbosef("Loaded Resource %s (%d bytes)", resourceName.c_str(), (int) res->size);
         }
     }
 
@@ -148,8 +149,9 @@ std::string MapLoader::processUnpackedResources(std::string basePath) {
             if (filename.substr(filename.length() - 5) != ".json") continue;
 
             std::string resourceName = mapId + ":_" + Util::splitString(filename, ".").front();
-            auto *res = ResourceManager::loadFileToResource(p.path().string(), resourceName);
-            Log::verbosef("Loaded Resource %s (%d bytes)", res->location.location.c_str(), (int) res->size);
+            auto *res = ResourceFile::loadFileToResource(p.path().string());
+            Engine::resourceFileRegistry.put(res, resourceName);
+            Log::verbosef("Loaded Resource %s (%d bytes)", resourceName.c_str(), (int) res->size);
         }
     }
 
@@ -230,12 +232,10 @@ std::string MapLoader::processPackedResources(std::string file) {
                     resourceName = mapId + ":" + Util::splitString(filename, ".").front();
                 }
                 if (!resourceName.empty()) {
-                    auto *res = ResourceManager::registerResource(new Resource(
-                            ResourceLocation(resourceName),
-                            ResourceType(ext),
-                            buf, (size_t) length
-                    ));
-                    Log::debugf("Loaded Packed Resource %s (%d bytes)", res->location.location.c_str(), length);
+
+                    auto *res = new ResourceFile(buf, (size_t) length);
+                    Engine::resourceFileRegistry.put(res, resourceName);
+                    Log::debugf("Loaded Packed Resource %s (%d bytes)", resourceName.c_str(), length);
                 } else {
                     free(buf);
                 }

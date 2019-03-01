@@ -10,7 +10,6 @@
 #include "Main.h"
 #include "Log.h"
 #include "Engine.h"
-#include "ResourceManager.h"
 
 Map::Map(std::string id, std::string defaultRoom, std::vector<std::string> rooms,
          std::map<std::string, Text> textsString, std::map<std::string, std::string> soundEffectsString,
@@ -19,7 +18,7 @@ Map::Map(std::string id, std::string defaultRoom, std::vector<std::string> rooms
     this->defaultRoom = defaultRoom;
 
     for (const auto &roomStr : rooms) {
-        Resource *res = ResourceManager::getResource(roomStr);
+        ResourceFile *res = Engine::resourceFileRegistry.get(roomStr);
         Room *room = (Room *) res->data;
         this->rooms[room->id] = room;
     }

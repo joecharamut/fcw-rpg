@@ -18,7 +18,6 @@
 #include "Log.h"
 #include "Engine.h"
 #include "Options.h"
-#include "ResourceManager.h"
 #include "MapLoader.h"
 
 bool fs_state = false;
@@ -133,8 +132,10 @@ void parseArgs(int argc, char *argv[]) {
 }
 
 void loadSystemResources() {
-    ResourceManager::loadFileToResource("resources/icon.png", "sys:icon");
-    ResourceManager::loadFileToResource("resources/font/DOSVGA.ttf", "sys:font_8bit");
+    ResourceFile *icon = ResourceFile::loadFileToResource("resources/icon.png");
+    ResourceFile *font = ResourceFile::loadFileToResource("resources/font/DOSVGA.ttf");
+    Engine::resourceFileRegistry.put(icon, "sys:icon");
+    Engine::resourceFileRegistry.put(font, "sys:font_8bit");
 }
 
 int main(int argc, char *argv[]) {

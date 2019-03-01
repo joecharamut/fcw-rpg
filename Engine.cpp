@@ -9,7 +9,6 @@
 #include "Util.h"
 #include "Main.h"
 #include "Sprite.h"
-#include "ResourceManager.h"
 #include "MapLoader.h"
 
 Sprite *Engine::player;
@@ -32,7 +31,7 @@ int Engine::f_pos_h;
 
 int Engine::state = 0;
 
-Registry<ResourceFile *> Engine::resourceFileRegistry;
+Registry<ResourceFile *> Engine::resourceFileRegistry = Registry<ResourceFile *>();
 
 // Function to initialize the game engine
 bool Engine::init() {
@@ -401,8 +400,8 @@ void Engine::loadFonts() {
 
 ALLEGRO_BITMAP *Engine::loadImage(const char *file) {
     ALLEGRO_BITMAP *img = nullptr;
-    Resource *res = ResourceManager::getResource(file);
-    img = al_load_bitmap_f(res->openAllegroFile(), res->type.extension.c_str());
+    ResourceFile *res = resourceFileRegistry.get(file);
+    img = al_load_bitmap_f(res->openAllegroFile(), ".png");
     if (img != nullptr) {
         return img;
     }
@@ -411,8 +410,8 @@ ALLEGRO_BITMAP *Engine::loadImage(const char *file) {
 
 ALLEGRO_SAMPLE *Engine::loadSample(const char *file) {
     ALLEGRO_SAMPLE *sample = nullptr;
-    Resource *res = ResourceManager::getResource(file);
-    if ((sample = al_load_sample_f(res->openAllegroFile(), res->type.extension.c_str())) != nullptr) {
+    ResourceFile *res = resourceFileRegistry.get(file);
+    if ((sample = al_load_sample_f(res->openAllegroFile(), ".ogg")) != nullptr) {
         return sample;
     }
     throw FileException("Error loading sound file \"" + std::string(file) + "\"");
@@ -420,7 +419,7 @@ ALLEGRO_SAMPLE *Engine::loadSample(const char *file) {
 
 ALLEGRO_FONT *Engine::loadFont(const char *file, int size) {
     ALLEGRO_FONT *font = nullptr;
-    Resource *res = ResourceManager::getResource(file);
+    ResourceFile *res = resourceFileRegistry.get(file);
     if ((font = al_load_ttf_font_f(res->openAllegroFile(), "", size, 0)) != nullptr) {
         return font;
     }
