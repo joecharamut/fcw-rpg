@@ -31,7 +31,9 @@ int Engine::f_pos_h;
 
 int Engine::state = 0;
 
-Registry<ResourceFile *> Engine::resourceFileRegistry = Registry<ResourceFile *>();
+Registry<ResourceFile *> Engine::resourceFileRegistry;
+Registry<Map *> Engine::mapRegistry;
+Registry<Room *> Engine::roomRegistry;
 
 // Function to initialize the game engine
 bool Engine::init() {

@@ -27,6 +27,8 @@ public:
     static std::map<std::string, ALLEGRO_FONT *> fonts;
 
     static Registry<ResourceFile *> resourceFileRegistry;
+    static Registry<Map *> mapRegistry;
+    static Registry<Room *> roomRegistry;
 
     static void run();
     static void Exit(int code);
