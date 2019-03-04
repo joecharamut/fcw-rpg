@@ -4,13 +4,6 @@ project(fcwrpg)
 set(CMAKE_CXX_STANDARD 14)
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 
-add_custom_target(echo)
-add_custom_command(
-        TARGET echo
-        COMMAND ${CMAKE_COMMAND} -E echo ${CMAKE_BUILD_TYPE}
-        COMMAND ${CMAKE_COMMAND} -E echo ${CMAKE_BINARY_DIR}
-)
-
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
 
 IF(${WIN32})
@@ -48,7 +41,6 @@ set(SOURCE_FILES
         MapLoader.cpp MapLoader.h Registry.cpp Registry.h ResourceFile.cpp ResourceFile.h)
 
 add_executable(fcwrpg ${SOURCE_FILES})
-add_dependencies(fcwrpg echo)
 
 add_library(duktape STATIC ${CMAKE_SOURCE_DIR}/lib/duktape/duktape.c)
 target_link_libraries(duktape m)

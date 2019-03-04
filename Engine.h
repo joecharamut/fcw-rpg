@@ -27,7 +27,6 @@ public:
     static std::map<std::string, ALLEGRO_FONT *> fonts;
 
     static Registry<ResourceFile *> resourceFileRegistry;
-    static Registry<Map *> mapRegistry;
     static Registry<Room *> roomRegistry;
 
     static void run();
@@ -64,7 +63,7 @@ private:
             STATE_TIMER             = 1 << 7,
             STATE_EVENT_QUEUE       = 1 << 8
     };
-    static int state;
+    static int load_state;
 
     static std::thread renderThread;
     static std::thread consoleThread;

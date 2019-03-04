@@ -94,7 +94,7 @@ bool MapLoader::processMap(std::string id) {
         input(cereal::make_nvp("mapdata", roomJSON));
         roomId = roomJSON.id;
         Room *room = new Room(roomJSON.id, roomJSON.tileset, roomJSON.tilemap, roomJSON.sprites, roomJSON.events);
-        Engine::resourceFileRegistry.put(new ResourceFile(room, 0), id + ":" + roomId);
+        Engine::roomRegistry.put(room, id + ":" + roomId);
         Log::verbosef("Loaded Room %s:%s", id.c_str(), roomId.c_str());
     }
 

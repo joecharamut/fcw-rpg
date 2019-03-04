@@ -19,6 +19,7 @@ ALLEGRO_TIMER *Engine::timer;
 ALLEGRO_EVENT_QUEUE *Engine::eventQueue;
 bool Engine::redraw;
 std::atomic<bool> Engine::done;
+
 double Engine::oldTime;
 double Engine::newTime;
 double Engine::delayTime;
@@ -29,10 +30,9 @@ int Engine::f_scale_h;
 int Engine::f_pos_w;
 int Engine::f_pos_h;
 
-int Engine::state = 0;
+int Engine::load_state = 0;
 
 Registry<ResourceFile *> Engine::resourceFileRegistry;
-Registry<Map *> Engine::mapRegistry;
 Registry<Room *> Engine::roomRegistry;
 
 // Function to initialize the game engine
@@ -43,7 +43,7 @@ bool Engine::init() {
         Log::error("Error initializing Allegro");
         return false;
     }
-    state |= STATE_ALLEGRO_INIT;
+    load_state |= STATE_ALLEGRO_INIT;
 
     // And all of the addons needed
     Log::debug("Initializing Font");
@@ -51,35 +51,35 @@ bool Engine::init() {
         Log::error("Error initializing Allegro Font");
         return false;
     }
-    state |= STATE_ALLEGRO_FONT;
+    load_state |= STATE_ALLEGRO_FONT;
 
     Log::debug("Initializing TTF");
     if(!al_init_ttf_addon()) {
         Log::error("Error initializing Allegro TTF");
         return false;
     }
-    state |= STATE_ALLEGRO_TTF;
+    load_state |= STATE_ALLEGRO_TTF;
 
     Log::debug("Initializing Image");
     if(!al_init_image_addon()) {
         Log::error("Error initializing Allegro Image");
         return false;
     }
-    state |= STATE_ALLEGRO_IMAGE;
+    load_state |= STATE_ALLEGRO_IMAGE;
 
     Log::debug("Initializing Keyboard");
     if(!al_install_keyboard()) {
         Log::error("Error initializing Keyboard");
         return false;
     }
-    state |= STATE_ALLEGRO_KEYBOARD;
+    load_state |= STATE_ALLEGRO_KEYBOARD;
 
     Log::debug("Initializing Audio");
     if(!al_install_audio()) {
         Log::error("Error initializing Audio");
         return false;
     }
-    state |= STATE_ALLEGRO_AUDIO;
+    load_state |= STATE_ALLEGRO_AUDIO;
 
     Log::debug("Initializing Audio Codec");
     if(!al_init_acodec_addon()) {
@@ -107,7 +107,7 @@ bool Engine::init() {
         Log::error("Error creating display");
         return false;
     }
-    state |= STATE_DISPLAY;
+    load_state |= STATE_DISPLAY;
     // Set icon and title
     al_set_display_icon(display, Engine::loadImage("sys:icon"));
     al_set_window_title(display, "FCW the RPG");
@@ -118,7 +118,7 @@ bool Engine::init() {
         Log::error("Error initializing Timer");
         return false;
     }
-    state |=  STATE_TIMER;
+    load_state |=  STATE_TIMER;
     al_start_timer(timer);
 
     // Create event queue
@@ -127,7 +127,7 @@ bool Engine::init() {
         Log::error("Error initializing Event Queue");
         return false;
     }
-    state |= STATE_EVENT_QUEUE;
+    load_state |= STATE_EVENT_QUEUE;
     // Register events
     al_register_event_source(eventQueue, al_get_keyboard_event_source());
     al_register_event_source(eventQueue, al_get_timer_event_source(timer));
@@ -360,31 +360,31 @@ void Engine::run() {
 }
 
 void Engine::Exit(int code) {
-    if (state & STATE_EVENT_QUEUE) {
+    if (load_state & STATE_EVENT_QUEUE) {
         al_destroy_event_queue(eventQueue);
     }
-    if (state & STATE_TIMER) {
+    if (load_state & STATE_TIMER) {
         al_destroy_timer(timer);
     }
-    if (state & STATE_DISPLAY) {
+    if (load_state & STATE_DISPLAY) {
         al_destroy_display(display);
     }
-    if (state & STATE_ALLEGRO_AUDIO) {
+    if (load_state & STATE_ALLEGRO_AUDIO) {
         al_uninstall_audio();
     }
-    if (state & STATE_ALLEGRO_KEYBOARD) {
+    if (load_state & STATE_ALLEGRO_KEYBOARD) {
         al_uninstall_keyboard();
     }
-    if (state & STATE_ALLEGRO_IMAGE) {
+    if (load_state & STATE_ALLEGRO_IMAGE) {
         al_shutdown_image_addon();
     }
-    if (state & STATE_ALLEGRO_TTF) {
+    if (load_state & STATE_ALLEGRO_TTF) {
         al_shutdown_ttf_addon();
     }
-    if (state & STATE_ALLEGRO_FONT) {
+    if (load_state & STATE_ALLEGRO_FONT) {
         al_shutdown_font_addon();
     }
-    if (state & STATE_ALLEGRO_INIT) {
+    if (load_state & STATE_ALLEGRO_INIT) {
         al_uninstall_system();
     }
 

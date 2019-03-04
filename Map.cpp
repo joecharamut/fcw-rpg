@@ -18,8 +18,7 @@ Map::Map(std::string id, std::string defaultRoom, std::vector<std::string> rooms
     this->defaultRoom = defaultRoom;
 
     for (const auto &roomStr : rooms) {
-        ResourceFile *res = Engine::resourceFileRegistry.get(roomStr);
-        Room *room = (Room *) res->data;
+        Room *room = Engine::roomRegistry.get(roomStr);
         this->rooms[room->id] = room;
     }
     this->current_room = this->rooms[defaultRoom];
