@@ -121,7 +121,6 @@ ELSE()
             allegro_memfile
             allegro_primitives
             allegro_ttf
-            allegro_video
 
             stdc++fs
             duktape
