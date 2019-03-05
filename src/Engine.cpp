@@ -4,8 +4,8 @@
 #include <thread>
 #include "Engine.h"
 #include "Log.h"
-#include "Audio.h"
-#include "Keyboard.h"
+#include "module/Audio.h"
+#include "module/Keyboard.h"
 #include "Util.h"
 #include "Main.h"
 #include "Sprite.h"

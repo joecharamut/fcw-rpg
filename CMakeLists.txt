@@ -30,15 +30,18 @@ set(SOURCE_FILES
         src/BoundingBox.cpp src/BoundingBox.h
         src/Util.cpp src/Util.h
         src/Animation.cpp src/Animation.h
-        src/Audio.cpp src/Audio.h
+        src/module/Audio.cpp src/module/Audio.h
         src/Event.cpp src/Event.h
-        src/Object.cpp src/Object.h
-        src/Keyboard.cpp src/Keyboard.h
+        src/object/Object.cpp src/object/Object.h
+        src/module/Keyboard.cpp src/module/Keyboard.h
         src/Engine.cpp src/Engine.h
         src/Log.cpp src/Log.h
         src/Options.cpp src/Options.h
         src/Room.cpp src/Room.h
-        src/MapLoader.cpp src/MapLoader.h src/Registry.cpp src/Registry.h src/ResourceFile.cpp src/ResourceFile.h)
+        src/MapLoader.cpp src/MapLoader.h
+        src/Registry.cpp src/Registry.h
+        src/ResourceFile.cpp src/ResourceFile.h
+        src/object/ObjectSign.cpp src/object/ObjectSign.h)
 
 add_executable(fcwrpg ${SOURCE_FILES})
 

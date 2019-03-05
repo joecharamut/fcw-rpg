@@ -6,7 +6,7 @@
 #include <string>
 #include <map>
 #include <allegro5/keycodes.h>
-#include "Keyboard.h"
+#include "module/Keyboard.h"
 #include <duktape-cpp/DuktapeCpp.h>
 
 #include "Map.h"
