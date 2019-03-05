@@ -41,7 +41,7 @@ set(SOURCE_FILES
         src/MapLoader.cpp src/MapLoader.h
         src/Registry.cpp src/Registry.h
         src/ResourceFile.cpp src/ResourceFile.h
-        src/object/ObjectSign.cpp src/object/ObjectSign.h)
+        src/object/ObjectSign.cpp src/object/ObjectSign.h src/gui/Gui.cpp src/gui/Gui.h src/gui/GuiComponent.cpp src/gui/GuiComponent.h src/gui/GuiComponentText.cpp src/gui/GuiComponentText.h)
 
 add_executable(fcwrpg ${SOURCE_FILES})
 

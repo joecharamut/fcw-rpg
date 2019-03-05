@@ -393,6 +393,8 @@ void Engine::Exit(int code) {
 
 void Engine::loadFonts() {
     Log::debug("Loading fonts");
+    fonts["default"] = Engine::loadFont("sys:font_8bit", 16);
+
     // Load in all the fonts and make them available as a map
     fonts["font8"]  = Engine::loadFont("sys:font_8bit",  8);
     fonts["font16"] = Engine::loadFont("sys:font_8bit", 16);
