@@ -4,7 +4,7 @@ project(fcwrpg)
 set(CMAKE_CXX_STANDARD 14)
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
+INCLUDE_DIRECTORIES(SYSTEM ${CMAKE_SOURCE_DIR}/include)
 
 IF(${WIN32})
     INCLUDE_DIRECTORIES(
@@ -44,6 +44,7 @@ set(SOURCE_FILES
         src/object/ObjectSign.cpp src/object/ObjectSign.h src/gui/Gui.cpp src/gui/Gui.h src/gui/GuiComponent.cpp src/gui/GuiComponent.h src/gui/GuiComponentText.cpp src/gui/GuiComponentText.h)
 
 add_executable(fcwrpg ${SOURCE_FILES})
+set_target_properties(fcwrpg PROPERTIES COMPILE_FLAGS "-Wall -Wextra")
 
 add_library(duktape STATIC ${CMAKE_SOURCE_DIR}/lib/duktape/duktape.c)
 target_link_libraries(duktape m)

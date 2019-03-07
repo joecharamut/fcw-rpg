@@ -11,7 +11,7 @@ ResourceFile *ResourceFile::loadFileToResource(std::string filePath) {
     fstat(fileno(file), &stat_buf);
     size_t size = (size_t) stat_buf.st_size;
     byte *data = (byte *) calloc(sizeof(byte), size);
-    size_t read = fread(data, size, 1, file);
+    fread(data, size, 1, file);
     resource = new ResourceFile(data, size);
 
     return resource;
@@ -27,7 +27,7 @@ ALLEGRO_FILE *ResourceFile::openAllegroFile() {
 
 std::stringstream ResourceFile::openStream() {
     std::stringstream stream;
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < (int)size; i++) {
         stream << ((byte *) data)[i];
     }
     return stream;

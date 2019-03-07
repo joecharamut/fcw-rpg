@@ -115,7 +115,7 @@ void parseArgs(int argc, char *argv[]) {
 
     if (Util::vectorContains(args, std::string("--help"))) {
         std::string helpStr;
-        for (int i = 0; i < validArgs.size(); i++) {
+        for (int i = 0; i < (int)validArgs.size(); i++) {
             helpStr += " " + validArgs[i] + "\n\t" + argHelpText[i] + "\n\n";
         }
         printf("Command Line Options:\n%s", helpStr.c_str());

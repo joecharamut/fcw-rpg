@@ -283,7 +283,7 @@ void processCommandString(std::string command) {
             printf("Usage: eval <string>\n\n");
         } else {
             std::string evalString;
-            for (int i = 1; i < commandPart.size(); i++) {
+            for (int i = 1; i < (int)commandPart.size(); i++) {
                 evalString += commandPart[i] + " ";
             }
             Event::eval(evalString);
@@ -314,13 +314,14 @@ void Engine::commandThreadFunction() {
 }
 
 void Engine::eventThreadFunction() {
+    /*
     while (!done) {
         if (current_map) {
             for (auto event : current_map->current_room->events) {
                 //event->execute();
             }
         }
-    }
+    }*/
 }
 
 std::thread Engine::renderThread;
