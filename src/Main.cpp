@@ -18,6 +18,8 @@
 #include "Engine.h"
 #include "Options.h"
 #include "MapLoader.h"
+#include "gui/GuiComponentText.h"
+#include "gui/GuiComponentGraphics.h"
 
 bool fs_state = false;
 bool fs_flag = false;
@@ -73,6 +75,11 @@ void Main::testing() {
     Engine::current_map = MapLoader::getMap("map_test");
     // Set the event handler TODO: Replace with events from map file, maybe pass events from game to map
     Engine::current_map->setEventHandlerFunction(mapEventHandler);
+
+    Gui *gui = new Gui();
+    gui->addComponent(new GuiComponentGraphics(0, 0, 512, 512, 0, 0, 0));
+    gui->addComponent(new GuiComponentText("mm yed it works", 0, 64, 0, 0, "font16", 255,255,255));
+    Engine::openGui(gui);
 
     // Load in some test music
     ALLEGRO_SAMPLE_INSTANCE *music = Engine::current_map->music.at("mus_cave");

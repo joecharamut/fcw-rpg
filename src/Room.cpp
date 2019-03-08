@@ -123,9 +123,9 @@ void Room::draw() {
     }
 
     // Check and execute events
-    for (auto *event : events) {
+    /*for (auto *event : events) {
 
-    }
+    }*/
 }
 
 Sprite *Room::getSpriteById(std::string id) {

@@ -32,7 +32,7 @@ struct GameSprite {
 
     template <class Inspector>
     static void inspect(Inspector &i) {
-        //i.construct(&std::make_shared<GameSprite, std::string>);
+        i.construct(&std::make_shared<GameSprite, std::string>);
     }
 };
 
@@ -64,7 +64,7 @@ namespace duk {
     };
 }
 
-DUK_CPP_DEF_CLASS_NAME(GameSprite);
+DUK_CPP_DEF_CLASS_NAME(GameSprite)
 
 class GameContext {
 public:
@@ -99,7 +99,7 @@ public:
         i.property("player", &GameContext::player);
     }
 };
-DUK_CPP_DEF_CLASS_NAME(GameContext);
+DUK_CPP_DEF_CLASS_NAME(GameContext)
 
 Event::Event(std::string encodedEvent) {
     using base64 = cppcodec::base64_rfc4648;

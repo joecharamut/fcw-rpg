@@ -35,6 +35,9 @@ int Engine::load_state = 0;
 Registry<ResourceFile *> Engine::resourceFileRegistry;
 Registry<Room *> Engine::roomRegistry;
 
+Gui *Engine::currentGui = nullptr;
+bool Engine::paused = false;
+
 // Function to initialize the game engine
 bool Engine::init() {
     // Initialize Allegro
@@ -186,6 +189,10 @@ void Engine::update() {
                 // Update viewport
                 current_map->updateViewport(player, false);
             }
+        }
+
+        if (currentGui) {
+            currentGui->draw();
         }
 
         // Reset target to display
@@ -429,6 +436,10 @@ ALLEGRO_FONT *Engine::loadFont(const char *file, int size) {
         return font;
     }
     throw FileException("Error loading font file \"" + std::string(file) + "\"");
+}
+
+void Engine::openGui(Gui *gui) {
+    currentGui = gui;
 }
 
 

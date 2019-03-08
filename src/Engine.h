@@ -13,6 +13,7 @@
 #include "Map.h"
 #include "Registry.h"
 #include "ResourceFile.h"
+#include "gui/Gui.h"
 
 class Map;
 
@@ -29,9 +30,14 @@ public:
     static Registry<ResourceFile *> resourceFileRegistry;
     static Registry<Room *> roomRegistry;
 
+    static Gui *currentGui;
+    static bool paused;
+
     static void run();
     static void Exit(int code);
 
+    static void openGui(Gui *gui);
+    static void closeGui();
     static void setFullscreen(bool enable);
 
     static ALLEGRO_BITMAP *loadImage(const char *file);
