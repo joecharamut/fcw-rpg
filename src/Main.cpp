@@ -77,7 +77,8 @@ void Main::testing() {
     Engine::current_map->setEventHandlerFunction(mapEventHandler);
 
     Gui *gui = new Gui();
-    gui->addComponent(new GuiComponentGraphics(0, 0, 512, 512, 0, 0, 0));
+    gui->addComponent(new GuiComponentGraphics(32, 32, 448, 448, 0, 0, 0));
+    gui->addComponent(new GuiComponentGraphics(128, 128, 32, 32, 255, 0, 0));
     gui->addComponent(new GuiComponentText("mm yed it works", 0, 64, 0, 0, "font16", 255,255,255));
     Engine::openGui(gui);
 
