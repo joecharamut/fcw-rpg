@@ -8,7 +8,7 @@
 class GuiComponentGraphics : public GuiComponent {
 public:
     GuiComponentGraphics(int x, int y, int width, int height, int r, int g, int b);
-    void draw() override;
+    ALLEGRO_BITMAP *getRendered() override;
 
 private:
     ALLEGRO_BITMAP *graphicsBuffer;

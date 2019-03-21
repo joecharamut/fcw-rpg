@@ -8,7 +8,6 @@
 #include <string>
 #include <allegro5/allegro_audio.h>
 #include <atomic>
-#include <thread>
 
 #include "Map.h"
 #include "Registry.h"
@@ -71,16 +70,9 @@ private:
     };
     static int load_state;
 
-    static std::thread renderThread;
-    static std::thread consoleThread;
-    static std::thread eventThread;
-
     static bool init();
     static void update();
     static void loadFonts();
-    static void renderThreadFunction();
-    static void commandThreadFunction();
-    static void eventThreadFunction();
 
     class FileException : public std::exception {
     private:

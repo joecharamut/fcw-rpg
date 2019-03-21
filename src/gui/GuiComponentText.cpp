@@ -31,6 +31,6 @@ GuiComponentText::GuiComponentText(std::string text, int x, int y, int width, in
     al_set_target_bitmap(old);
 }
 
-void GuiComponentText::draw() {
-    al_draw_bitmap(textBuffer, x, y, 0);
+ALLEGRO_BITMAP *GuiComponentText::getRendered() {
+    return textBuffer;
 }

@@ -9,7 +9,7 @@
 class GuiComponentText : public GuiComponent {
 public:
     GuiComponentText(std::string text, int x, int y, int width, int height, std::string fontStr, int r, int g, int b);
-    void draw() override;
+    ALLEGRO_BITMAP *getRendered() override;
 
 private:
     ALLEGRO_BITMAP *textBuffer;

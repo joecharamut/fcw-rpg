@@ -1,7 +1,6 @@
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_acodec.h>
-#include <thread>
 #include "Engine.h"
 #include "Log.h"
 #include "module/Audio.h"
@@ -162,8 +161,11 @@ void Engine::update() {
         // TODO: Replace with menu
         if (event.type == ALLEGRO_EVENT_KEY_UP && event.keyboard.keycode == ALLEGRO_KEY_ESCAPE) done = true;
         // Register a key event with the keyboard module
-        if (event.type == ALLEGRO_EVENT_KEY_DOWN || event.type == ALLEGRO_EVENT_KEY_UP)
+        if (event.type == ALLEGRO_EVENT_KEY_DOWN ||
+                event.type == ALLEGRO_EVENT_KEY_UP ||
+                event.type == ALLEGRO_EVENT_KEY_CHAR) {
             Keyboard::registerKeyEvent(event);
+        }
 
         // If there is a map loaded, hand the event over
         if (current_map) {
@@ -304,37 +306,6 @@ void processCommandString(std::string command) {
     }
 }
 
-void Engine::renderThreadFunction() {
-    while (!done) {
-        update();
-    }
-}
-
-void Engine::commandThreadFunction() {
-    while (!done) {
-        std::string input;
-        std::getline(std::cin, input);
-        if (!input.empty()) {
-            processCommandString(input);
-        }
-    }
-}
-
-void Engine::eventThreadFunction() {
-    /*
-    while (!done) {
-        if (current_map) {
-            for (auto event : current_map->current_room->events) {
-                //event->execute();
-            }
-        }
-    }*/
-}
-
-std::thread Engine::renderThread;
-std::thread Engine::consoleThread;
-std::thread Engine::eventThread;
-
 void Engine::run() {
     // Get current system time
     long long int start = Util::getMilliTime();
@@ -358,13 +329,9 @@ void Engine::run() {
     // Testing code TODO: Remove
     Main::testing();
 
-    renderThread = std::thread(Engine::renderThreadFunction);
-    consoleThread = std::thread(Engine::commandThreadFunction);
-    //eventThread = std::thread(Engine::eventThreadFunction);
-
-    consoleThread.detach();
-    //eventThread.detach();
-    renderThread.join();
+    while (!done) {
+        update();
+    }
 }
 
 void Engine::Exit(int code) {

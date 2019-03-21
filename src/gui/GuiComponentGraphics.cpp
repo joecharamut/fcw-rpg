@@ -1,4 +1,3 @@
-#include <allegro5/haptic.h>
 #include <allegro5/drawing.h>
 #include <allegro5/allegro.h>
 #include "GuiComponentGraphics.h"
@@ -16,6 +15,6 @@ GuiComponentGraphics::GuiComponentGraphics(int x, int y, int width, int height, 
     al_set_target_bitmap(old);
 }
 
-void GuiComponentGraphics::draw() {
-    al_draw_bitmap(graphicsBuffer, x, y, 0);
+ALLEGRO_BITMAP *GuiComponentGraphics::getRendered() {
+    return graphicsBuffer;
 }

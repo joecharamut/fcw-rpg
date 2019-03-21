@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.0)
 project(fcwrpg)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -39,7 +39,7 @@ set(SOURCE_FILES
         src/Options.cpp src/Options.h
         src/Room.cpp src/Room.h
         src/MapLoader.cpp src/MapLoader.h
-        src/Registry.cpp src/Registry.h
+        src/Registry.h
         src/ResourceFile.cpp src/ResourceFile.h
         src/object/ObjectSign.cpp src/object/ObjectSign.h
         src/gui/Gui.cpp src/gui/Gui.h

@@ -66,11 +66,17 @@ void mapEventHandler(ALLEGRO_EVENT event) {
                 hat->setY(fix[1]);
             }
         }
+        char c;
+        if ((c = Keyboard::consumeKey())) {
+            printf("%c", c);
+            fflush(stdout);
+        }
     }
 }
 
 // Function for testing features and stuff
 void Main::testing() {
+    Keyboard::setKeyBuffer(true);
     // Load the test map
     Engine::current_map = MapLoader::getMap("map_test");
     // Set the event handler TODO: Replace with events from map file, maybe pass events from game to map

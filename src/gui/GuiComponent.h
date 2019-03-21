@@ -1,6 +1,8 @@
 #ifndef FCWRPG_GUICOMPONENT_H
 #define FCWRPG_GUICOMPONENT_H
 
+#include <allegro5/bitmap.h>
+
 class GuiComponent {
 public:
     const bool interactable = false;
@@ -10,7 +12,8 @@ public:
     int width = 0;
     int height = 0;
 
-    virtual void draw() = 0;
+    //virtual void draw() = 0;
+    virtual ALLEGRO_BITMAP *getRendered() = 0;
     virtual void setPosition(int x, int y) {
         this->x = x;
         this->y = y;

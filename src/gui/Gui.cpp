@@ -1,8 +1,10 @@
 #include "Gui.h"
+#include <allegro5/drawing.h>
+#include <allegro5/allegro.h>
 
 void Gui::draw() {
     for (GuiComponent *component : components) {
-        component->draw();
+        al_draw_bitmap(component->getRendered(), component->x, component->y, 0);
     }
 }
 
