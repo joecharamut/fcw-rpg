@@ -30,14 +30,12 @@ public:
     static Registry<Room *> roomRegistry;
 
     static Gui *currentGui;
-    static bool paused;
 
     static void run();
     static void Exit(int code);
 
     static void openGui(Gui *gui);
     static void closeGui();
-    static void setFullscreen(bool enable);
 
     static ALLEGRO_BITMAP *loadImage(const char *file);
     static ALLEGRO_SAMPLE *loadSample(const char *file);
@@ -57,6 +55,9 @@ private:
     static int f_pos_w;
     static int f_pos_h;
 
+    static bool f_state;
+    static bool f_flag;
+
     enum state_offset {
             STATE_ALLEGRO_INIT      = 1 << 0,
             STATE_ALLEGRO_FONT      = 1 << 1,
@@ -69,6 +70,10 @@ private:
             STATE_EVENT_QUEUE       = 1 << 8
     };
     static int load_state;
+
+    static void setFullscreen(bool enable);
+
+    static void handleControls();
 
     static bool init();
     static void update();

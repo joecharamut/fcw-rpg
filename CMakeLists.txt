@@ -46,7 +46,7 @@ set(SOURCE_FILES
         src/gui/GuiComponent.h
         src/gui/GuiComponentText.cpp src/gui/GuiComponentText.h
         src/gui/GuiComponentGraphics.cpp src/gui/GuiComponentGraphics.h
-        src/gui/GuiComponentGraphics.cpp src/gui/GuiComponentGraphics.h)
+        src/gui/GuiComponentGraphics.cpp src/gui/GuiComponentGraphics.h src/gui/GuiComponentButton.cpp src/gui/GuiComponentButton.h)
 
 add_executable(fcwrpg ${SOURCE_FILES})
 set_target_properties(fcwrpg PROPERTIES COMPILE_FLAGS "-Wall -Wextra -pedantic")

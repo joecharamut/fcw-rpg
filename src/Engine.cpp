@@ -28,6 +28,8 @@ int Engine::f_scale_w;
 int Engine::f_scale_h;
 int Engine::f_pos_w;
 int Engine::f_pos_h;
+bool Engine::f_state = false;
+bool Engine::f_flag = false;
 
 int Engine::load_state = 0;
 
@@ -35,7 +37,6 @@ Registry<ResourceFile *> Engine::resourceFileRegistry;
 Registry<Room *> Engine::roomRegistry;
 
 Gui *Engine::currentGui = nullptr;
-bool Engine::paused = false;
 
 // Function to initialize the game engine
 bool Engine::init() {
@@ -177,6 +178,21 @@ void Engine::update() {
         // Clear redraw flag
         redraw = false;
 
+        // Toggle Fullscreen on ALT+ENTER
+        if (Keyboard::getKeyState(ALLEGRO_KEY_ALT) && Keyboard::getKeyState(ALLEGRO_KEY_ENTER)) {
+            if (!f_flag) {
+                f_state = !f_state;
+                setFullscreen(f_state);
+                f_flag = true;
+            }
+        } else {
+            if (f_flag) {
+                f_flag = false;
+            }
+        }
+
+        handleControls();
+
         // Create screen buffer
         ALLEGRO_BITMAP *buffer = al_create_bitmap(SCREEN_W, SCREEN_H);
         // Set as draw target
@@ -232,6 +248,38 @@ void Engine::update() {
 
     // Run music update routine - Used to fade audio
     Audio::update();
+}
+
+void Engine::handleControls() {
+    if (player == nullptr) {
+        return;
+    }
+
+    float playerX = player->x;
+    float playerY = player->y;
+
+    if (Keyboard::getKeyState(ALLEGRO_KEY_UP) /*|| Keyboard::getKeyState(ALLEGRO_KEY_W)*/) {
+        playerY -= 4;
+    }
+    if (Keyboard::getKeyState(ALLEGRO_KEY_DOWN) /*|| Keyboard::getKeyState(ALLEGRO_KEY_S)*/) {
+        playerY += 4;
+    }
+    if (Keyboard::getKeyState(ALLEGRO_KEY_LEFT) /*|| Keyboard::getKeyState(ALLEGRO_KEY_A)*/) {
+        playerX -= 4;
+    }
+    if (Keyboard::getKeyState(ALLEGRO_KEY_RIGHT) /*|| Keyboard::getKeyState(ALLEGRO_KEY_D)*/) {
+        playerX += 4;
+    }
+
+    player->setX(playerX);
+    player->setY(playerY);
+
+    Sprite *collision;
+    if ((collision = current_map->checkCollision(player)) != nullptr) {
+        std::vector<float> fix = BoundingBox::fixCollision(collision->boundingBox, player->boundingBox);
+        player->setX(fix[0]);
+        player->setY(fix[1]);
+    }
 }
 
 void Engine::setFullscreen(bool enable) {
@@ -407,6 +455,10 @@ ALLEGRO_FONT *Engine::loadFont(const char *file, int size) {
 
 void Engine::openGui(Gui *gui) {
     currentGui = gui;
+}
+
+void Engine::closeGui() {
+    currentGui = nullptr;
 }
 
 

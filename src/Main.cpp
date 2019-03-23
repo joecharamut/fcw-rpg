@@ -24,59 +24,21 @@
 bool fs_state = false;
 bool fs_flag = false;
 
+std::string buffer;
+GuiComponentText *textComponent;
+
 void mapEventHandler(ALLEGRO_EVENT event) {
     if (event.type == ALLEGRO_EVENT_TIMER) {
-        auto hat = Engine::current_map->getSpriteById("s_hat");
-        if (hat != nullptr) {
-            float hat_x = hat->x;
-            float hat_y = hat->y;
-
-            if (Keyboard::getKeyState(ALLEGRO_KEY_UP) || Keyboard::getKeyState(ALLEGRO_KEY_W)) {
-                hat_y -= 4;
-            }
-            if (Keyboard::getKeyState(ALLEGRO_KEY_DOWN) || Keyboard::getKeyState(ALLEGRO_KEY_S)) {
-                hat_y += 4;
-            }
-            if (Keyboard::getKeyState(ALLEGRO_KEY_LEFT) || Keyboard::getKeyState(ALLEGRO_KEY_A)) {
-                hat_x -= 4;
-            }
-            if (Keyboard::getKeyState(ALLEGRO_KEY_RIGHT) || Keyboard::getKeyState(ALLEGRO_KEY_D)) {
-                hat_x += 4;
-            }
-
-            if (Keyboard::getKeyState(ALLEGRO_KEY_ALT) && Keyboard::getKeyState(ALLEGRO_KEY_ENTER)) {
-                if (!fs_flag) {
-                    fs_state = !fs_state;
-                    Engine::setFullscreen(fs_state);
-                    fs_flag = true;
-                }
-            } else {
-                if (fs_flag) {
-                    fs_flag = false;
-                }
-            }
-
-            hat->setX(hat_x);
-            hat->setY(hat_y);
-
-            Sprite *spr = Engine::current_map->checkCollision(hat);
-            if (spr) {
-                std::vector<float> fix = BoundingBox::fixCollision(spr->boundingBox, hat->boundingBox);
-                hat->setX(fix[0]);
-                hat->setY(fix[1]);
-            }
-        }
         char c;
         if ((c = Keyboard::consumeKey())) {
-            printf("%c", c);
-            fflush(stdout);
+            buffer += c;
+            textComponent->setText(buffer);
         }
     }
 }
 
 // Function for testing features and stuff
 void Main::testing() {
-    Keyboard::setKeyBuffer(true);
     // Load the test map
     Engine::current_map = MapLoader::getMap("map_test");
     // Set the event handler TODO: Replace with events from map file, maybe pass events from game to map
@@ -85,7 +47,10 @@ void Main::testing() {
     Gui *gui = new Gui();
     gui->addComponent(new GuiComponentGraphics(32, 32, 448, 448, 0, 0, 0));
     gui->addComponent(new GuiComponentGraphics(128, 128, 32, 32, 255, 0, 0));
-    gui->addComponent(new GuiComponentText("mm yed it works", 0, 64, 0, 0, "font16", 255,255,255));
+
+    gui->addComponent((textComponent = new GuiComponentText("", 0, 64, 0, 24, "font16", 255,255,255)));
+    textComponent->setSelected(true);
+    Keyboard::setKeyBuffer(true);
     Engine::openGui(gui);
 
     // Load in some test music
