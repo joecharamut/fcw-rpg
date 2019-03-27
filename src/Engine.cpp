@@ -31,6 +31,8 @@ int Engine::f_pos_h;
 bool Engine::f_state = false;
 bool Engine::f_flag = false;
 
+int Engine::gui_flags = 0;
+
 int Engine::load_state = 0;
 
 Registry<ResourceFile *> Engine::resourceFileRegistry;
@@ -259,16 +261,66 @@ void Engine::handleControls() {
     float playerY = player->y;
 
     if (Keyboard::getKeyState(ALLEGRO_KEY_UP) /*|| Keyboard::getKeyState(ALLEGRO_KEY_W)*/) {
-        playerY -= 4;
+        if (currentGui) {
+            if (!(gui_flags & GUI_UP)) {
+                currentGui->handleKey(GUI_UP);
+                gui_flags |= GUI_UP;
+            }
+        } else {
+            playerY -= 4;
+        }
+    }else {
+         gui_flags &= ~GUI_UP;
+
     }
     if (Keyboard::getKeyState(ALLEGRO_KEY_DOWN) /*|| Keyboard::getKeyState(ALLEGRO_KEY_S)*/) {
-        playerY += 4;
+        if (currentGui) {
+            if (!(gui_flags & GUI_DOWN)) {
+                currentGui->handleKey(GUI_DOWN);
+                gui_flags |= GUI_DOWN;
+            }
+        } else {
+            playerY += 4;
+        }
+    } else {
+        gui_flags &= ~GUI_DOWN;
     }
+
     if (Keyboard::getKeyState(ALLEGRO_KEY_LEFT) /*|| Keyboard::getKeyState(ALLEGRO_KEY_A)*/) {
-        playerX -= 4;
+        if (currentGui) {
+            if (!(gui_flags & GUI_LEFT)) {
+                currentGui->handleKey(GUI_LEFT);
+                gui_flags |= GUI_LEFT;
+            }
+        } else {
+            playerX -= 4;
+        }
+    } else {
+        gui_flags &= ~GUI_LEFT;
     }
+
     if (Keyboard::getKeyState(ALLEGRO_KEY_RIGHT) /*|| Keyboard::getKeyState(ALLEGRO_KEY_D)*/) {
-        playerX += 4;
+        if (currentGui) {
+            if (!(gui_flags & GUI_RIGHT)) {
+                currentGui->handleKey(GUI_RIGHT);
+                gui_flags |= GUI_RIGHT;
+            }
+        } else {
+            playerX += 4;
+        }
+    } else {
+        gui_flags &= ~GUI_RIGHT;
+    }
+
+    if (Keyboard::getKeyState(ALLEGRO_KEY_Z) || Keyboard::getKeyState(ALLEGRO_KEY_ENTER)) {
+        if (currentGui) {
+            if (!(gui_flags & GUI_SELECT)) {
+                currentGui->handleKey(GUI_SELECT);
+                gui_flags |= GUI_SELECT;
+            }
+        }
+    } else {
+        gui_flags &= ~GUI_SELECT;
     }
 
     player->setX(playerX);

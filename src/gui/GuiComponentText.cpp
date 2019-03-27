@@ -28,27 +28,10 @@ GuiComponentText::GuiComponentText(std::string text, int x, int y, int width, in
     } else {
         font = Engine::fonts.at(fontStr);
     }
-
-    ALLEGRO_BITMAP *old = al_get_target_bitmap();
-    outlineBuffer = al_create_bitmap(buf_w, buf_h);
-    al_set_target_bitmap(outlineBuffer);
-    al_clear_to_color(al_map_rgba(0,0,0,0));
-
-    for (int oX = 0; oX < buf_w; oX++) {
-        for (int oY = 0; oY < buf_h; oY++) {
-            if (oX < 2 || oX > buf_w - 3 || oY < 2 || oY > buf_h - 3) {
-                al_draw_pixel(oX, oY, al_map_rgb(255,255,0));
-            }
-        }
-    }
-
-    al_set_target_bitmap(old);
-
     refreshBuffer();
 }
 
 ALLEGRO_BITMAP *GuiComponentText::getRendered() {
-    refreshBuffer();
     return textBuffer;
 }
 
@@ -59,9 +42,6 @@ void GuiComponentText::refreshBuffer() {
     al_set_target_bitmap(textBuffer);
     al_clear_to_color(al_map_rgba(0,0,0,0));
     al_draw_multiline_text(font, al_map_rgb(r, g, b), 0, 0, buf_w, al_get_font_line_height(font), 0, text.c_str());
-    if (selected) {
-        al_draw_bitmap(outlineBuffer, 0, 0, 0);
-    }
     al_set_target_bitmap(old);
 }
 

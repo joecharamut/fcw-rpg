@@ -16,6 +16,7 @@ public:
 
     virtual bool isSelectable() { return false; }
     virtual void setSelected(bool state) { selected = state; };
+    virtual void activate() { ; };
 
     virtual void setPosition(int x, int y) {
         this->x = x;

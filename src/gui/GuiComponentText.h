@@ -9,7 +9,7 @@
 
 class GuiComponentText : public GuiComponent {
 public:
-    bool isSelectable() override { return true; }
+    bool isSelectable() override { return false; }
 
     GuiComponentText(std::string text, int x, int y, int width, int height, std::string fontStr, int r, int g, int b);
     ALLEGRO_BITMAP *getRendered() override;
@@ -17,7 +17,6 @@ public:
 
 private:
     ALLEGRO_BITMAP *textBuffer;
-    ALLEGRO_BITMAP *outlineBuffer;
 
     std::string text;
     int r,g,b;

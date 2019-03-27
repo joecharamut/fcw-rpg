@@ -58,6 +58,8 @@ private:
     static bool f_state;
     static bool f_flag;
 
+    static int gui_flags;
+
     enum state_offset {
             STATE_ALLEGRO_INIT      = 1 << 0,
             STATE_ALLEGRO_FONT      = 1 << 1,
