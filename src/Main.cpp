@@ -1,22 +1,13 @@
 #include <cstdio>
 #include <allegro5/allegro.h>
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_ttf.h>
-#include <allegro5/allegro_image.h>
 #include <allegro5/allegro_audio.h>
-#include <allegro5/allegro_acodec.h>
-#include <archive/archive.h>
-#include <archive/archive_entry.h>
 
 #include "Sprite.h"
 #include "Map.h"
 #include "Util.h"
-#include "module/Audio.h"
 #include "Main.h"
-#include "module/Keyboard.h"
 #include "Log.h"
 #include "Engine.h"
-#include "Options.h"
 #include "MapLoader.h"
 
 #include "gui/GuiComponentText.h"
@@ -24,15 +15,8 @@
 #include "gui/GuiComponentButton.h"
 #include "gui/GuiComponentTextField.h"
 
-bool fs_state = false;
-bool fs_flag = false;
-
-std::string buffer;
-
 void mapEventHandler(ALLEGRO_EVENT event) {
-    if (event.type == ALLEGRO_EVENT_TIMER) {
 
-    }
 }
 
 void button1Handler() { Log::debug("Button1"); }
