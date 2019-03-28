@@ -15,17 +15,17 @@
 #include "gui/GuiComponentButton.h"
 #include "gui/GuiComponentTextField.h"
 
-void mapEventHandler(ALLEGRO_EVENT event) {
-
-}
+void mapEventHandler(ALLEGRO_EVENT event) {}
 
 void button1Handler() { Log::debug("Button1"); }
 void closeButton() { Engine::closeGui(); }
 
 // Function for testing features and stuff
 void Main::testing() {
+    Sprite *player = new Sprite(0, 0, "player_hat", {Animation("map_test:hat")}, COLLISION_NONE);
+    Engine::player = player;
     // Load the test map
-    Engine::current_map = MapLoader::getMap("map_test");
+    //Engine::current_map = MapLoader::getMap("map_test");
     // Set the event handler TODO: Replace with events from map file, maybe pass events from game to map
     //Engine::current_map->setEventHandlerFunction(mapEventHandler);
 
@@ -41,16 +41,14 @@ void Main::testing() {
     Engine::openGui(gui);
 
     // Load in some test music
-    ALLEGRO_SAMPLE_INSTANCE *music = Engine::current_map->music.at("mus_cave");
-    al_set_sample_instance_playmode(music, ALLEGRO_PLAYMODE_LOOP);
+    //ALLEGRO_SAMPLE_INSTANCE *music = Engine::current_map->music.at("mus_cave");
+    //al_set_sample_instance_playmode(music, ALLEGRO_PLAYMODE_LOOP);
     //Music::playMusic(music);
 
-    // Set the hat position and click action
-    auto hat = Engine::current_map->getSpriteById("s_hat");
-    hat->setX(Engine::SCREEN_W/4.0f -(hat->width/2.0f));
-    hat->setY(Engine::SCREEN_H/4.0f -(hat->height/2.0f));
-
-    Engine::player = hat;
+    // Set the hat position
+    //auto hat = Engine::current_map->getSpriteById("s_hat");
+    player->setX(Engine::SCREEN_W/4.0f - (player->width/2.0f));
+    player->setY(Engine::SCREEN_H/4.0f - (player->height/2.0f));
 }
 
 const std::vector<std::string> validArgs = {

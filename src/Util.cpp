@@ -4,11 +4,6 @@
 
 #include "Util.h"
 
-bool Util::checkInt(std::string test) {
-    for (char c : test) if (!isdigit(c) && c != '-') return false;
-    return true;
-}
-
 std::vector<std::string> Util::splitString(std::string str, std::string delimiter) {
     std::vector<std::string> out = {};
     size_t start, end = 0;

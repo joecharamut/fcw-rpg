@@ -9,13 +9,13 @@
 #include "Animation.h"
 
 enum COLLISION_TYPE {
-    NONE,
-    TILE
+    COLLISION_NONE,
+    COLLISION_TILE
 };
 
 class Sprite {
 public:
-    COLLISION_TYPE collision = NONE;
+    COLLISION_TYPE collision = COLLISION_NONE;
 
     float x = 0;
     float y = 0;

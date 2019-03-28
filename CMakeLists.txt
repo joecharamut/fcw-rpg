@@ -39,15 +39,16 @@ set(SOURCE_FILES
         src/Options.cpp src/Options.h
         src/Room.cpp src/Room.h
         src/MapLoader.cpp src/MapLoader.h
-        src/Registry.h
+        src/Registry.cpp src/Registry.h
         src/ResourceFile.cpp src/ResourceFile.h
         src/object/ObjectSign.cpp src/object/ObjectSign.h
         src/gui/Gui.cpp src/gui/Gui.h
-        src/gui/GuiComponent.h
+        src/gui/GuiComponent.cpp src/gui/GuiComponent.h
         src/gui/GuiComponentText.cpp src/gui/GuiComponentText.h
         src/gui/GuiComponentGraphics.cpp src/gui/GuiComponentGraphics.h
         src/gui/GuiComponentGraphics.cpp src/gui/GuiComponentGraphics.h
-        src/gui/GuiComponentButton.cpp src/gui/GuiComponentButton.h src/gui/GuiComponentTextField.cpp src/gui/GuiComponentTextField.h)
+        src/gui/GuiComponentButton.cpp src/gui/GuiComponentButton.h
+        src/gui/GuiComponentTextField.cpp src/gui/GuiComponentTextField.h)
 
 add_executable(fcwrpg ${SOURCE_FILES})
 set_target_properties(fcwrpg PROPERTIES COMPILE_FLAGS "-Wall -Wextra -pedantic")

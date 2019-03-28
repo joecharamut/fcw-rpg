@@ -6,7 +6,6 @@
 
 class Util {
 public:
-    static bool checkInt(std::string test);
     static std::vector<std::string> splitString(std::string str, std::string delimiter);
 
     template <typename T>

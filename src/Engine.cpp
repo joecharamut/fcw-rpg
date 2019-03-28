@@ -327,7 +327,7 @@ void Engine::handleControls() {
     player->setY(playerY);
 
     Sprite *collision;
-    if ((collision = current_map->checkCollision(player)) != nullptr) {
+    if (current_map && (collision = current_map->checkCollision(player)) != nullptr) {
         std::vector<float> fix = BoundingBox::fixCollision(collision->boundingBox, player->boundingBox);
         player->setX(fix[0]);
         player->setY(fix[1]);

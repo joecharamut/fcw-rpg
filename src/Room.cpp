@@ -140,7 +140,7 @@ Sprite *Room::getSpriteById(std::string id) {
 Sprite* Room::checkCollision(Sprite *sprite) {
     BoundingBox *box = sprite->boundingBox;
     for (auto *spr : sprites) {
-        if (spr->collision == NONE) {
+        if (spr->collision == COLLISION_NONE) {
             continue;
         }
         spr->updateBoundingBox();
