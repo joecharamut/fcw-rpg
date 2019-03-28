@@ -16,14 +16,14 @@ public:
     static bool getKeyState(Keycode k);
 
     static void setKeyBuffer(bool state);
-    static char consumeKey();
+    static std::pair<char, int> consumeKey();
     static std::string consumeKeys(int numKeys);
 
 private:
     static bool keyStates[ALLEGRO_KEY_MAX];
 
     static bool keyBufferEnabled;
-    static std::vector<char> keyBuffer;
+    static std::vector<std::pair<char, int>> keyBuffer;
 };
 
 

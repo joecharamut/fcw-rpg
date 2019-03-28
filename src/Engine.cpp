@@ -312,7 +312,7 @@ void Engine::handleControls() {
         gui_flags &= ~GUI_RIGHT;
     }
 
-    if (Keyboard::getKeyState(ALLEGRO_KEY_Z) || Keyboard::getKeyState(ALLEGRO_KEY_ENTER)) {
+    if (Keyboard::getKeyState(ALLEGRO_KEY_ENTER) /*|| Keyboard::getKeyState(ALLEGRO_KEY_Z)*/) {
         if (currentGui) {
             if (!(gui_flags & GUI_SELECT)) {
                 currentGui->handleKey(GUI_SELECT);

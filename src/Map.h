@@ -81,7 +81,7 @@ public:
     std::map<std::string, ALLEGRO_SAMPLE_INSTANCE *> soundEffects;
     std::map<std::string, ALLEGRO_SAMPLE_INSTANCE *> music;
     Room *current_room;
-    void (*handlerFunction)(ALLEGRO_EVENT event);
+    void (*handlerFunction)(ALLEGRO_EVENT event) = nullptr;
 
     void handleEvent(ALLEGRO_EVENT event);
     void setEventHandlerFunction(void (*handler)(ALLEGRO_EVENT event));

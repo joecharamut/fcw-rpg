@@ -22,6 +22,7 @@
 #include "gui/GuiComponentText.h"
 #include "gui/GuiComponentGraphics.h"
 #include "gui/GuiComponentButton.h"
+#include "gui/GuiComponentTextField.h"
 
 bool fs_state = false;
 bool fs_flag = false;
@@ -30,16 +31,11 @@ std::string buffer;
 
 void mapEventHandler(ALLEGRO_EVENT event) {
     if (event.type == ALLEGRO_EVENT_TIMER) {
-        char c;
-        if ((c = Keyboard::consumeKey())) {
-            buffer += c;
-        }
+
     }
 }
 
 void button1Handler() { Log::debug("Button1"); }
-void button2Handler() { Log::debug("Button2"); }
-void button3Handler() { Log::debug("Button3"); }
 void closeButton() { Engine::closeGui(); }
 
 // Function for testing features and stuff
@@ -54,9 +50,8 @@ void Main::testing() {
     gui->addComponent(new GuiComponentGraphics(128, 128, 32, 32, 255, 0, 0));
     gui->addComponent(new GuiComponentText("test text test text", 48, 64, 0, 0, "font16", 255,255,255));
     gui->addComponent(new GuiComponentButton("Button 1", button1Handler, 96,  128, 0, 0, "font16"));
-    gui->addComponent(new GuiComponentButton("Button 2", button2Handler, 48,  192, 0, 0, "font16"));
-    gui->addComponent(new GuiComponentButton("Button 3", button3Handler, 144, 192, 0, 0, "font16"));
-    gui->addComponent(new GuiComponentButton("Close",    closeButton,    232, 432, 0, 0, "font16"));
+    gui->addComponent(new GuiComponentTextField(64, 256, 256, 16, "font16"));
+    gui->addComponent(new GuiComponentButton("Close", closeButton, 232, 432, 0, 0, "font16"));
 
     //Keyboard::setKeyBuffer(true);
     Engine::openGui(gui);

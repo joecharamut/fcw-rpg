@@ -4,7 +4,7 @@
 bool Keyboard::keyStates[];
 
 bool Keyboard::keyBufferEnabled = false;
-std::vector<char> Keyboard::keyBuffer;
+std::vector<std::pair<char, int>> Keyboard::keyBuffer;
 
 bool Keyboard::init() {
     for (bool &keyState : keyStates) {
@@ -22,7 +22,7 @@ void Keyboard::registerKeyEvent(ALLEGRO_EVENT event) {
     }
     if (keyBufferEnabled) {
         if (event.type == ALLEGRO_EVENT_KEY_CHAR) {
-            keyBuffer.push_back(((char) event.keyboard.unichar));
+            keyBuffer.emplace_back(event.keyboard.unichar, event.keyboard.keycode);
         }
     }
 }
@@ -35,11 +35,11 @@ void Keyboard::setKeyBuffer(bool state) {
     keyBufferEnabled = state;
 }
 
-char Keyboard::consumeKey() {
+std::pair<char, int> Keyboard::consumeKey() {
     if (!keyBuffer.empty()) {
-        char ret = keyBuffer.back();
+        auto ret = keyBuffer.back();
         keyBuffer.pop_back();
         return ret;
     }
-    return '\0';
+    return std::make_pair(-1, -1);
 }
