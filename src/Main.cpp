@@ -29,6 +29,8 @@ void Main::testing() {
     // Set the event handler TODO: Replace with events from map file, maybe pass events from game to map
     //Engine::current_map->setEventHandlerFunction(mapEventHandler);
 
+    while (1);
+
     Gui *gui = new Gui();
     gui->addComponent(new GuiComponentGraphics(32, 32, 448, 448, 0, 0, 0));
     gui->addComponent(new GuiComponentGraphics(128, 128, 32, 32, 255, 0, 0));

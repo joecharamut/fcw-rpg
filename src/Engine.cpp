@@ -35,6 +35,8 @@ int Engine::gui_flags = 0;
 
 int Engine::load_state = 0;
 
+std::vector<float> Engine::progressBars = {0, 0};
+
 Registry<ResourceFile *> Engine::resourceFileRegistry;
 Registry<Room *> Engine::roomRegistry;
 
@@ -142,6 +144,8 @@ bool Engine::init() {
     done = false;
     oldTime = al_get_time();
     delayTime = al_get_time();
+
+    updateLoadingProgress(0, 0.1);
 
     if (!MapLoader::loadMaps()) {
         Log::error("Error loading maps");
@@ -513,4 +517,76 @@ void Engine::closeGui() {
     currentGui = nullptr;
 }
 
+void Engine::updateLoadingProgress(int which, float inc) {
+    progressBars[which] += inc;
+    refreshProgress();
+}
 
+void Engine::setLoadingProgress(int which, float amt) {
+    progressBars[which] = amt;
+    refreshProgress();
+}
+
+void Engine::refreshProgress() {
+    /*int min_x = 16;
+    int max_x = SCREEN_W - 16;
+    int min_y = SCREEN_H - 32;
+    int max_y = SCREEN_H - 16;
+    int border = 2;
+    ALLEGRO_COLOR white = al_map_rgb(255, 255, 255);
+    ALLEGRO_COLOR yellow = al_map_rgb(255, 255, 0);
+
+
+    for (int x = min_x; x < max_x; x++) {
+        for (int y = min_y; y < max_y; y++) {
+            if (x < min_x+border || x > max_x-border-1 || y < min_y+border || y > max_y-border-1) {
+                al_draw_pixel(x, y, white);
+            }
+        }
+    }
+
+    for (int x = min_x+border; x < max_x-border; x++) {
+        if (x < min_x + (int) amt) {
+            for (int y = min_y+border; y < max_y-border; y++) {
+                al_draw_pixel(x, y, yellow);
+            }
+        }
+    }*/
+
+    al_clear_to_color(al_map_rgb(0, 0, 0));
+
+    updateProgress(2, progressBars[0]);
+    updateProgress(1, progressBars[1]);
+    //updateProgress(0, progressBars[2]);
+
+    al_flip_display();
+}
+
+void Engine::updateProgress(int pos, float amount) {
+    int min_x = 16;
+    int max_x = SCREEN_W - 16;
+    int min_y = SCREEN_H - (32 + (32 * pos));
+    int max_y = SCREEN_H - (16 + (32 * pos));
+
+    int width = max_x-min_x;
+
+    int border = 2;
+    ALLEGRO_COLOR white = al_map_rgb(255, 255, 255);
+    ALLEGRO_COLOR yellow = al_map_rgb(255, 255, 0);
+
+    for (int x = min_x; x < max_x; x++) {
+        for (int y = min_y; y < max_y; y++) {
+            if (x < min_x+border || x > max_x-border-1 || y < min_y+border || y > max_y-border-1) {
+                al_draw_pixel(x, y, white);
+            }
+        }
+    }
+
+    for (int x = min_x+border; x < max_x-border; x++) {
+        if (x < min_x + (int) (amount * width)) {
+            for (int y = min_y+border; y < max_y-border; y++) {
+                al_draw_pixel(x, y, yellow);
+            }
+        }
+    }
+}

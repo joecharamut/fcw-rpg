@@ -37,6 +37,9 @@ public:
     static void openGui(Gui *gui);
     static void closeGui();
 
+    static void updateLoadingProgress(int which, float inc);
+    static void setLoadingProgress(int which, float amt);
+
     static ALLEGRO_BITMAP *loadImage(const char *file);
     static ALLEGRO_SAMPLE *loadSample(const char *file);
     static ALLEGRO_FONT *loadFont(const char *file, int size);
@@ -60,6 +63,8 @@ private:
 
     static int gui_flags;
 
+    static std::vector<float> progressBars;
+
     enum state_offset {
             STATE_ALLEGRO_INIT      = 1 << 0,
             STATE_ALLEGRO_FONT      = 1 << 1,
@@ -80,6 +85,9 @@ private:
     static bool init();
     static void update();
     static void loadFonts();
+
+    static void refreshProgress();
+    static void updateProgress(int pos, float amount);
 
     class FileException : public std::exception {
     private:

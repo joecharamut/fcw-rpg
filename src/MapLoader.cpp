@@ -12,6 +12,8 @@ std::map<std::string, Map *> MapLoader::mapList = {};
 bool MapLoader::loadMaps() {
     // Create the list
     std::vector<std::string> maps = {};
+
+    std::vector<std::pair<std::string, bool>> mapPaths = {};
     // Define the base path
     std::string mapPath = "resources/maps";
     // If the path doesn't exist, return empty list
@@ -31,12 +33,13 @@ bool MapLoader::loadMaps() {
                 // If it ends in .json
                 if (file.find("map.json") != std::string::npos) {
                     // Assume unpacked map
-                    std::string id;
+                    /*std::string id;
                     if ((id = processUnpackedResources(file.substr(0, file.size() - 8))).empty()) {
                         return false;
                     } else {
                         maps.push_back(id);
-                    }
+                    }*/
+                    mapPaths.emplace_back(file.substr(0, file.size() - 8), false);
                 }
             }
         } else if (p.path().string().substr(p.path().string().length() - 4) == ".map") {
@@ -47,13 +50,34 @@ bool MapLoader::loadMaps() {
             // Fix Windows path issue (Replace \ with /)
             std::replace(file.begin(), file.end(), '\\', '/');
             // Load
-            std::string id;
+            /*std::string id;
             if ((id = processPackedResources(file)).empty()) {
                 return false;
             } else {
                 maps.push_back(id);
+            }*/
+            mapPaths.emplace_back(file, true);
+        }
+    }
+
+    Log::debugf("Discovered %d maps.", mapPaths.size());
+
+    Engine::setLoadingProgress(1, 0);
+    for (const auto &pair : mapPaths) {
+        std::string id;
+        if (pair.second) {
+            // Packed Map
+            if ((id = processPackedResources(pair.first)).empty()) {
+                return false;
+            }
+        } else {
+            // Unpacked Map
+            if ((id = processUnpackedResources(pair.first)).empty()) {
+                return false;
             }
         }
+        maps.push_back(id);
+        Engine::updateLoadingProgress(1, 1.0f/mapPaths.size());
     }
 
     for (const std::string &map : maps) {
@@ -84,7 +108,8 @@ bool MapLoader::processMap(std::string id) {
         Log::verbosef("Loaded Sprite %s:%s", id.c_str(), spr->id.c_str());
     }
 
-    for (ResourceFile *res : Engine::resourceFileRegistry.search(id + ":_room[0-9]+")) {
+    std::vector<ResourceFile *> files = Engine::resourceFileRegistry.search(id + ":_room[0-9]+");
+    for (ResourceFile *res : files) {
         std::stringstream inStream = res->openStream();
         std::string roomId;
         if (inStream.fail()) return false;
@@ -232,10 +257,9 @@ std::string MapLoader::processPackedResources(std::string file) {
                     resourceName = mapId + ":" + Util::splitString(filename, ".").front();
                 }
                 if (!resourceName.empty()) {
-
                     auto *res = new ResourceFile(buf, (size_t) length);
                     Engine::resourceFileRegistry.put(res, resourceName);
-                    Log::debugf("Loaded Packed Resource %s (%d bytes)", resourceName.c_str(), length);
+                    Log::verbosef("Loaded Packed Resource %s (%d bytes)", resourceName.c_str(), length);
                 } else {
                     free(buf);
                 }
