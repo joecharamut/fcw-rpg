@@ -2,9 +2,14 @@
 #define FCWRPG_GUICOMPONENT_H
 
 #include <allegro5/bitmap.h>
+#include "Gui.h"
+
+class Gui;
 
 class GuiComponent {
 public:
+    Gui *parent;
+
     int x = 0;
     int y = 0;
     int width = 0;

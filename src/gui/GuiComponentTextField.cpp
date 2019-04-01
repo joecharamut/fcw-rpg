@@ -26,7 +26,7 @@ void GuiComponentTextField::createOverlays() {
     al_clear_to_color(al_map_rgba(0, 0, 0, 0));
     for (int x = 0; x < width; x++) {
         for (int y = 0; y < height; y++) {
-            if (x < 2 || x > width-2 || y < 1 || y > height-2) {
+            if (x < 2 || x > width-2 || y < 2 || y > height-2) {
                 al_draw_pixel(x, y, white);
             }
         }
@@ -36,7 +36,7 @@ void GuiComponentTextField::createOverlays() {
     al_clear_to_color(al_map_rgba(0, 0, 0, 0));
     for (int x = 0; x < width; x++) {
         for (int y = 0; y < height; y++) {
-            if (x < 2 || x > width-2 || y < 1 || y > height-2) {
+            if (x < 2 || x > width-2 || y < 2 || y > height-2) {
                 al_draw_pixel(x, y, yellow);
             }
         }
@@ -54,7 +54,7 @@ ALLEGRO_BITMAP *GuiComponentTextField::getRendered() {
                     buffer.pop_back();
                 }
             } else {
-                if (isascii(c.first)) {
+                if (isprint(c.first)) {
                     buffer += c.first;
                 }
             }

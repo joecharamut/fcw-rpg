@@ -29,14 +29,15 @@ void Main::testing() {
     // Set the event handler TODO: Replace with events from map file, maybe pass events from game to map
     //Engine::current_map->setEventHandlerFunction(mapEventHandler);
 
-    while (1);
-
     Gui *gui = new Gui();
     gui->addComponent(new GuiComponentGraphics(32, 32, 448, 448, 0, 0, 0));
     gui->addComponent(new GuiComponentGraphics(128, 128, 32, 32, 255, 0, 0));
     gui->addComponent(new GuiComponentText("test text test text", 48, 64, 0, 0, "font16", 255,255,255));
     gui->addComponent(new GuiComponentButton("Button 1", button1Handler, 96,  128, 0, 0, "font16"));
     gui->addComponent(new GuiComponentTextField(64, 256, 256, 16, "font16"));
+    gui->addComponent(new GuiComponentTextField(64, 280, 256, 16, "font16"));
+    gui->addComponent(new GuiComponentTextField(64, 304, 256, 16, "font16"));
+    gui->addComponent(new GuiComponentTextField(64, 330, 256, 16, "font16"));
     gui->addComponent(new GuiComponentButton("Close", closeButton, 232, 432, 0, 0, "font16"));
 
     //Keyboard::setKeyBuffer(true);

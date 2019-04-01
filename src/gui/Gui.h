@@ -4,6 +4,8 @@
 #include <vector>
 #include "GuiComponent.h"
 
+class GuiComponent;
+
 enum GuiKey {
     GUI_UP      = 1<<0,
     GUI_DOWN    = 1<<1,

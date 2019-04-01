@@ -10,6 +10,7 @@ void Gui::draw() {
 }
 
 void Gui::addComponent(GuiComponent *component) {
+    component->parent = this;
     components.push_back(component);
     updateSelectedComponent(0);
 }
