@@ -15,21 +15,23 @@
 #include "gui/GuiComponentButton.h"
 #include "gui/GuiComponentTextField.h"
 
-void mapEventHandler(ALLEGRO_EVENT event) {}
+#include "object/Object.h"
+#include "module/Registries.h"
 
 void button1Handler() { Log::debug("Button1"); }
 void closeButton() { Engine::closeGui(); }
 
 // Function for testing features and stuff
 void Main::testing() {
-    Sprite *player = new Sprite(0, 0, "player_hat", {Animation("map_test:hat")}, COLLISION_NONE);
+    //Sprite *player = new Sprite(0, 0, "player_hat", {Animation("map_test:hat")}, COLLISION_NONE_OLD);
+    Object *player = new Object("player_hat", 0, 0, {{"default",new Sprite("map_test:hat")}}, COLLISION_NONE);
     Engine::player = player;
     // Load the test map
-    //Engine::current_map = MapLoader::getMap("map_test");
+    Engine::current_map = MapLoader::getMap("map_test");
     // Set the event handler TODO: Replace with events from map file, maybe pass events from game to map
     //Engine::current_map->setEventHandlerFunction(mapEventHandler);
 
-    Gui *gui = new Gui();
+    auto *gui = new Gui();
     gui->addComponent(new GuiComponentGraphics(32, 32, 448, 448, 0, 0, 0));
     gui->addComponent(new GuiComponentGraphics(128, 128, 32, 32, 255, 0, 0));
     gui->addComponent(new GuiComponentText("test text test text", 48, 64, 0, 0, "font16", 255,255,255));
@@ -50,8 +52,8 @@ void Main::testing() {
 
     // Set the hat position
     //auto hat = Engine::current_map->getSpriteById("s_hat");
-    player->setX(Engine::SCREEN_W/4.0f - (player->width/2.0f));
-    player->setY(Engine::SCREEN_H/4.0f - (player->height/2.0f));
+    player->setPosition(
+            (Engine::SCREEN_W/4.0f-(player->getWidth()/2.0f)),(Engine::SCREEN_H/4.0f-(player->getHeight()/2.0f)));
 }
 
 const std::vector<std::string> validArgs = {
@@ -68,7 +70,7 @@ const std::vector<std::string> argHelpText = {
 
 void parseArgs(int argc, char *argv[]) {
     std::vector<std::string> args;
-    args.reserve(argc);
+    args.reserve((unsigned long) argc);
     for (int i = 1; i < argc; i++) {
         args.emplace_back(argv[i]);
     }
@@ -89,7 +91,7 @@ void parseArgs(int argc, char *argv[]) {
         exit(0);
     }
 
-    for (auto arg : args) {
+    for (const auto &arg : args) {
         Log::debug("Arg: " + arg);
         if (!Util::vectorContains(validArgs, arg)) {
             Log::warn("Invalid argument \"" + arg + "\"");
@@ -100,8 +102,8 @@ void parseArgs(int argc, char *argv[]) {
 void loadSystemResources() {
     ResourceFile *icon = ResourceFile::loadFileToResource("resources/icon.png");
     ResourceFile *font = ResourceFile::loadFileToResource("resources/font/DOSVGA.ttf");
-    Engine::resourceFileRegistry.put(icon, "sys:icon");
-    Engine::resourceFileRegistry.put(font, "sys:font_8bit");
+    Registries::resourceFileRegistry.put(icon, "sys:icon");
+    Registries::resourceFileRegistry.put(font, "sys:font_8bit");
 }
 
 int main(int argc, char *argv[]) {

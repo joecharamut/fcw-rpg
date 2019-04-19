@@ -9,8 +9,10 @@
 #include "Main.h"
 #include "Sprite.h"
 #include "MapLoader.h"
+#include "module/Registries.h"
+#include "DataLoader.h"
 
-Sprite *Engine::player;
+Object *Engine::player;
 Map *Engine::current_map;
 std::map<std::string, ALLEGRO_FONT *> Engine::fonts;
 ALLEGRO_DISPLAY *Engine::display;
@@ -36,9 +38,6 @@ int Engine::gui_flags = 0;
 int Engine::load_state = 0;
 
 std::vector<float> Engine::progressBars = {0, 0};
-
-Registry<ResourceFile *> Engine::resourceFileRegistry;
-Registry<Room *> Engine::roomRegistry;
 
 Gui *Engine::currentGui = nullptr;
 
@@ -147,6 +146,11 @@ bool Engine::init() {
 
     updateLoadingProgress(0, 0.1);
 
+    if (!DataLoader::load()) {
+        Log::error("Error loading data");
+        return false;
+    }
+
     if (!MapLoader::loadMaps()) {
         Log::error("Error loading maps");
         return false;
@@ -208,6 +212,7 @@ void Engine::update() {
 
         // Draw map and related to buffer
         if (current_map) {
+            player->draw();
             current_map->draw();
             if (player) {
                 // Update viewport
@@ -261,8 +266,8 @@ void Engine::handleControls() {
         return;
     }
 
-    float playerX = player->x;
-    float playerY = player->y;
+    float playerX = player->getX();
+    float playerY = player->getY();
 
     if (Keyboard::getKeyState(ALLEGRO_KEY_UP) /*|| Keyboard::getKeyState(ALLEGRO_KEY_W)*/) {
         if (currentGui) {
@@ -327,14 +332,12 @@ void Engine::handleControls() {
         gui_flags &= ~GUI_SELECT;
     }
 
-    player->setX(playerX);
-    player->setY(playerY);
+    player->setPosition(playerX, playerY);
 
-    Sprite *collision;
+    Object *collision;
     if (current_map && (collision = current_map->checkCollision(player)) != nullptr) {
         std::vector<float> fix = BoundingBox::fixCollision(collision->boundingBox, player->boundingBox);
-        player->setX(fix[0]);
-        player->setY(fix[1]);
+        player->setPosition(fix[0], fix[1]);
     }
 }
 
@@ -391,22 +394,6 @@ void processCommandString(std::string command) {
                 printf("%s: %s\n\n", commandPart[1].c_str(), commandHelp[commandPart[1]].c_str());
             }
         }
-    } else if (cmd == "eval") {
-        if (commandPart.size() < 2) {
-            printf("Usage: eval <string>\n\n");
-        } else {
-            std::string evalString;
-            for (int i = 1; i < (int)commandPart.size(); i++) {
-                evalString += commandPart[i] + " ";
-            }
-            Event::eval(evalString);
-        }
-    } else if (cmd == "test") {
-        std::string testStr =
-                "var ctx = new GameContext();\n"
-                "var player = ctx.player;\n"
-                "print(player.id);\n";
-        Event::eval(testStr);
     }
 }
 
@@ -418,7 +405,7 @@ void Engine::run() {
     // Run initialization
     if (!Engine::init()) {
         // If failed, quit program
-        Log::error("Error in init!");
+        Log::error("Error in init");
         Engine::Exit(1);
     }
 
@@ -483,7 +470,7 @@ void Engine::loadFonts() {
 
 ALLEGRO_BITMAP *Engine::loadImage(const char *file) {
     ALLEGRO_BITMAP *img = nullptr;
-    ResourceFile *res = resourceFileRegistry.get(file);
+    ResourceFile *res = Registries::resourceFileRegistry.get(file);
     img = al_load_bitmap_f(res->openAllegroFile(), ".png");
     if (img != nullptr) {
         return img;
@@ -493,7 +480,7 @@ ALLEGRO_BITMAP *Engine::loadImage(const char *file) {
 
 ALLEGRO_SAMPLE *Engine::loadSample(const char *file) {
     ALLEGRO_SAMPLE *sample = nullptr;
-    ResourceFile *res = resourceFileRegistry.get(file);
+    ResourceFile *res = Registries::resourceFileRegistry.get(file);
     if ((sample = al_load_sample_f(res->openAllegroFile(), ".ogg")) != nullptr) {
         return sample;
     }
@@ -502,7 +489,7 @@ ALLEGRO_SAMPLE *Engine::loadSample(const char *file) {
 
 ALLEGRO_FONT *Engine::loadFont(const char *file, int size) {
     ALLEGRO_FONT *font = nullptr;
-    ResourceFile *res = resourceFileRegistry.get(file);
+    ResourceFile *res = Registries::resourceFileRegistry.get(file);
     if ((font = al_load_ttf_font_f(res->openAllegroFile(), "", size, 0)) != nullptr) {
         return font;
     }

@@ -1,78 +1,29 @@
 {
   "sprites": [
     {
-      "id": "anim_sprite",
-      "x": 64.0,
-      "y": 64.0,
-      "collision": 1,
+      "id": "spr_rainbow",
       "frames": [
-        {
-          "type": "IDLE",
-          "frames": [
-            "map_test:rainbow_0",
-            "map_test:rainbow_1",
-            "map_test:rainbow_2",
-            "map_test:rainbow_3",
-            "map_test:rainbow_4",
-            "map_test:rainbow_5",
-            "map_test:rainbow_6",
-            "map_test:rainbow_7",
-            "map_test:rainbow_8",
-            "map_test:rainbow_9",
-            "map_test:rainbow_10",
-            "map_test:rainbow_11"
-          ],
-          "speed": 4
-        },
-        {
-          "type": "STILL",
-          "frames": [
-            "map_test:rainbow_0"
-          ],
-          "speed": 1
-        }
-      ]
-    },
-    {
-      "id": "test2",
-      "x": 416.0,
-      "y": 64.0,
-      "collision": 1,
-      "frames": [
-        {
-          "type": "IDLE",
-          "frames": [
-            "map_test:rainbow_0",
-            "map_test:rainbow_1",
-            "map_test:rainbow_2",
-            "map_test:rainbow_3",
-            "map_test:rainbow_4",
-            "map_test:rainbow_5",
-            "map_test:rainbow_6",
-            "map_test:rainbow_7",
-            "map_test:rainbow_8",
-            "map_test:rainbow_9",
-            "map_test:rainbow_10",
-            "map_test:rainbow_11"
-          ],
-          "speed": 4
-        }
-      ]
+        "map_test:rainbow_0",
+        "map_test:rainbow_1",
+        "map_test:rainbow_2",
+        "map_test:rainbow_3",
+        "map_test:rainbow_4",
+        "map_test:rainbow_5",
+        "map_test:rainbow_6",
+        "map_test:rainbow_7",
+        "map_test:rainbow_8",
+        "map_test:rainbow_9",
+        "map_test:rainbow_10",
+        "map_test:rainbow_11"
+      ],
+      "speed": 4
     },
     {
       "id": "s_hat",
-      "x": 0.0,
-      "y": 0.0,
-      "collision": 0,
       "frames": [
-        {
-          "type": "default",
-          "frames": [
-            "map_test:hat"
-          ],
-          "speed": 1
-        }
-      ]
+        "map_test:hat"
+      ],
+      "speed": 1
     }
   ]
 }

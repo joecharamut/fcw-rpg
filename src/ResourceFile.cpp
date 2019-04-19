@@ -7,10 +7,10 @@ ResourceFile *ResourceFile::loadFileToResource(std::string filePath) {
     ResourceFile *resource;
 
     FILE *file = fopen(filePath.c_str(), "rb");
-    struct stat stat_buf;
+    struct stat stat_buf {};
     fstat(fileno(file), &stat_buf);
-    size_t size = (size_t) stat_buf.st_size;
-    byte *data = (byte *) calloc(sizeof(byte), size);
+    auto size = (size_t) stat_buf.st_size;
+    auto *data = (byte *) calloc(sizeof(byte), size);
     fread(data, size, 1, file);
     resource = new ResourceFile(data, size);
 

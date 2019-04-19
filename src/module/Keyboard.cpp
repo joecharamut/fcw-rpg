@@ -41,5 +41,5 @@ std::pair<char, int> Keyboard::consumeKey() {
         keyBuffer.pop_back();
         return ret;
     }
-    return std::make_pair(-1, -1);
+    return {'\0', -1};//std::pair<char, int>('\0', -1);
 }

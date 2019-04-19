@@ -1,5 +1,5 @@
 {
-  "mapdata": {
+  "data": {
     "version": 1,
     "id": "map_test",
     "defaultRoom": "room_default",

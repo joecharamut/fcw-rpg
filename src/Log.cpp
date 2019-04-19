@@ -55,7 +55,7 @@ void Log::logf(LogLevel level, const char *fmt, va_list args) {
     va_list copy;
     va_copy(copy, args);
     size_t size = (size_t) vsnprintf(nullptr, 0, fmt, copy) + 1;
-    char *buf = new char[size];
+    auto *buf = new char[size];
     vsnprintf(buf, size, fmt, args);
     va_end(copy);
     log(level, std::string(buf, buf + size - 1));

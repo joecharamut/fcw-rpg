@@ -13,6 +13,7 @@
 #include <allegro5/allegro_audio.h>
 
 #include "Room.h"
+#include "object/Object.h"
 
 class Room;
 
@@ -88,10 +89,10 @@ public:
     void setRoom(std::string roomId);
 
     // Pass to current room
-    std::vector<Sprite *> getSprites();
-    Sprite* getSpriteById(std::string id);
-    Sprite* checkCollision(Sprite *sprite);
-    void updateViewport(Sprite *spr, bool override);
+    std::vector<Object *> getObjects();
+    Object* getObjectById(std::string id);
+    Object* checkCollision(Object *object);
+    void updateViewport(Object *obj, bool override);
     void draw();
 
     Map(std::string id, std::string defaultRoom, std::vector<std::string> rooms,

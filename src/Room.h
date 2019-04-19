@@ -11,18 +11,16 @@
 
 #include "Sprite.h"
 #include "Map.h"
-#include "Event.h"
+#include "object/Object.h"
 
 class Map;
-class Event;
 
 struct RoomJSON {
     int version = 1;
     std::string id;
     std::vector<std::vector<std::vector<int>>> tilemap;
     std::vector<std::string> tileset;
-    std::vector<std::string> sprites;
-    std::vector<std::string> events;
+    std::vector<ObjectJSON> objects;
 
     RoomJSON() = default;
 
@@ -33,8 +31,7 @@ struct RoomJSON {
                 CEREAL_NVP(id),
                 CEREAL_NVP(tilemap),
                 CEREAL_NVP(tileset),
-                CEREAL_NVP(sprites),
-                CEREAL_NVP(events)
+                CEREAL_NVP(objects)
         );
     }
 };
@@ -43,19 +40,18 @@ class Room {
 public:
     std::string id;
     std::vector<ALLEGRO_BITMAP *> backgrounds = {};
-    std::vector<Sprite *> sprites = {};
-    std::vector<Event *> events = {};
+    std::vector<Object *> objects = {};
     float viewportX = 0;
     float viewportY = 0;
 
     Room(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
-        std::vector<std::string> sprites, std::vector<std::string> events);
+        std::vector<ObjectJSON> objects);
 
-    std::vector<Animation *> resolveTileset(std::vector<std::string> in);
+    std::vector<Sprite *> resolveTileset(std::vector<std::string> in);
     void resolveMap(std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap);
-    void updateViewport(Sprite *spr, bool override);
-    Sprite* getSpriteById(std::string id);
-    Sprite* checkCollision(Sprite *sprite);
+    void updateViewport(Object *obj, bool override);
+    Object* getObjectById(std::string id);
+    Object* checkCollision(Object *object);
     void draw();
 };
 

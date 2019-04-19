@@ -29,19 +29,15 @@ set(SOURCE_FILES
         src/Map.cpp src/Map.h
         src/BoundingBox.cpp src/BoundingBox.h
         src/Util.cpp src/Util.h
-        src/Animation.cpp src/Animation.h
-        src/module/Audio.cpp src/module/Audio.h
-        src/Event.cpp src/Event.h
-        src/object/Object.cpp src/object/Object.h
-        src/module/Keyboard.cpp src/module/Keyboard.h
         src/Engine.cpp src/Engine.h
         src/Log.cpp src/Log.h
         src/Options.cpp src/Options.h
         src/Room.cpp src/Room.h
         src/MapLoader.cpp src/MapLoader.h
         src/Registry.cpp src/Registry.h
-        src/ResourceFile.cpp src/ResourceFile.h
-        src/object/ObjectSign.cpp src/object/ObjectSign.h
+        src/ResourceFile.cpp src/ResourceFile.h src/DataLoader.cpp src/DataLoader.h)
+
+set(GUI_SOURCES
         src/gui/Gui.cpp src/gui/Gui.h
         src/gui/GuiComponent.cpp src/gui/GuiComponent.h
         src/gui/GuiComponentText.cpp src/gui/GuiComponentText.h
@@ -50,7 +46,14 @@ set(SOURCE_FILES
         src/gui/GuiComponentButton.cpp src/gui/GuiComponentButton.h
         src/gui/GuiComponentTextField.cpp src/gui/GuiComponentTextField.h)
 
-add_executable(fcwrpg ${SOURCE_FILES})
+set(MODULE_SOURCES
+        src/module/Keyboard.cpp src/module/Keyboard.h
+        src/module/Audio.cpp src/module/Audio.h)
+
+set(OBJECT_SOURCES
+        src/object/Object.cpp src/object/Object.h src/module/Registries.cpp src/module/Registries.h)
+
+add_executable(fcwrpg ${SOURCE_FILES} ${GUI_SOURCES} ${MODULE_SOURCES} ${OBJECT_SOURCES})
 set_target_properties(fcwrpg PROPERTIES COMPILE_FLAGS "-Wall -Wextra -pedantic")
 add_dependencies(fcwrpg copy_resources)
 

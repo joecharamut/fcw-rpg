@@ -13,8 +13,9 @@
 #include "Registry.h"
 #include "ResourceFile.h"
 #include "gui/Gui.h"
+#include "object/Object.h"
 
-class Map;
+//class Map;
 
 class Engine {
 public:
@@ -22,12 +23,9 @@ public:
     const static int SCREEN_H = 512;
     const static int FPS = 60;
 
-    static Sprite *player;
+    static Object *player;
     static Map *current_map;
     static std::map<std::string, ALLEGRO_FONT *> fonts;
-
-    static Registry<ResourceFile *> resourceFileRegistry;
-    static Registry<Room *> roomRegistry;
 
     static Gui *currentGui;
 
@@ -91,11 +89,12 @@ private:
 
     class FileException : public std::exception {
     private:
-        std::string message_;
+        std::string _message;
     public:
-        explicit FileException(std::string message) : message_(std::move(message)) {}
-        virtual const char *what() const throw() {
-            return message_.c_str();
+        explicit FileException(std::string message) : _message(std::move(message)) {}
+
+        const char *what() const noexcept override {
+            return _message.c_str();
         }
     };
 };

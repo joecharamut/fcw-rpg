@@ -10,6 +10,7 @@
 #include "Main.h"
 #include "Log.h"
 #include "Engine.h"
+#include "module/Registries.h"
 
 Map::Map(std::string id, std::string defaultRoom, std::vector<std::string> rooms,
          std::map<std::string, Text> textsString, std::map<std::string, std::string> soundEffectsString,
@@ -18,7 +19,7 @@ Map::Map(std::string id, std::string defaultRoom, std::vector<std::string> rooms
     this->defaultRoom = defaultRoom;
 
     for (const auto &roomStr : rooms) {
-        Room *room = Engine::roomRegistry.get(roomStr);
+        Room *room = Registries::roomRegistry.get(roomStr);
         this->rooms[room->id] = room;
     }
     this->current_room = this->rooms[defaultRoom];
@@ -37,20 +38,20 @@ Map::Map(std::string id, std::string defaultRoom, std::vector<std::string> rooms
     }
 }
 
-std::vector<Sprite *> Map::getSprites() {
-    return current_room->sprites;
+std::vector<Object *> Map::getObjects() {
+    return current_room->objects;
 }
 
-Sprite* Map::getSpriteById(std::string id) {
-    return current_room->getSpriteById(std::move(id));
+Object* Map::getObjectById(std::string id) {
+    return current_room->getObjectById(std::move(id));
 }
 
-Sprite* Map::checkCollision(Sprite *sprite) {
-    return current_room->checkCollision(sprite);
+Object* Map::checkCollision(Object *object) {
+    return current_room->checkCollision(object);
 }
 
-void Map::updateViewport(Sprite *spr, bool override) {
-    current_room->updateViewport(spr, override);
+void Map::updateViewport(Object *obj, bool override) {
+    current_room->updateViewport(obj, override);
 }
 
 void Map::draw() {

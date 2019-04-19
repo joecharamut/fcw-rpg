@@ -1,5 +1,5 @@
 {
-  "mapdata": {
+  "data": {
     "version": 1,
     "id": "room_default",
     "layers": 2,
@@ -62,13 +62,31 @@
       "map_test:tile01",
       "map_test:tile02"
     ],
-    "sprites": [
-      "map_test:anim_sprite",
-      "map_test:test2",
-      "map_test:s_hat"
-    ],
-    "events": [
-      "dmFyIGN0eCA9IG5ldyBHYW1lQ29udGV4dCgpOwppZiAoY3R4LnBsYXllci54ID4gMjU2KSB7CiAgcHJpbnQoImFzZGYiKTsKfQ=="
+    "objects": [
+      {
+        "id": "map_test:anim_sprite",
+        "x": 64,
+        "y": 64,
+        "sprites": [
+          {
+            "key": "default",
+            "value": "map_test:spr_rainbow"
+          }
+        ],
+        "collision": 0
+      },
+      {
+        "id": "map_test:test2",
+        "x": 416,
+        "y": 64,
+        "sprites": [
+          {
+            "key": "default",
+            "value": "map_test:spr_rainbow"
+          }
+        ],
+        "collision": 0
+      }
     ]
   }
 }

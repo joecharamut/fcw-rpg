@@ -21,7 +21,7 @@ public:
     }
 
     T get(std::string location) {
-        T entry;
+        T entry = nullptr;
 
         if (entries.count(location) != 0) {
             entry = entries[location];
@@ -30,7 +30,7 @@ public:
         return entry;
     }
 
-    std::vector<T> search(std::string pattern) {
+    std::vector<T> search(const std::string &pattern) {
         std::vector<T> results;
         std::regex regex(pattern);
 
