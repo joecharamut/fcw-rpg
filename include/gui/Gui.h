@@ -15,6 +15,7 @@ enum GuiKey {
 class Gui {
 public:
     Gui() = default;
+    void unload();
 
     void draw();
     void addComponent(GuiComponent *component);

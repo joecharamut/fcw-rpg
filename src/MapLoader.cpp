@@ -268,6 +268,7 @@ std::string MapLoader::processPackedResources(std::string file) {
     }
     // Free the archive
     archive_read_free(archive);
+    fclose(filePtr);
 
     return mapId;
 }

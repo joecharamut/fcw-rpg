@@ -1,22 +1,20 @@
 #include <cstdio>
 #include <allegro5/allegro.h>
-#include <allegro5/allegro_audio.h>
 
-#include "Sprite.h"
-#include "Map.h"
-#include "Util.h"
-#include "Main.h"
-#include "Log.h"
-#include "Engine.h"
-#include "MapLoader.h"
+#include <Sprite.h>
+#include <Map.h>
+#include <Util.h>
+#include <Main.h>
+#include <Log.h>
+#include <Engine.h>
+#include <MapLoader.h>
 
-#include "gui/GuiComponentText.h"
-#include "gui/GuiComponentGraphics.h"
-#include "gui/GuiComponentButton.h"
-#include "gui/GuiComponentTextField.h"
+#include <gui/GuiComponentText.h>
+#include <gui/GuiComponentGraphics.h>
+#include <gui/GuiComponentButton.h>
+#include <gui/GuiComponentTextField.h>
 
-#include "object/Object.h"
-#include "module/Registries.h"
+#include <module/Registries.h>
 
 void button1Handler() { Log::debug("Button1"); }
 void closeButton() { Engine::closeGui(); }
@@ -31,7 +29,7 @@ void Main::testing() {
     // Set the event handler TODO: Replace with events from map file, maybe pass events from game to map
     //Engine::current_map->setEventHandlerFunction(mapEventHandler);
 
-    auto *gui = new Gui();
+    Gui *gui = new Gui();
     gui->addComponent(new GuiComponentGraphics(32, 32, 448, 448, 0, 0, 0));
     gui->addComponent(new GuiComponentGraphics(128, 128, 32, 32, 255, 0, 0));
     gui->addComponent(new GuiComponentText("test text test text", 48, 64, 0, 0, "font16", 255,255,255));
@@ -42,8 +40,10 @@ void Main::testing() {
     gui->addComponent(new GuiComponentTextField(64, 330, 256, 16, "font16"));
     gui->addComponent(new GuiComponentButton("Close", closeButton, 232, 432, 0, 0, "font16"));
 
+    Registries::guiRegistry.put(gui, "testGui");
+
     //Keyboard::setKeyBuffer(true);
-    Engine::openGui(gui);
+    Engine::openGui("testGui");
 
     // Load in some test music
     //ALLEGRO_SAMPLE_INSTANCE *music = Engine::current_map->music.at("mus_cave");

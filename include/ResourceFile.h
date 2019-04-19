@@ -13,7 +13,7 @@ public:
     size_t size;
 
     ResourceFile(void *data, size_t size) : data(data), size(size) {};
-    ~ResourceFile() { free(data); };
+    ~ResourceFile();
 
     static ResourceFile *loadFileToResource(std::string filePath);
 

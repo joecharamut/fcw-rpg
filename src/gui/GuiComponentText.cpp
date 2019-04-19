@@ -2,6 +2,8 @@
 
 #include "gui/GuiComponentText.h"
 #include <allegro5/drawing.h>
+#include <gui/GuiComponentText.h>
+
 #include "Engine.h"
 
 GuiComponentText::GuiComponentText(std::string text, int x, int y, int width, int height, std::string fontStr,
@@ -34,11 +36,16 @@ GuiComponentText::GuiComponentText(std::string text, int x, int y, int width, in
     refreshBuffer();
 }
 
+GuiComponentText::~GuiComponentText() {
+    al_destroy_bitmap(textBuffer);
+}
+
 ALLEGRO_BITMAP *GuiComponentText::getRendered() {
     return textBuffer;
 }
 
 void GuiComponentText::refreshBuffer() {
+    if (textBuffer) al_destroy_bitmap(textBuffer);
     textBuffer = al_create_bitmap(buf_w, buf_h);
     ALLEGRO_BITMAP *old = al_get_target_bitmap();
 

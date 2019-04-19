@@ -32,7 +32,7 @@ public:
     static void run();
     static void Exit(int code);
 
-    static void openGui(Gui *gui);
+    static void openGui(std::string gui);
     static void closeGui();
 
     static void updateLoadingProgress(int which, float inc);
@@ -64,15 +64,10 @@ private:
     static std::vector<float> progressBars;
 
     enum state_offset {
-            STATE_ALLEGRO_INIT      = 1 << 0,
-            STATE_ALLEGRO_FONT      = 1 << 1,
-            STATE_ALLEGRO_TTF       = 1 << 2,
-            STATE_ALLEGRO_IMAGE     = 1 << 3,
-            STATE_ALLEGRO_KEYBOARD  = 1 << 4,
-            STATE_ALLEGRO_AUDIO     = 1 << 5,
-            STATE_DISPLAY           = 1 << 6,
-            STATE_TIMER             = 1 << 7,
-            STATE_EVENT_QUEUE       = 1 << 8
+            STATE_DISPLAY           = 1 << 0,
+            STATE_TIMER             = 1 << 1,
+            STATE_EVENT_QUEUE       = 1 << 2,
+            STATE_LOADED            = 1 << 3
     };
     static int load_state;
 

@@ -24,6 +24,8 @@ public:
     Object(std::string id, float x, float y, std::map<std::string, std::string> sprites, CollisionType collision);
     Object(const Object &obj) : Object(obj.id, obj.x, obj.y, obj.sprites, obj.collision) {};
 
+    ~Object();
+
     void draw();
     void setPosition(float x, float y);
     void setDisplace(float dX, float dY);

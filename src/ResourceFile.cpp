@@ -2,6 +2,8 @@
 
 #include <allegro5/allegro_memfile.h>
 #include <sys/stat.h>
+#include <ResourceFile.h>
+
 
 ResourceFile *ResourceFile::loadFileToResource(std::string filePath) {
     ResourceFile *resource;
@@ -13,8 +15,13 @@ ResourceFile *ResourceFile::loadFileToResource(std::string filePath) {
     auto *data = (byte *) calloc(sizeof(byte), size);
     fread(data, size, 1, file);
     resource = new ResourceFile(data, size);
+    fclose(file);
 
     return resource;
+}
+
+ResourceFile::~ResourceFile() {
+    free(data);
 }
 
 ALLEGRO_FILE *ResourceFile::openAllegroFile() {

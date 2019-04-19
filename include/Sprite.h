@@ -46,6 +46,8 @@ public:
     explicit Sprite(std::string frame) : Sprite("null", {std::move(frame)}, 1) {};
     Sprite(const Sprite &spr) : Sprite(spr.id, spr.frames, spr.speed) {};
 
+    void unload();
+
     ALLEGRO_BITMAP *getNextFrame();
 };
 

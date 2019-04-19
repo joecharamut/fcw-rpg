@@ -2,10 +2,18 @@
 #include <allegro5/drawing.h>
 #include <allegro5/allegro.h>
 #include <cmath>
+#include <gui/Gui.h>
+
 
 void Gui::draw() {
     for (GuiComponent *component : components) {
         al_draw_bitmap(component->getRendered(), component->x, component->y, 0);
+    }
+}
+
+void Gui::unload() {
+    for (GuiComponent *component : components) {
+        delete component;
     }
 }
 

@@ -11,6 +11,8 @@ public:
     int height = 0;
     bool selected = false;
 
+    virtual ~GuiComponent() = 0;
+
     virtual ALLEGRO_BITMAP *getRendered() = 0;
 
     virtual bool isSelectable() { return false; };
@@ -23,6 +25,5 @@ public:
         this->y = y;
     };
 };
-
 
 #endif //FCWRPG_GUICOMPONENT_H

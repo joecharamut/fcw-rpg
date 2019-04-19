@@ -10,6 +10,8 @@ public:
     void (*onClick)() = nullptr;
 
     GuiComponentButton(std::string buttonText, void (*onClick)(), int x, int y, int width, int height, std::string font);
+    ~GuiComponentButton() override = default;
+
     ALLEGRO_BITMAP *getRendered() override;
     bool isSelectable() override { return true; }
     void activate() override;

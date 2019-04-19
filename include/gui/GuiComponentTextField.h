@@ -12,6 +12,7 @@ public:
     std::string buffer = "";
 
     GuiComponentTextField(int x, int y, int width, int height, std::string font);
+    ~GuiComponentTextField() override = default;
 
     ALLEGRO_BITMAP *getRendered() override;
     bool isSelectable() override { return true; }

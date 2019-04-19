@@ -12,6 +12,12 @@ class Registry {
 public:
     static_assert(std::is_pointer<T>::value, "Registry Type Must be a Pointer");
 
+    ~Registry() {
+        for (auto entry : entries) {
+            delete entry.second;
+        }
+    }
+
     T put(T entry, std::string location) {
         if (entries.count(location) > 0) {
             Log::warnf("Resource at location %s already exists!", location.c_str());
@@ -44,10 +50,17 @@ public:
         return results;
     }
 
+    typename std::map<std::string, T>::iterator begin() {
+        return entries.begin();
+    }
+
+    typename std::map<std::string, T>::iterator end() {
+        return entries.end();
+    }
+
 
 private:
     std::map<std::string, T> entries = {};
 };
-
 
 #endif //FCWRPG_REGISTRY_H

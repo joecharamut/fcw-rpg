@@ -19,7 +19,7 @@ IF(${WIN32})
     )
 ELSE()
     #LINK_DIRECTORIES(
-    #        ${CMAKE_SOURCE_DIR}/lib/linux/libarchive
+    #        ${CMAKE_SOURCE_DIR}/lib/linux/allegro_debug/lib
     #)
 ENDIF()
 

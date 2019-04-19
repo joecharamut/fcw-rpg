@@ -1,3 +1,6 @@
+
+#include <object/Object.h>
+
 #include "object/Object.h"
 #include "module/Registries.h"
 
@@ -18,6 +21,13 @@ Object::Object(std::string id, float x, float y, std::map<std::string, std::stri
     for (const auto &s : sprites) {
         this->sprites[s.first] = Registries::spriteRegistry.get(s.second);
     }
+}
+
+Object::~Object() {
+    for (auto s : sprites) {
+        delete s.second;
+    }
+    delete boundingBox;
 }
 
 void Object::draw() {

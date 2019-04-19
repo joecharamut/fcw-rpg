@@ -18,6 +18,12 @@ Sprite::Sprite(std::string id, std::vector<std::string> frameStrings, int speed)
     this->speed = speed;
 }
 
+void Sprite::unload() {
+    for (ALLEGRO_BITMAP *frame : frames) {
+        al_destroy_bitmap(frame);
+    }
+}
+
 ALLEGRO_BITMAP *Sprite::getNextFrame() {
     if (frames.empty()) Log::errorf("Sprite %s has no frames!", id.c_str());
 

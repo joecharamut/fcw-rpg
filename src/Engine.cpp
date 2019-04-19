@@ -49,7 +49,6 @@ bool Engine::init() {
         Log::error("Error initializing Allegro");
         return false;
     }
-    load_state |= STATE_ALLEGRO_INIT;
 
     // And all of the addons needed
     Log::debug("Initializing Font");
@@ -57,35 +56,30 @@ bool Engine::init() {
         Log::error("Error initializing Allegro Font");
         return false;
     }
-    load_state |= STATE_ALLEGRO_FONT;
 
     Log::debug("Initializing TTF");
     if(!al_init_ttf_addon()) {
         Log::error("Error initializing Allegro TTF");
         return false;
     }
-    load_state |= STATE_ALLEGRO_TTF;
 
     Log::debug("Initializing Image");
     if(!al_init_image_addon()) {
         Log::error("Error initializing Allegro Image");
         return false;
     }
-    load_state |= STATE_ALLEGRO_IMAGE;
 
     Log::debug("Initializing Keyboard");
     if(!al_install_keyboard()) {
         Log::error("Error initializing Keyboard");
         return false;
     }
-    load_state |= STATE_ALLEGRO_KEYBOARD;
 
     Log::debug("Initializing Audio");
     if(!al_install_audio()) {
         Log::error("Error initializing Audio");
         return false;
     }
-    load_state |= STATE_ALLEGRO_AUDIO;
 
     Log::debug("Initializing Audio Codec");
     if(!al_init_acodec_addon()) {
@@ -155,6 +149,8 @@ bool Engine::init() {
         Log::error("Error loading maps");
         return false;
     }
+
+    load_state |= STATE_LOADED;
 
     return true;
 }
@@ -423,9 +419,20 @@ void Engine::run() {
     while (!done) {
         update();
     }
+
+    Exit(0);
 }
 
 void Engine::Exit(int code) {
+    if (load_state & STATE_LOADED) {
+        for (auto s : Registries::spriteRegistry) {
+            s.second->unload();
+        }
+
+        for (auto g : Registries::guiRegistry) {
+            g.second->unload();
+        }
+    }
     if (load_state & STATE_EVENT_QUEUE) {
         al_destroy_event_queue(eventQueue);
     }
@@ -434,24 +441,6 @@ void Engine::Exit(int code) {
     }
     if (load_state & STATE_DISPLAY) {
         al_destroy_display(display);
-    }
-    if (load_state & STATE_ALLEGRO_AUDIO) {
-        al_uninstall_audio();
-    }
-    if (load_state & STATE_ALLEGRO_KEYBOARD) {
-        al_uninstall_keyboard();
-    }
-    if (load_state & STATE_ALLEGRO_IMAGE) {
-        al_shutdown_image_addon();
-    }
-    if (load_state & STATE_ALLEGRO_TTF) {
-        al_shutdown_ttf_addon();
-    }
-    if (load_state & STATE_ALLEGRO_FONT) {
-        al_shutdown_font_addon();
-    }
-    if (load_state & STATE_ALLEGRO_INIT) {
-        al_uninstall_system();
     }
 
     exit(code);
@@ -496,8 +485,8 @@ ALLEGRO_FONT *Engine::loadFont(const char *file, int size) {
     throw FileException("Error loading font file \"" + std::string(file) + "\"");
 }
 
-void Engine::openGui(Gui *gui) {
-    currentGui = gui;
+void Engine::openGui(std::string gui) {
+    currentGui = Registries::guiRegistry.get(gui);
 }
 
 void Engine::closeGui() {
