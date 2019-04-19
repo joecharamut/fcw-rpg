@@ -1,13 +1,16 @@
+#include <utility>
+
 #include "GuiComponentText.h"
 #include <allegro5/drawing.h>
 #include "../Engine.h"
 
-GuiComponentText::GuiComponentText(std::string text, int x, int y, int width, int height, std::string fontStr, int r, int g, int b) {
+GuiComponentText::GuiComponentText(std::string text, int x, int y, int width, int height, std::string fontStr,
+        unsigned char r, unsigned char g, unsigned char b) {
     this->x = x;
     this->y = y;
     this->buf_w = width;
     this->buf_h = height;
-    this->text = text;
+    this->text = std::move(text);
 
     this->r = r;
     this->g = g;

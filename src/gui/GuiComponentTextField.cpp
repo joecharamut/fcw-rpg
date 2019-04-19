@@ -48,7 +48,7 @@ void GuiComponentTextField::createOverlays() {
 ALLEGRO_BITMAP *GuiComponentTextField::getRendered() {
     if (state) {
         std::pair<char, int> c;
-        while ((c = Keyboard::consumeKey()).first != -1) {
+        while ((c = Keyboard::consumeKey()).second != -1) {
             if (c.second == ALLEGRO_KEY_BACKSPACE) {
                 if (!buffer.empty()) {
                     buffer.pop_back();

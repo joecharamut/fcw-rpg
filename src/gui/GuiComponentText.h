@@ -11,7 +11,8 @@ class GuiComponentText : public GuiComponent {
 public:
     bool isSelectable() override { return false; }
 
-    GuiComponentText(std::string text, int x, int y, int width, int height, std::string fontStr, int r, int g, int b);
+    GuiComponentText(std::string text, int x, int y, int width, int height, std::string fontStr,
+            unsigned char r, unsigned char g, unsigned char b);
     ALLEGRO_BITMAP *getRendered() override;
     void setText(std::string newText);
 

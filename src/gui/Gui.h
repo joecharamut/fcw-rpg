@@ -4,14 +4,12 @@
 #include <vector>
 #include "GuiComponent.h"
 
-class GuiComponent;
-
 enum GuiKey {
-    GUI_UP      = 1<<0,
-    GUI_DOWN    = 1<<1,
-    GUI_LEFT    = 1<<2,
-    GUI_RIGHT   = 1<<3,
-    GUI_SELECT  = 1<<4
+    GUI_UP      = 1u<<0u,
+    GUI_DOWN    = 1u<<1u,
+    GUI_LEFT    = 1u<<2u,
+    GUI_RIGHT   = 1u<<3u,
+    GUI_SELECT  = 1u<<4u
 };
 
 class Gui {
@@ -25,6 +23,7 @@ public:
 private:
     std::vector<GuiComponent *> components;
     int selected = 0;
+    bool lockSelect = false;
 
     std::vector<GuiComponent *> getSelectableComponents();
     void updateSelectedComponent(int index);

@@ -10,32 +10,37 @@ void Gui::draw() {
 }
 
 void Gui::addComponent(GuiComponent *component) {
-    component->parent = this;
     components.push_back(component);
     updateSelectedComponent(0);
 }
 
 void Gui::handleKey(GuiKey key) {
     auto selected = getSelectedComponent();
-    int which = -1;
-    if (key == GUI_UP) {
-        if ((which = getComponentRelativeTo(selected->x, selected->y, GUI_UP)) != -1) {
-            updateSelectedComponent(which);
+    int which;
+    if (!lockSelect) {
+        if (key == GUI_UP) {
+            if ((which = getComponentRelativeTo(selected->x, selected->y, GUI_UP)) != -1) {
+                updateSelectedComponent(which);
+            }
+        } else if (key == GUI_DOWN) {
+            if ((which = getComponentRelativeTo(selected->x, selected->y, GUI_DOWN)) != -1) {
+                updateSelectedComponent(which);
+            }
+        } else if (key == GUI_LEFT) {
+            if ((which = getComponentRelativeTo(selected->x, selected->y, GUI_LEFT)) != -1) {
+                updateSelectedComponent(which);
+            }
+        } else if (key == GUI_RIGHT) {
+            if ((which = getComponentRelativeTo(selected->x, selected->y, GUI_RIGHT)) != -1) {
+                updateSelectedComponent(which);
+            }
         }
-    } else if (key == GUI_DOWN) {
-        if ((which = getComponentRelativeTo(selected->x, selected->y, GUI_DOWN)) != -1) {
-            updateSelectedComponent(which);
-        }
-    } else if (key == GUI_LEFT) {
-        if ((which = getComponentRelativeTo(selected->x, selected->y, GUI_LEFT)) != -1) {
-            updateSelectedComponent(which);
-        }
-    } else if (key == GUI_RIGHT) {
-        if ((which = getComponentRelativeTo(selected->x, selected->y, GUI_RIGHT)) != -1) {
-            updateSelectedComponent(which);
-        }
-    } else if (key == GUI_SELECT) {
+    }
+    if (key == GUI_SELECT) {
         selected->activate();
+        if (selected->doesLock()) {
+            lockSelect = !lockSelect;
+        }
     }
 }
 
@@ -74,7 +79,7 @@ int Gui::getComponentRelativeTo(int x, int y, GuiKey direction) {
     std::pair<int, double> closest = matches[0];
     for (auto m : matches) {
         if (m.second < closest.second) {
-            closest = m;
+            closest.swap(m);
         }
     }
 

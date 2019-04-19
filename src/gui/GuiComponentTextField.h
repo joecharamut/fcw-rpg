@@ -15,6 +15,7 @@ public:
 
     ALLEGRO_BITMAP *getRendered() override;
     bool isSelectable() override { return true; }
+    bool doesLock() override { return true; }
     void activate() override;
 
 private:

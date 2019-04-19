@@ -2,7 +2,8 @@
 #include <allegro5/allegro.h>
 #include "GuiComponentGraphics.h"
 
-GuiComponentGraphics::GuiComponentGraphics(int x, int y, int width, int height, int r, int g, int b) {
+GuiComponentGraphics::GuiComponentGraphics(int x, int y, int width, int height,
+        unsigned char r, unsigned char g, unsigned char b) {
     this->x = x;
     this->y = y;
 
