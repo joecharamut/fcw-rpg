@@ -29,9 +29,6 @@ set_target_properties(fcwrpg PROPERTIES COMPILE_FLAGS "-Wall -Wextra -pedantic")
 target_include_directories(fcwrpg PUBLIC "include/")
 add_dependencies(fcwrpg copy_resources)
 
-add_library(duktape STATIC ${CMAKE_SOURCE_DIR}/lib/duktape/duktape.c)
-target_link_libraries(duktape m)
-
 IF(${WIN32})
     add_dependencies(fcwrpg copy_win_deps)
 ENDIF()
@@ -71,7 +68,6 @@ IF(${WIN32})
             shlwapi
 
             stdc++fs
-            duktape
             archive_static
     )
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static -static-libstdc++ -static-libgcc")
@@ -90,7 +86,6 @@ ELSE()
             allegro_ttf
 
             stdc++fs
-            duktape
             pthread
             archive
     )
