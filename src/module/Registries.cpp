@@ -1,4 +1,4 @@
-#include "module/Registries.h"
+#include <module/Registries.h>
 
 Registry<ResourceFile *>    Registries::resourceFileRegistry;
 Registry<Room *>            Registries::roomRegistry;

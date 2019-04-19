@@ -1,6 +1,6 @@
-#include "DataLoader.h"
-#include "Log.h"
-#include "Util.h"
+#include <load/DataLoader.h>
+#include <Log.h>
+#include <Util.h>
 #include <experimental/filesystem>
 
 bool DataLoader::load() {

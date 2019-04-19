@@ -1,5 +1,5 @@
-#include "gui/GuiComponent.h"
+#include <gui/GuiComponent.h>
 
 GuiComponent::~GuiComponent() {
-    // Why
+    // This needs to be here
 }

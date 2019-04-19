@@ -1,16 +1,17 @@
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_acodec.h>
-#include "Engine.h"
-#include "Log.h"
-#include "module/Audio.h"
-#include "module/Keyboard.h"
-#include "Util.h"
-#include "Main.h"
-#include "Sprite.h"
-#include "MapLoader.h"
-#include "module/Registries.h"
-#include "DataLoader.h"
+
+#include <Engine.h>
+#include <Log.h>
+#include <module/Audio.h>
+#include <module/Keyboard.h>
+#include <Util.h>
+#include <Main.h>
+#include <Sprite.h>
+#include <MapLoader.h>
+#include <module/Registries.h>
+#include <load/DataLoader.h>
 
 Object *Engine::player;
 Map *Engine::current_map;

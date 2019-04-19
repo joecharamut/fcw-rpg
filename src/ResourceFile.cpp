@@ -1,9 +1,7 @@
-#include "ResourceFile.h"
-
 #include <allegro5/allegro_memfile.h>
 #include <sys/stat.h>
-#include <ResourceFile.h>
 
+#include <ResourceFile.h>
 
 ResourceFile *ResourceFile::loadFileToResource(std::string filePath) {
     ResourceFile *resource;

@@ -1,6 +1,7 @@
 #include <allegro5/drawing.h>
 #include <allegro5/allegro.h>
-#include "gui/GuiComponentGraphics.h"
+
+#include <gui/GuiComponentGraphics.h>
 
 GuiComponentGraphics::GuiComponentGraphics(int x, int y, int width, int height,
         unsigned char r, unsigned char g, unsigned char b) {

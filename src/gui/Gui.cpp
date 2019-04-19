@@ -1,9 +1,8 @@
-#include "gui/Gui.h"
 #include <allegro5/drawing.h>
 #include <allegro5/allegro.h>
 #include <cmath>
-#include <gui/Gui.h>
 
+#include <gui/Gui.h>
 
 void Gui::draw() {
     for (GuiComponent *component : components) {

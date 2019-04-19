@@ -1,6 +1,7 @@
 #include <cmath>
-#include "BoundingBox.h"
-#include "Util.h"
+
+#include <BoundingBox.h>
+#include <Util.h>
 
 BoundingBox::BoundingBox(float x1, float y1, float x2, float y2) {
     this->x1 = x1;

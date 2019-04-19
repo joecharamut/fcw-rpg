@@ -1,4 +1,4 @@
-#include "gui/GuiComponentButton.h"
+#include <gui/GuiComponentButton.h>
 
 GuiComponentButton::GuiComponentButton(std::string buttonText, void (*onClick)(), int x, int y, int width, int height, std::string font) {
     this->x = x;

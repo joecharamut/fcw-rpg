@@ -2,7 +2,7 @@
 #include <iostream>
 #include <chrono>
 
-#include "Util.h"
+#include <Util.h>
 
 std::vector<std::string> Util::splitString(std::string str, std::string delimiter) {
     std::vector<std::string> out = {};

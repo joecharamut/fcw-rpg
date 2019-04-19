@@ -5,12 +5,12 @@
 #include <experimental/filesystem>
 #include <algorithm>
 
-#include "Map.h"
-#include "Util.h"
-#include "Main.h"
-#include "Log.h"
-#include "Engine.h"
-#include "module/Registries.h"
+#include <Map.h>
+#include <Util.h>
+#include <Main.h>
+#include <Log.h>
+#include <Engine.h>
+#include <module/Registries.h>
 
 Map::Map(std::string id, std::string defaultRoom, std::vector<std::string> rooms,
          std::map<std::string, Text> textsString, std::map<std::string, std::string> soundEffectsString,

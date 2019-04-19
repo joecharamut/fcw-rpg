@@ -1,7 +1,8 @@
-#include "Log.h"
 #include <iostream>
 #include <memory>
 #include <cstdarg>
+
+#include <Log.h>
 
 std::vector<std::string> Log::levelStrings = {
         "INFO", "WARN", "ERROR", "DEBUG", "VERBOSE"

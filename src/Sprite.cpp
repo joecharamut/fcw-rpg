@@ -1,8 +1,8 @@
 #include <utility>
 
-#include "Sprite.h"
-#include "Log.h"
-#include "Engine.h"
+#include <Sprite.h>
+#include <Log.h>
+#include <Engine.h>
 
 Sprite::Sprite(std::string id, std::vector<ALLEGRO_BITMAP *> frames, int speed) {
     this->id = std::move(id);
