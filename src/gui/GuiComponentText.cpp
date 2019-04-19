@@ -1,8 +1,8 @@
 #include <utility>
 
-#include "GuiComponentText.h"
+#include "gui/GuiComponentText.h"
 #include <allegro5/drawing.h>
-#include "../Engine.h"
+#include "Engine.h"
 
 GuiComponentText::GuiComponentText(std::string text, int x, int y, int width, int height, std::string fontStr,
         unsigned char r, unsigned char g, unsigned char b) {

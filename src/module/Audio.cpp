@@ -1,7 +1,7 @@
 
-#include "../Util.h"
-#include "Audio.h"
-#include "../Log.h"
+#include "Util.h"
+#include "module/Audio.h"
+#include "Log.h"
 
 ALLEGRO_MIXER *Audio::musicMixer;
 ALLEGRO_MIXER *Audio::sfxMixer;

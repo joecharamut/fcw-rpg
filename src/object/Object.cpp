@@ -1,5 +1,5 @@
-#include "Object.h"
-#include "../module/Registries.h"
+#include "object/Object.h"
+#include "module/Registries.h"
 
 Object::Object(std::string id, float x, float y, std::map<std::string, Sprite *> sprites, CollisionType collision) {
     this->id = std::move(id);

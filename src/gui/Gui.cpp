@@ -1,4 +1,4 @@
-#include "Gui.h"
+#include "gui/Gui.h"
 #include <allegro5/drawing.h>
 #include <allegro5/allegro.h>
 #include <cmath>

@@ -1,6 +1,6 @@
-#include "GuiComponentTextField.h"
-#include "../module/Keyboard.h"
-#include "../Log.h"
+#include "gui/GuiComponentTextField.h"
+#include "module/Keyboard.h"
+#include "Log.h"
 
 GuiComponentTextField::GuiComponentTextField(int x, int y, int width, int height, std::string font) {
     this->x = x;
