@@ -5,7 +5,7 @@
 #include <vector>
 #include <map>
 #include <regex>
-#include "Log.h"
+#include <Log.h>
 
 template <class T>
 class Registry {

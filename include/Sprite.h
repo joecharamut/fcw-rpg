@@ -7,7 +7,7 @@
 #include <allegro5/allegro_image.h>
 #include <vector>
 #include <cereal/cereal.hpp>
-#include "BoundingBox.h"
+#include <BoundingBox.h>
 
 enum COLLISION_TYPE {
     COLLISION_NONE_OLD

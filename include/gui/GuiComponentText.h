@@ -5,7 +5,7 @@
 #include <allegro5/bitmap.h>
 #include <string>
 #include <allegro5/allegro_font.h>
-#include "GuiComponent.h"
+#include <gui/GuiComponent.h>
 
 class GuiComponentText : public GuiComponent {
 public:

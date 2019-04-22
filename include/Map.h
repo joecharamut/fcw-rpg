@@ -12,8 +12,8 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_audio.h>
 
-#include "Room.h"
-#include "object/Object.h"
+#include <Room.h>
+#include <object/Object.h>
 
 class Room;
 

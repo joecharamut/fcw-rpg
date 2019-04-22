@@ -2,7 +2,7 @@
 #define FCWRPG_OBJECT_H
 
 #include <map>
-#include "../Sprite.h"
+#include <Sprite.h>
 
 enum CollisionType {
     COLLISION_NONE,

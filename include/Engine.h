@@ -9,11 +9,11 @@
 #include <allegro5/allegro_audio.h>
 #include <atomic>
 
-#include "Map.h"
-#include "Registry.h"
-#include "ResourceFile.h"
-#include "gui/Gui.h"
-#include "object/Object.h"
+#include <Map.h>
+#include <Registry.h>
+#include <ResourceFile.h>
+#include <gui/Gui.h>
+#include <object/Object.h>
 
 //class Map;
 

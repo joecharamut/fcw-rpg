@@ -2,7 +2,7 @@
 #define FCWRPG_GUI_H
 
 #include <vector>
-#include "GuiComponent.h"
+#include <gui/GuiComponent.h>
 
 enum GuiKey {
     GUI_UP      = 1u<<0u,

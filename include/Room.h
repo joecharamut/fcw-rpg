@@ -9,9 +9,9 @@
 #include "cereal/types/vector.hpp"
 #include "cereal/types/map.hpp"
 
-#include "Sprite.h"
-#include "Map.h"
-#include "object/Object.h"
+#include <Sprite.h>
+#include <Map.h>
+#include <object/Object.h>
 
 class Map;
 

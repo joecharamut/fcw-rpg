@@ -3,7 +3,7 @@
 
 
 #include <allegro5/bitmap.h>
-#include "GuiComponent.h"
+#include <gui/GuiComponent.h>
 
 class GuiComponentGraphics : public GuiComponent {
 public:

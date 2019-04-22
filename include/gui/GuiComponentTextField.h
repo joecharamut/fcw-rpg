@@ -1,9 +1,9 @@
 #ifndef FCWRPG_GUICOMPONENTTEXTFIELD_H
 #define FCWRPG_GUICOMPONENTTEXTFIELD_H
 
-#include "GuiComponent.h"
-#include "GuiComponentText.h"
-#include "GuiComponentGraphics.h"
+#include <gui/GuiComponent.h>
+#include <gui/GuiComponentText.h>
+#include <gui/GuiComponentGraphics.h>
 #include <string>
 
 class GuiComponentTextField : public GuiComponent {
