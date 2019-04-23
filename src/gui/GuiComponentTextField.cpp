@@ -15,6 +15,13 @@ GuiComponentTextField::GuiComponentTextField(int x, int y, int width, int height
     createOverlays();
 }
 
+GuiComponentTextField::~GuiComponentTextField() {
+    delete textComponent;
+    al_destroy_bitmap(defaultBorder);
+    al_destroy_bitmap(selectedBorder);
+    al_destroy_bitmap(target);
+}
+
 void GuiComponentTextField::createOverlays() {
     ALLEGRO_BITMAP *old = al_get_target_bitmap();
     this->defaultBorder = al_create_bitmap(width, height);

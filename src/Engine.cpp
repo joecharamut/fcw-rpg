@@ -434,6 +434,7 @@ void Engine::Exit(int code) {
             g.second->unload();
         }
     }
+
     if (load_state & STATE_EVENT_QUEUE) {
         al_destroy_event_queue(eventQueue);
     }

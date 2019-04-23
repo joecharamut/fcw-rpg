@@ -9,6 +9,11 @@ GuiComponentButton::GuiComponentButton(std::string buttonText, void (*onClick)()
     this->selectedBuffer = new GuiComponentText(buttonText, x, y, width, height, font, 255, 255, 0);
 }
 
+GuiComponentButton::~GuiComponentButton() {
+    delete unselectedBuffer;
+    delete selectedBuffer;
+}
+
 ALLEGRO_BITMAP *GuiComponentButton::getRendered() {
     if (selected) {
         return selectedBuffer->getRendered();

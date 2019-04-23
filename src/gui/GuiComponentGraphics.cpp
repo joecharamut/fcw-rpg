@@ -17,6 +17,10 @@ GuiComponentGraphics::GuiComponentGraphics(int x, int y, int width, int height,
     al_set_target_bitmap(old);
 }
 
+GuiComponentGraphics::~GuiComponentGraphics() {
+    al_destroy_bitmap(graphicsBuffer);
+}
+
 ALLEGRO_BITMAP *GuiComponentGraphics::getRendered() {
     return graphicsBuffer;
 }

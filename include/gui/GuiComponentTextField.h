@@ -12,7 +12,7 @@ public:
     std::string buffer = "";
 
     GuiComponentTextField(int x, int y, int width, int height, std::string font);
-    ~GuiComponentTextField() override = default;
+    ~GuiComponentTextField() override;
 
     ALLEGRO_BITMAP *getRendered() override;
     bool isSelectable() override { return true; }
@@ -22,10 +22,10 @@ public:
 private:
     bool state = false;
 
-    GuiComponentText *textComponent;
-    ALLEGRO_BITMAP *defaultBorder;
-    ALLEGRO_BITMAP *selectedBorder;
-    ALLEGRO_BITMAP *target;
+    GuiComponentText *textComponent = nullptr;
+    ALLEGRO_BITMAP *defaultBorder = nullptr;
+    ALLEGRO_BITMAP *selectedBorder = nullptr;
+    ALLEGRO_BITMAP *target = nullptr;
 
     void createOverlays();
 };
