@@ -13,7 +13,7 @@
 #include <module/Registries.h>
 
 Map::Map(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
-           std::vector<ObjectJSON> objects) {
+           std::vector<std::string> objects) {
     // Copy in id
     this->id = std::move(id);
 
@@ -22,7 +22,7 @@ Map::Map(std::string id, std::vector<std::string> tileset, std::vector<std::vect
 
     // Load in the sprites
     for (auto obj : objects) {
-        this->objects.push_back(obj.construct());
+        this->objects.push_back(Registries::objectRegistry.get(obj));
     }
 }
 

@@ -109,21 +109,6 @@ bool MapLoader::processMap(std::string id) {
         Log::verbosef("Loaded Sprite %s:%s", id.c_str(), sprite->id.c_str());
     }
 
-    std::vector<ResourceFile *> files = Registries::resourceFileRegistry.search(id + ":_room[0-9]+");
-    for (ResourceFile *res : files) {
-        std::stringstream inStream = res->openStream();
-        std::string roomId;
-        if (inStream.fail()) return false;
-
-        cereal::JSONInputArchive input(inStream);
-        RoomJSON roomJSON;
-        input(cereal::make_nvp("data", roomJSON));
-        roomId = roomJSON.id;
-        Room *room = new Room(roomJSON.id, roomJSON.tileset, roomJSON.tilemap, roomJSON.objects);
-        Registries::roomRegistry.put(room, id + ":" + roomId);
-        Log::verbosef("Loaded Room %s:%s", id.c_str(), roomId.c_str());
-    }
-
     ResourceFile *mapFile = Registries::resourceFileRegistry.get(id + ":_map");
     if (!mapFile) return false;
     std::stringstream mapStream = mapFile->openStream();
@@ -132,8 +117,7 @@ bool MapLoader::processMap(std::string id) {
     cereal::JSONInputArchive inputArchive(mapStream);
     MapJSON mapJSON;
     inputArchive(cereal::make_nvp("data", mapJSON));
-    Map *map = new Map(mapJSON.id, mapJSON.defaultRoom, mapJSON.rooms,
-                       mapJSON.textsString, mapJSON.soundEffectsString, mapJSON.musicString);
+    Map *map = new Map(mapJSON.id, mapJSON.tileset, mapJSON.tilemap, mapJSON.objects);
     mapList[mapJSON.id] = map;
 
     long long int end = Util::getMilliTime();

@@ -172,17 +172,17 @@ bool DataLoader::handle_json(std::string path) {
 }
 
 bool DataLoader::process_sprite(ResourceFile *file) {
-    cereal::JSONInputArchive input();
-
 
     return false;
 }
 
 bool DataLoader::process_object(ResourceFile *file) {
+
     return false;
 }
 
 bool DataLoader::process_map(ResourceFile *file) {
+
     return false;
 }
 

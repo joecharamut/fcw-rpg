@@ -15,24 +15,20 @@
 #include <object/Object.h>
 
 struct MapJSON {
-    int version = 1;
     std::string id;
-    std::string defaultRoom;
-    std::vector<std::string> rooms;
-    std::map<std::string, std::string> soundEffectsString;
-    std::map<std::string, std::string> musicString;
+    std::vector<std::vector<std::vector<int>>> tilemap;
+    std::vector<std::string> tileset;
+    std::vector<std::string> objects;
 
     MapJSON() = default;
 
-    template<class Archive>
+    template <class Archive>
     void serialize(Archive &archive) {
         archive(
-                CEREAL_NVP(version),
                 CEREAL_NVP(id),
-                CEREAL_NVP(defaultRoom),
-                CEREAL_NVP(rooms),
-                cereal::make_nvp("soundEffects", soundEffectsString),
-                cereal::make_nvp("music", musicString)
+                CEREAL_NVP(tilemap),
+                CEREAL_NVP(tileset),
+                CEREAL_NVP(objects)
         );
     }
 };
@@ -40,12 +36,11 @@ struct MapJSON {
 class Map {
 public:
     std::string id;
+    void (*handlerFunction)(ALLEGRO_EVENT event) = nullptr;
 
     Map(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
         std::vector<std::string> objects);
-
-    void (*handlerFunction)(ALLEGRO_EVENT event) = nullptr;
-
+    Map() = default;
 
     void handleEvent(ALLEGRO_EVENT event);
     void setEventHandlerFunction(void (*handler)(ALLEGRO_EVENT event));
