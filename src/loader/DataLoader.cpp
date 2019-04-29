@@ -67,6 +67,7 @@ bool DataLoader::load() {
     s_time = Util::getMilliTime();
 
     // TODO: Implement this
+    // i.e. check if every sprite has all its bitmaps, objects have sprites etc
 
     Log::debugf("Data validated successfully in %d ms", (int) (Util::getMilliTime() - s_time));
 

@@ -25,8 +25,9 @@ void Main::testing() {
     //Sprite *player = new Sprite(0, 0, "player_hat", {Animation("map_test:hat")}, COLLISION_NONE_OLD);
     Object *player = new Object("player_hat", 0, 0, {{"default", new Sprite("hat")}}, COLLISION_NONE);
     Engine::player = player;
-    // Load the test map
+    // Open the test map
     Engine::current_map = Registries::mapRegistry.get("map_test");
+
     // Set the event handler TODO: Replace with events from map file, maybe pass events from game to map
     //Engine::current_map->setEventHandlerFunction(mapEventHandler);
 
@@ -43,8 +44,7 @@ void Main::testing() {
 
     Registries::guiRegistry.put(gui, "testGui");
 
-    //Keyboard::setKeyBuffer(true);
-    Engine::openGui("testGui");
+    //Engine::openGui("testGui");
 
     // Load in some test music
     //ALLEGRO_SAMPLE_INSTANCE *music = Engine::current_map->music.at("mus_cave");
