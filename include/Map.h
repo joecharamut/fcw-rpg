@@ -12,48 +12,13 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_audio.h>
 
-#include <Room.h>
 #include <object/Object.h>
-
-class Room;
-
-struct Text {
-    std::string text;
-    float x = 0, y = 0;
-    std::string font;
-    unsigned char r = 0, g = 0, b = 0;
-
-    Text() = default;
-    Text(std::string text, float x, float y, std::string font, unsigned char r, unsigned char g, unsigned char b) {
-        this->text = std::move(text);
-        this->x = x;
-        this->y = y;
-        this->font = std::move(font);
-        this->r = r;
-        this->g = g;
-        this->b = b;
-    }
-
-    template <class Archive>
-    void serialize(Archive &archive) {
-        archive(
-                CEREAL_NVP(text),
-                CEREAL_NVP(x),
-                CEREAL_NVP(y),
-                CEREAL_NVP(font),
-                CEREAL_NVP(r),
-                CEREAL_NVP(g),
-                CEREAL_NVP(b)
-        );
-    }
-};
 
 struct MapJSON {
     int version = 1;
     std::string id;
     std::string defaultRoom;
     std::vector<std::string> rooms;
-    std::map<std::string, Text> textsString;
     std::map<std::string, std::string> soundEffectsString;
     std::map<std::string, std::string> musicString;
 
@@ -66,7 +31,6 @@ struct MapJSON {
                 CEREAL_NVP(id),
                 CEREAL_NVP(defaultRoom),
                 CEREAL_NVP(rooms),
-                cereal::make_nvp("texts", textsString),
                 cereal::make_nvp("soundEffects", soundEffectsString),
                 cereal::make_nvp("music", musicString)
         );
@@ -76,28 +40,31 @@ struct MapJSON {
 class Map {
 public:
     std::string id;
-    std::string defaultRoom;
-    std::map<std::string, Room *> rooms;
-    std::map<std::string, Text *> texts;
-    std::map<std::string, ALLEGRO_SAMPLE_INSTANCE *> soundEffects;
-    std::map<std::string, ALLEGRO_SAMPLE_INSTANCE *> music;
-    Room *current_room;
+
+    Map(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
+        std::vector<std::string> objects);
+
     void (*handlerFunction)(ALLEGRO_EVENT event) = nullptr;
+
 
     void handleEvent(ALLEGRO_EVENT event);
     void setEventHandlerFunction(void (*handler)(ALLEGRO_EVENT event));
-    void setRoom(std::string roomId);
 
-    // Pass to current room
     std::vector<Object *> getObjects();
     Object* getObjectById(std::string id);
     Object* checkCollision(Object *object);
+
     void updateViewport(Object *obj, bool override);
     void draw();
 
-    Map(std::string id, std::string defaultRoom, std::vector<std::string> rooms,
-            std::map<std::string, Text> textsString, std::map<std::string, std::string> soundEffectsString,
-            std::map<std::string, std::string> musicString);
+private:
+    std::vector<ALLEGRO_BITMAP *> backgrounds = {};
+    std::vector<Object *> objects = {};
+    float viewportX = 0;
+    float viewportY = 0;
+
+    std::vector<Sprite *> resolveTileset(std::vector<std::string> in);
+    void resolveTilemap(std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap);
 };
 
 #endif //FCWRPG_MAP_H

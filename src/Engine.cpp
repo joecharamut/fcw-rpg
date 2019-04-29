@@ -11,7 +11,8 @@
 #include <Sprite.h>
 #include <MapLoader.h>
 #include <module/Registries.h>
-#include <load/DataLoader.h>
+#include <loader/DataLoader.h>
+#include <types/Bitmap.h>
 
 Object *Engine::player;
 Map *Engine::current_map;
@@ -432,6 +433,10 @@ void Engine::Exit(int code) {
 
         for (auto g : Registries::guiRegistry) {
             g.second->unload();
+        }
+
+        for (auto b : Bitmap::bitmaps) {
+            b->destroy();
         }
     }
 

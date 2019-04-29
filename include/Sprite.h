@@ -6,29 +6,8 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
 #include <vector>
-#include <cereal/cereal.hpp>
+#include <string>
 #include <BoundingBox.h>
-
-enum COLLISION_TYPE {
-    COLLISION_NONE_OLD
-};
-
-struct SpriteJSON {
-    std::string id;
-    std::vector<std::string> frames;
-    int speed = 1;
-
-    SpriteJSON() = default;
-
-    template <class Archive>
-    void serialize(Archive &archive) {
-        archive(
-                CEREAL_NVP(id),
-                CEREAL_NVP(frames),
-                CEREAL_NVP(speed)
-        );
-    }
-};
 
 class Sprite {
 public:

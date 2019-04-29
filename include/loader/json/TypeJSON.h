@@ -1,10 +1,10 @@
-#ifndef FCWRPG_JSONTYPE_H
-#define FCWRPG_JSONTYPE_H
+#ifndef FCWRPG_TYPEJSON_H
+#define FCWRPG_TYPEJSON_H
 
 #include <string>
+
 #include <cereal/cereal.hpp>
 #include <cereal/types/string.hpp>
-#include <cereal/archives/json.hpp>
 
 
 class TypeJSON {
@@ -21,4 +21,4 @@ public:
     }
 };
 
-#endif //FCWRPG_JSONTYPE_H
+#endif //FCWRPG_TYPEJSON_H

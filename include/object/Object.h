@@ -42,27 +42,4 @@ private:
     void updateBoundingBox();
 };
 
-struct ObjectJSON {
-    std::string id;
-    float x;
-    float y;
-    std::map<std::string, std::string> sprites;
-    CollisionType collision;
-
-    Object *toObject() {
-        return new Object(id, x, y, sprites, collision);
-    }
-
-    template <class Archive>
-    void serialize(Archive &archive) {
-        archive(
-                CEREAL_NVP(id),
-                CEREAL_NVP(x),
-                CEREAL_NVP(y),
-                CEREAL_NVP(sprites),
-                CEREAL_NVP(collision)
-        );
-    }
-};
-
 #endif //FCWRPG_OBJECT_H

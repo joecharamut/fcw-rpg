@@ -16,6 +16,8 @@
 
 #include <module/Registries.h>
 
+#include <types/Bitmap.h>
+
 void button1Handler() { Log::debug("Button1"); }
 void closeButton() { Engine::closeGui(); }
 
