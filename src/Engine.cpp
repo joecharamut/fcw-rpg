@@ -9,7 +9,6 @@
 #include <Util.h>
 #include <Main.h>
 #include <Sprite.h>
-#include <MapLoader.h>
 #include <module/Registries.h>
 #include <loader/DataLoader.h>
 #include <types/Bitmap.h>
@@ -144,11 +143,6 @@ bool Engine::init() {
 
     if (!DataLoader::load()) {
         Log::error("Error loading data");
-        return false;
-    }
-
-    if (!MapLoader::loadMaps()) {
-        Log::error("Error loading maps");
         return false;
     }
 

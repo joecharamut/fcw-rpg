@@ -7,7 +7,6 @@
 #include <Main.h>
 #include <Log.h>
 #include <Engine.h>
-#include <MapLoader.h>
 
 #include <gui/GuiComponentText.h>
 #include <gui/GuiComponentGraphics.h>
@@ -27,7 +26,7 @@ void Main::testing() {
     Object *player = new Object("player_hat", 0, 0, {{"default", new Sprite("hat")}}, COLLISION_NONE);
     Engine::player = player;
     // Load the test map
-    Engine::current_map = MapLoader::getMap("map_test");
+    Engine::current_map = Registries::mapRegistry.get("map_test");
     // Set the event handler TODO: Replace with events from map file, maybe pass events from game to map
     //Engine::current_map->setEventHandlerFunction(mapEventHandler);
 

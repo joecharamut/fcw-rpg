@@ -10,7 +10,6 @@
 #include <loader/json/SpriteJSON.h>
 #include <module/Registries.h>
 #include <loader/json/MapJSON.h>
-#include <MapLoader.h>
 #include <loader/json/ObjectJSON.h>
 
 std::priority_queue<PriorityObject<ResourceFile *>> DataLoader::postProcessQueue;
@@ -204,7 +203,7 @@ bool DataLoader::process_map(ResourceFile *file) {
     input(cereal::make_nvp("data", mapJSON));
 
     Map *map = mapJSON.construct();
-    MapLoader::mapList[map->id] = map;
+    Registries::mapRegistry.put(map, map->id);
     return true;
 }
 
