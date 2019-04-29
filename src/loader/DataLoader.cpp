@@ -7,9 +7,13 @@
 #include <experimental/filesystem>
 #include <sys/stat.h>
 #include <cereal/archives/json.hpp>
+#include <loader/json/SpriteJSON.h>
+#include <module/Registries.h>
+#include <loader/json/MapJSON.h>
+#include <MapLoader.h>
+#include <loader/json/ObjectJSON.h>
 
 std::priority_queue<PriorityObject<ResourceFile *>> DataLoader::postProcessQueue;
-Registry<ResourceFile *> DataLoader::fileRegistry;
 
 bool DataLoader::load() {
     std::string dataPath = "resources/data";
@@ -51,10 +55,10 @@ bool DataLoader::load() {
         postProcessQueue.pop();
 
         if (!process_resource(obj)) {
-            Log::errorf("Error processing resource of type %s", toStringMap[obj.priority].c_str());
+            Log::errorf("Error processing resource %s", obj.value->path.c_str());
             return false;
         } else {
-            Log::verbosef("Processed resource of type %s successfully", toStringMap[obj.priority].c_str());
+            Log::verbosef("Processed resource %s successfully", obj.value->path.c_str());
         }
     }
 
@@ -141,7 +145,7 @@ bool DataLoader::handle_basic_file(std::string path) {
     unsigned char *data;
     size_t size;
     std::tie(data, size) = read_file(path);
-    fileRegistry.put(new ResourceFile(data, size), getFileName(path));
+    Registries::resourceFileRegistry.put(new ResourceFile(data, size), getFileName(path));
 
     return true;
 }
@@ -163,7 +167,7 @@ bool DataLoader::handle_json(std::string path) {
 
     if (toPriorityMap.count(type)) {
         postProcessQueue.push(
-                PriorityObject<ResourceFile *>(new ResourceFile(data, (size_t) size), toPriorityMap.at(type)));
+                PriorityObject<ResourceFile *>(new ResourceFile(data, (size_t) size, path), toPriorityMap.at(type)));
         return true;
     }
 
@@ -172,17 +176,35 @@ bool DataLoader::handle_json(std::string path) {
 }
 
 bool DataLoader::process_sprite(ResourceFile *file) {
+    std::stringstream stream = file->openStream();
+    cereal::JSONInputArchive input(stream);
+    SpriteJSON spriteJSON;
+    input(cereal::make_nvp("data", spriteJSON));
 
-    return false;
+    Sprite *spr = spriteJSON.construct();
+    Registries::spriteRegistry.put(spr, getFileName(file->path));
+    return true;
 }
 
 bool DataLoader::process_object(ResourceFile *file) {
+    std::stringstream stream = file->openStream();
+    cereal::JSONInputArchive input(stream);
+    ObjectJSON objectJSON;
+    input(cereal::make_nvp("data", objectJSON));
 
-    return false;
+    Object *obj = objectJSON.construct();
+    Registries::objectRegistry.put(obj, getFileName(file->path));
+    return true;
 }
 
 bool DataLoader::process_map(ResourceFile *file) {
+    std::stringstream stream = file->openStream();
+    cereal::JSONInputArchive input(stream);
+    MapJSON mapJSON;
+    input(cereal::make_nvp("data", mapJSON));
 
-    return false;
+    Map *map = mapJSON.construct();
+    MapLoader::mapList[map->id] = map;
+    return true;
 }
 

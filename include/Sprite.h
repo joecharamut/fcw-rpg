@@ -13,8 +13,6 @@ class Sprite {
 public:
     std::string id;
     std::vector<ALLEGRO_BITMAP *> frames;
-    int width;
-    int height;
 
     int speed = 1;
     int currentFrame = 0;
@@ -24,6 +22,9 @@ public:
     Sprite(std::string id, std::vector<std::string> frameStrings, int speed);
     explicit Sprite(std::string frame) : Sprite("null", {std::move(frame)}, 1) {};
     Sprite(const Sprite &spr) : Sprite(spr.id, spr.frames, spr.speed) {};
+
+    int getWidth();
+    int getHeight();
 
     void unload();
 

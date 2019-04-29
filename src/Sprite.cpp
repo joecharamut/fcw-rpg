@@ -36,3 +36,10 @@ ALLEGRO_BITMAP *Sprite::getNextFrame() {
     return frames[currentFrame];
 }
 
+int Sprite::getWidth() {
+    return al_get_bitmap_width(frames[currentFrame]);
+}
+
+int Sprite::getHeight() {
+    return al_get_bitmap_height(frames[currentFrame]);
+}

@@ -57,12 +57,12 @@
       ]
     ],
     "tileset": [
-      "map_test:tile00",
-      "map_test:tile01",
-      "map_test:tile02"
+      "tile00",
+      "tile01",
+      "tile02"
     ],
     "objects": [
-
+      "obj_rainbow"
     ]
   }
 }

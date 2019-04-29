@@ -7,6 +7,7 @@ Object::Object(std::string id, float x, float y, std::map<std::string, Sprite *>
     this->y = y;
     this->sprites = std::move(sprites);
     this->collision = collision;
+    updateBoundingBox();
 }
 
 Object::Object(std::string id, float x, float y, std::map<std::string, std::string> sprites, CollisionType collision) {
@@ -18,6 +19,7 @@ Object::Object(std::string id, float x, float y, std::map<std::string, std::stri
     for (const auto &s : sprites) {
         this->sprites[s.first] = Registries::spriteRegistry.get(s.second);
     }
+    updateBoundingBox();
 }
 
 Object::~Object() {
@@ -28,7 +30,7 @@ Object::~Object() {
 }
 
 void Object::draw() {
-    al_draw_bitmap(this->sprites[currentSprite]->getNextFrame(), x, y, 0);
+    al_draw_bitmap(this->sprites[currentSprite]->getNextFrame(), x-dX, y-dY, 0);
 }
 
 void Object::setPosition(float x, float y) {

@@ -7,6 +7,7 @@
 #include <Sprite.h>
 #include <object/Object.h>
 #include <Registry.h>
+#include <Map.h>
 
 class Registries {
 public:
@@ -14,6 +15,7 @@ public:
     static Registry<Sprite *> spriteRegistry;
     static Registry<Object *> objectRegistry;
     static Registry<Gui *> guiRegistry;
+    static Registry<Map *> mapRegistry;
 };
 
 

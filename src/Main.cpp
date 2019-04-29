@@ -24,7 +24,7 @@ void closeButton() { Engine::closeGui(); }
 // Function for testing features and stuff
 void Main::testing() {
     //Sprite *player = new Sprite(0, 0, "player_hat", {Animation("map_test:hat")}, COLLISION_NONE_OLD);
-    Object *player = new Object("player_hat", 0, 0, {{"default",new Sprite("map_test:hat")}}, COLLISION_NONE);
+    Object *player = new Object("player_hat", 0, 0, {{"default", new Sprite("hat")}}, COLLISION_NONE);
     Engine::player = player;
     // Load the test map
     Engine::current_map = MapLoader::getMap("map_test");

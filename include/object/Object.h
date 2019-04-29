@@ -32,8 +32,8 @@ public:
 
     float getX() { return x+dX; };
     float getY() { return y+dY; };
-    float getWidth() {return sprites[currentSprite]->width; };
-    float getHeight() { return sprites[currentSprite]->height; };
+    float getWidth() {return sprites[currentSprite]->getWidth(); };
+    float getHeight() { return sprites[currentSprite]->getHeight(); };
 
 private:
     std::map<std::string, Sprite *> sprites;

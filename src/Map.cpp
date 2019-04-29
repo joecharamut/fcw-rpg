@@ -63,6 +63,7 @@ void Map::updateViewport(Object *obj, bool override) {
     float cY = Engine::SCREEN_H/2.0f;
     float csX = (obj->x + (obj->getWidth()/2.0f));
     float csY = (obj->y + (obj->getHeight()/2.0f));
+
     if (csX != cX || csY != cY) {
         float dX = cX - csX;
         float dY = cY - csY;

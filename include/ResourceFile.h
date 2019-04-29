@@ -1,3 +1,5 @@
+#include <utility>
+
 #ifndef FCWRPG_RESOURCEFILE_H
 #define FCWRPG_RESOURCEFILE_H
 
@@ -11,8 +13,10 @@ class ResourceFile {
 public:
     void *data;
     size_t size;
+    std::string path;
 
-    ResourceFile(void *data, size_t size) : data(data), size(size) {};
+    ResourceFile(void *data, size_t size, std::string path) : data(data), size(size), path(std::move(path)) {};
+    ResourceFile(void *data, size_t size) : ResourceFile(data, size, "") {};
     ~ResourceFile();
 
     static ResourceFile *loadFileToResource(std::string filePath);

@@ -210,8 +210,8 @@ void Engine::update() {
 
         // Draw map and related to buffer
         if (current_map) {
-            player->draw();
             current_map->draw();
+            player->draw();
             if (player) {
                 // Update viewport
                 current_map->updateViewport(player, false);

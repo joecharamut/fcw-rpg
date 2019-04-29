@@ -1,0 +1,10 @@
+{
+  "data": {
+    "type": "sprite",
+    "id": "s_hat",
+    "frames": [
+      "hat"
+    ],
+    "speed": 1
+  }
+}

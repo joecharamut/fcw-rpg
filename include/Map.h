@@ -14,25 +14,6 @@
 
 #include <object/Object.h>
 
-struct MapJSON {
-    std::string id;
-    std::vector<std::vector<std::vector<int>>> tilemap;
-    std::vector<std::string> tileset;
-    std::vector<std::string> objects;
-
-    MapJSON() = default;
-
-    template <class Archive>
-    void serialize(Archive &archive) {
-        archive(
-                CEREAL_NVP(id),
-                CEREAL_NVP(tilemap),
-                CEREAL_NVP(tileset),
-                CEREAL_NVP(objects)
-        );
-    }
-};
-
 class Map {
 public:
     std::string id;
@@ -40,7 +21,6 @@ public:
 
     Map(std::string id, std::vector<std::string> tileset, std::vector<std::vector<std::vector<int>>> tilemap,
         std::vector<std::string> objects);
-    Map() = default;
 
     void handleEvent(ALLEGRO_EVENT event);
     void setEventHandlerFunction(void (*handler)(ALLEGRO_EVENT event));

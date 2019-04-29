@@ -8,6 +8,7 @@
 #include <archive/archive.h>
 #include <archive/archive_entry.h>
 #include <loader/json/SpriteJSON.h>
+#include <loader/json/MapJSON.h>
 
 std::map<std::string, Map *> MapLoader::mapList = {};
 

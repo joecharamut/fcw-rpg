@@ -1,0 +1,21 @@
+{
+  "data": {
+    "type": "sprite",
+    "id": "spr_rainbow",
+    "frames": [
+      "rainbow_0",
+      "rainbow_1",
+      "rainbow_2",
+      "rainbow_3",
+      "rainbow_4",
+      "rainbow_5",
+      "rainbow_6",
+      "rainbow_7",
+      "rainbow_8",
+      "rainbow_9",
+      "rainbow_10",
+      "rainbow_11"
+    ],
+    "speed": 4
+  }
+}

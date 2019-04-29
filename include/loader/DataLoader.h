@@ -23,10 +23,6 @@ public:
     PriorityObject() = default;
     PriorityObject(T v, Priority p) : priority(p), value(v) {}
 
-    ~PriorityObject() {
-        delete value;
-    }
-
     friend bool operator<(const PriorityObject &a, const PriorityObject &b) {
         return a.priority > b.priority;
     }
@@ -38,7 +34,6 @@ public:
 
 private:
     static std::priority_queue<PriorityObject<ResourceFile *>> postProcessQueue;
-    static Registry<ResourceFile *> fileRegistry;
 
     static std::map<std::string, Priority> toPriorityMap;
     static std::map<Priority, std::string> toStringMap;
