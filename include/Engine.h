@@ -10,8 +10,8 @@
 #include <atomic>
 
 #include <Map.h>
-#include <Registry.h>
-#include <ResourceFile.h>
+#include <resource/Registry.h>
+#include <resource/ResourceFile.h>
 #include <gui/Gui.h>
 #include <object/Object.h>
 

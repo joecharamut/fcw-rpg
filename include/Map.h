@@ -32,6 +32,8 @@ public:
     void updateViewport(Object *obj, bool override);
     void draw();
 
+    void unload();
+
 private:
     std::vector<ALLEGRO_BITMAP *> backgrounds = {};
     std::vector<Object *> objects = {};

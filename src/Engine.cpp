@@ -10,7 +10,7 @@
 #include <Main.h>
 #include <Sprite.h>
 #include <module/Registries.h>
-#include <loader/DataLoader.h>
+#include <resource/ResourceManager.h>
 #include <types/Bitmap.h>
 
 Object *Engine::player;
@@ -110,7 +110,9 @@ bool Engine::init() {
     }
     load_state |= STATE_DISPLAY;
     // Set icon and title
-    al_set_display_icon(display, Engine::loadImage("sys:icon"));
+    Registries::spriteRegistry.put(new Sprite("sys:icon", {al_load_bitmap("resources/icon.png")}, 1), "sys:icon");
+    ALLEGRO_BITMAP *icon = Registries::spriteRegistry.get("sys:icon")->getNextFrame();
+    al_set_display_icon(display, icon);
     al_set_window_title(display, "FCW the RPG");
 
     // Set 60 FPS Timer
@@ -141,7 +143,7 @@ bool Engine::init() {
 
     updateLoadingProgress(0, 0.1);
 
-    if (!DataLoader::load()) {
+    if (!ResourceManager::load()) {
         Log::error("Error loading data");
         return false;
     }
@@ -421,16 +423,10 @@ void Engine::run() {
 
 void Engine::Exit(int code) {
     if (load_state & STATE_LOADED) {
-        for (auto s : Registries::spriteRegistry) {
-            s.second->unload();
-        }
+        Registries::unloadRegistries();
 
-        for (auto g : Registries::guiRegistry) {
-            g.second->unload();
-        }
-
-        for (auto b : Bitmap::bitmaps) {
-            b->destroy();
+        for (auto f : fonts) {
+            al_destroy_font(f.second);
         }
     }
 

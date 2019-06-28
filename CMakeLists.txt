@@ -18,14 +18,12 @@ IF(${WIN32})
             ${CMAKE_SOURCE_DIR}/lib/windows/allegro_deps/lib
     )
 ELSE()
-    #LINK_DIRECTORIES(
-    #        ${CMAKE_SOURCE_DIR}/lib/linux/allegro_debug/lib
-    #)
+
 ENDIF()
 
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 add_executable(fcwrpg ${SOURCES})
-set_target_properties(fcwrpg PROPERTIES COMPILE_FLAGS "-Wall -Wextra -pedantic")
+set_target_properties(fcwrpg PROPERTIES COMPILE_FLAGS "-Wall -Wextra -pedantic -ggdb3")
 target_include_directories(fcwrpg PUBLIC "include/")
 add_dependencies(fcwrpg copy_resources)
 
@@ -82,7 +80,7 @@ ELSE()
             allegro_image
             allegro_main
             allegro_memfile
-            allegro_primitives
+            #allegro_primitives
             allegro_ttf
 
             stdc++fs

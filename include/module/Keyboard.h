@@ -10,7 +10,6 @@ typedef int Keycode;
 
 class Keyboard {
 public:
-
     static bool init();
     static void registerKeyEvent(ALLEGRO_EVENT event);
     static bool getKeyState(Keycode k);

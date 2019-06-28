@@ -23,9 +23,6 @@ Object::Object(std::string id, float x, float y, std::map<std::string, std::stri
 }
 
 Object::~Object() {
-    for (auto s : sprites) {
-        delete s.second;
-    }
     delete boundingBox;
 }
 

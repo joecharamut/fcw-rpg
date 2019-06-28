@@ -101,9 +101,8 @@ void parseArgs(int argc, char *argv[]) {
 }
 
 void loadSystemResources() {
-    ResourceFile *icon = ResourceFile::loadFileToResource("resources/icon.png");
     ResourceFile *font = ResourceFile::loadFileToResource("resources/font/DOSVGA.ttf");
-    Registries::resourceFileRegistry.put(icon, "sys:icon");
+
     Registries::resourceFileRegistry.put(font, "sys:font_8bit");
 }
 

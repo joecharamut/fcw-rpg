@@ -164,6 +164,17 @@ void Map::resolveTilemap(std::vector<std::string> tileset, std::vector<std::vect
         }
     }
 
+    for (auto s : spriteMap) {
+        s->unload();
+        delete s;
+    }
+
     // Reset the target
     al_set_target_bitmap(old);
+}
+
+void Map::unload() {
+    for (ALLEGRO_BITMAP *bmp : backgrounds) {
+        al_destroy_bitmap(bmp);
+    }
 }

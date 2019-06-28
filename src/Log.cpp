@@ -60,4 +60,5 @@ void Log::logf(LogLevel level, const char *fmt, va_list args) {
     vsnprintf(buf, size, fmt, args);
     va_end(copy);
     log(level, std::string(buf, buf + size - 1));
+    delete[] buf;
 }
